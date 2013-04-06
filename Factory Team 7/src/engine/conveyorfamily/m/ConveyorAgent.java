@@ -154,6 +154,7 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver
 	{
 		myTransducer = transducer;
 		myTransducer.register(this, TChannel.CONVEYOR);
+		//myTransducer.register(this,TChannel.SENSOR);
 	}
 	
 	//!!TRANSDUCER METHODS!!

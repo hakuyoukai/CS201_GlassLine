@@ -75,6 +75,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver
 		state = PopupState.READY;
 		status = PopupStatus.UP;
 		operators = new ArrayList<MyOperator>();
+		//TODO Add statement for determining if necessary to add operators
 		animState = AnimState.DEFAULT;
 	}
 	
@@ -215,8 +216,8 @@ public class PopupAgent extends Agent implements Popup, TReceiver
 		nextState = NextConveyorState.DEFAULT;
 		glass = null;
 		state = PopupState.WAIT;
-		//myTransducer.fireEvent(TChannel.ALL_GUI, TEvent.POPUP_RELEASE_GLASS,null);
-		//myTransducer.POPUP_RELEASE_GLASS();
+		myTransducer.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS,null);
+		//TODO add in args for conveyor number
 		stateChanged();
 	}
 	
@@ -316,18 +317,18 @@ public class PopupAgent extends Agent implements Popup, TReceiver
 				}
 				if(event == TEvent.WORKSTATION_RELEASE_FINISHED)
 				{
-					//if(WORKSTATION ONE)
+					//TODO Add in logic for each workstation
 					status = PopupStatus.UP;
 					state = PopupState.READY;
 					glass = operators.get(0).g;
+					operators.get(0).g = null;
 					operators.get(0).state = OperatorState.EMPTY;
 					gState = GlassState.PROCESSED;
 					state = PopupState.WAIT;
-					//if(WORKSTATION TWO)	
 				}
 				if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 				{
-					//if(WORKSTATION ONE)
+					//TODO parse args for workstation number
 					operators.get(0).state = OperatorState.DONE;
 				}
 			}
