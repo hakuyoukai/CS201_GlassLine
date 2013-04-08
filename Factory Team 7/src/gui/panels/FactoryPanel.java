@@ -1,6 +1,7 @@
 
 package gui.panels;
 
+import engine.conveyorfamily.zero.ConveyorFamilyZero;
 import gui.drivers.FactoryFrame;
 
 import javax.swing.BoxLayout;
@@ -29,6 +30,8 @@ public class FactoryPanel extends JPanel
 	/** Allows the control panel to communicate with the back end and give commands */
 	private Transducer transducer;
 
+	ConveyorFamilyZero conveyor0;
+	
 	/**
 	 * Constructor links this panel to its frame
 	 */
@@ -81,7 +84,7 @@ public class FactoryPanel extends JPanel
 		// ===========================================================================
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
-
+		conveyor0= new ConveyorFamilyZero(transducer);
 		System.out.println("Back end initialization finished.");
 	}
 

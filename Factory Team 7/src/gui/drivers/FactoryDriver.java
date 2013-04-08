@@ -42,7 +42,7 @@ public class FactoryDriver
 		myFactory.setLocation(50, 50);
 		myFactory.showFrame();
 		
-		ConveyorFamilyZero conveyor0 = new ConveyorFamilyZero(myFactory.getLinkedTransducer());
+		
 		
 		//~~~~MICHAEL~~~~
 		//ConveyorFamilyM  conveyor2 = new ConveyorFamilyM(2,myFactory.getLinkedTransducer());

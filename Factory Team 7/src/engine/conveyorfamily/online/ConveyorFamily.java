@@ -21,7 +21,6 @@ public class ConveyorFamily implements ConveyorFamilyInterface
 		sensorBefore=new SensorBeforeAgent(conveyorBefore,t,2*familyIndex);
 		conveyor=new ConveyorAgent(conveyorAfter,t,familyIndex,machineType);
 		sensorAfter=new SensorAfterAgent(conveyor,t,2*familyIndex+1);
-		startAllAgentThreads();
 	}
 	
 	public void setNextCF(ConveyorFamilyInterface conveyorAfter)
@@ -36,9 +35,7 @@ public class ConveyorFamily implements ConveyorFamilyInterface
 		sensorBefore.setPreviousCF(this.conveyorBefore);
 	}
 
-
-	
-	private void startAllAgentThreads()
+	public void startAllAgentThreads()
 	{
 		conveyor.startThread();
 		sensorAfter.startThread();

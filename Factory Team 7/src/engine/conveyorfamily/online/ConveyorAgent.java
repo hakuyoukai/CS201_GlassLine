@@ -91,7 +91,7 @@ public class ConveyorAgent extends Agent
 		args[0]=new Integer(conveyorIndex);
 		transducer.fireEvent(TChannel.CONVEYOR,TEvent.CONVEYOR_DO_START,args);
 		//for testing
-		if(conveyorIndex==9)
+		if(conveyorIndex==1)
 		{
 			conveyorAfter.msgHereIsGlass(g.glass); 
 		}

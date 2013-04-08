@@ -63,7 +63,7 @@ public class SensorBeforeAgent extends Agent
 		if(state==SensorBeforeState.JUST_RELEASED)
 		{
 			state=SensorBeforeState.RELEASED;
-			if(sensorBeforeIndex!=18)
+			if(sensorBeforeIndex!=2)
 				tellPreviousCFReady();
 			return true;
 		}
