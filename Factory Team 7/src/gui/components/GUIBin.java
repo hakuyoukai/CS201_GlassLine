@@ -2,6 +2,7 @@
 package gui.components;
 
 import gui.panels.DisplayPanel;
+import engine.util.Glass;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -81,7 +82,6 @@ public class GUIBin extends GuiComponent
 		{
 			nextComponent.addPart(part);
 			part = null;
-			transducer.fireEvent(TChannel.BIN, TEvent.BIN_PART_CREATED, null);
 		}
 	}
 
@@ -96,6 +96,10 @@ public class GUIBin extends GuiComponent
 		if (event == TEvent.BIN_CREATE_PART)
 		{
 			GUIGlass part = new GUIGlass();
+			Glass  glass = new Glass("0");
+			Glass[] newArgs = new Glass[1];
+			newArgs[0] = (Glass)glass;
+			transducer.fireEvent(TChannel.BIN, TEvent.BIN_PART_CREATED, newArgs);
 			this.part = part;
 			part.setCenterLocation(getCenterX(), getCenterY());
 			parent.getActivePieces().add(part);

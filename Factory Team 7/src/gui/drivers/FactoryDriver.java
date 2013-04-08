@@ -5,6 +5,7 @@ import transducer.TEvent;
 import transducer.Transducer;
 import transducer.TransducerDebugMode;
 import engine.conveyorfamily.m.*;
+import engine.conveyorfamily.zero.ConveyorFamilyZero;
 
 /**
  * The FactoryDriver class is the main class for running the factory program.
@@ -40,6 +41,8 @@ public class FactoryDriver
 		FactoryFrame myFactory = new FactoryFrame();
 		myFactory.setLocation(50, 50);
 		myFactory.showFrame();
+		
+		ConveyorFamilyZero conveyor0 = new ConveyorFamilyZero(myFactory.getLinkedTransducer());
 		
 		//~~~~MICHAEL~~~~
 		//ConveyorFamilyM  conveyor2 = new ConveyorFamilyM(2,myFactory.getLinkedTransducer());
