@@ -27,8 +27,9 @@ public class ConveyorAgent extends Agent
 
 	ConveyorFamilyInterface conveyorAfter;
 	int conveyorIndex;
-	Semaphore animationDone=new Semaphore(0,true);
+	//Semaphore animationDone=new Semaphore(0,true);
 	
+	public TChannel myChannel;
 	
 	public class MyGlass
 	{
@@ -42,13 +43,14 @@ public class ConveyorAgent extends Agent
 		}
 	}
 	
-	public ConveyorAgent(ConveyorFamilyInterface conveyorAfter,Transducer t, int index)
+	public ConveyorAgent(ConveyorFamilyInterface conveyorAfter,Transducer t, int index, TChannel myChannel)
 	{
 		super("Conveyor Belt " + index);
 		this.transducer=t;
 		this.transducer.register(this, TChannel.PAINTER);
 		this.conveyorIndex=index;
 		this.conveyorAfter=conveyorAfter;
+		this.myChannel=myChannel;
 	}
 	
 	public void setNextCF(ConveyorFamilyInterface conveyorAfter)
@@ -165,7 +167,7 @@ public class ConveyorAgent extends Agent
 
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
-		if(channel == TChannel.PAINTER)
+		if(channel == this.myChannel)
 		{
 			if(event == TEvent.WORKSTATION_LOAD_FINISHED)
 			{
@@ -179,14 +181,14 @@ public class ConveyorAgent extends Agent
 							{
 								Object[] conveyorNum=new Object[1];
 								conveyorNum[0]=new Integer(conveyorIndex);
-								transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_DO_ACTION, conveyorNum);
+								transducer.fireEvent(this.myChannel, TEvent.WORKSTATION_DO_ACTION, conveyorNum);
 								break;
 							}
 							else
 							{
 								Object[] conveyorNum=new Object[1];
 								conveyorNum[0]=new Integer(conveyorIndex);
-								transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, conveyorNum);
+								transducer.fireEvent(this.myChannel, TEvent.WORKSTATION_RELEASE_GLASS, conveyorNum);
 								break;
 							}
 						}
@@ -203,7 +205,7 @@ public class ConveyorAgent extends Agent
 						{
 							Object[] conveyorNum=new Object[1];
 							conveyorNum[0]=new Integer(conveyorIndex);
-							transducer.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, conveyorNum);
+							transducer.fireEvent(this.myChannel, TEvent.WORKSTATION_RELEASE_GLASS, conveyorNum);
 							break;
 						}
 					}

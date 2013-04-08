@@ -1,6 +1,7 @@
 package engine.conveyorfamily.online;
 
 import engine.util.ConveyorFamilyInterface;
+import transducer.TChannel;
 import transducer.Transducer;
 
 public class ConveyorFamily implements ConveyorFamilyInterface
@@ -13,12 +14,12 @@ public class ConveyorFamily implements ConveyorFamilyInterface
 	public int familyIndex;
 
 	
-	public ConveyorFamily(ConveyorFamilyInterface conveyorBefore, ConveyorFamilyInterface conveyorAfter,Transducer t, int familyIndex)
+	public ConveyorFamily(ConveyorFamilyInterface conveyorBefore, ConveyorFamilyInterface conveyorAfter,Transducer t, int familyIndex, TChannel machineType)
 	{
 		this.conveyorBefore=conveyorBefore;
 		this.familyIndex=familyIndex;
 		sensorBefore=new SensorBeforeAgent(conveyorBefore,t,2*familyIndex);
-		conveyor=new ConveyorAgent(conveyorAfter,t,familyIndex);
+		conveyor=new ConveyorAgent(conveyorAfter,t,familyIndex,machineType);
 		sensorAfter=new SensorAfterAgent(conveyor,t,2*familyIndex+1);
 		startAllAgentThreads();
 	}
