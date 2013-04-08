@@ -46,4 +46,6 @@ public enum TEvent
 	BIN_CREATE_PART,
 	BIN_PART_CREATED,
 	
+	//shuttle
+	SHUTTLE_FINISHED_LOADING,
 }

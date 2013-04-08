@@ -28,5 +28,8 @@ public enum TChannel
 	WASHER,
 	UV_LAMP,
 	OVEN,
-	PAINTER
+	PAINTER,
+	
+	// shuttle
+	SHUTTLE,
 }
