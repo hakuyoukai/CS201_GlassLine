@@ -140,6 +140,12 @@ public class GUIShuttle extends GuiComponent
 		// guiPartMover = new GUIPartMover();
 	}
 
+	// registers transducer (after guicomponent.setTransducer called in displaypanel) // used in conveyor for now?
+	/*public void registerTransducer() {
+		transducer.register(this,TChannel.SHUTTLE);
+	} */
+	
+	
 	/**
 	 * Moves a GUIPart one block in a direction.
 	 * Before moving a block, calls alignPart to make sure the part is squarely on the conveyor.
@@ -163,6 +169,12 @@ public class GUIShuttle extends GuiComponent
 			}
 			else
 			{
+				if (part.getCenterY() == getCenterY() && part.getCenterX() == getCenterX()) {
+					Integer[] args = new Integer[1];
+					args[0] = 1; // index of adjacent conveyor
+					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
+				}
+					System.out.println("center reaached");
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() - 1);
 			}
 		}
@@ -174,6 +186,11 @@ public class GUIShuttle extends GuiComponent
 			}
 			else
 			{
+				if (part.getCenterY() == getCenterY() && part.getCenterX() == getCenterX()) {
+					Integer[] args = new Integer[1];
+					args[0] = 4; // index of adjacent conveyor
+					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
+				}
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() + 1);
 			}
 		}
@@ -185,6 +202,11 @@ public class GUIShuttle extends GuiComponent
 			}
 			else
 			{
+				if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY()) {
+					Integer[] args = new Integer[1];
+					args[0] = 9; // index of adjacent conveyor
+					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
+				}
 				part.setCenterLocation(part.getCenterX() - 1, part.getCenterY());
 			}
 		}
@@ -196,6 +218,11 @@ public class GUIShuttle extends GuiComponent
 			}
 			else
 			{
+				if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY()) {
+					Integer[] args = new Integer[1];
+					args[0] = 12; // index of adjacent conveyor
+					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
+				}
 				part.setCenterLocation(part.getCenterX() + 1, part.getCenterY());
 			}
 		}

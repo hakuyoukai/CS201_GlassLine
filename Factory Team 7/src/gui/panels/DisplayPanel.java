@@ -370,6 +370,7 @@ public class DisplayPanel extends JLayeredPane {
 		connector.setParent(this);
 		connector.setName("transfer "+transferCount);
 		connector.setCenterLocation(x, y);
+		connector.setTransducer(transducer);
 		this.add(connector,CONVEYOR_LAYER);
 		parent.getGuiParent().getTimer().addActionListener(connector);
 		currentComponent.addNextComponent(connector);
