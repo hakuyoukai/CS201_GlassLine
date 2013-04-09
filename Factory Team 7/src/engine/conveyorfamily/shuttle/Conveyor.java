@@ -104,8 +104,6 @@ public class Conveyor extends Agent{
 		}	
 		//	stateChanged();
 
-		Calendar cal = Calendar.getInstance();
-		cal.getTimeInMillis();
 	}
 
 
@@ -127,11 +125,6 @@ public class Conveyor extends Agent{
 
 		System.out.println("CONVEYOR " + ID + ": " + sensorNum + "pressed");
 		if (sensorNum == 0) {
-			if (intervalset== 0) {
-				Calendar cal = Calendar.getInstance();
-				startTime = cal.getTimeInMillis();
-				intervalset++;
-			}
 			if (incomingGlass == null)
 				stopConveyor();
 			else
@@ -148,13 +141,7 @@ public class Conveyor extends Agent{
 			}
 		}
 		else if (sensorNum == 1) { // and conveyor is movingg - has to be to trigger this
-			if (intervalset == 1) {
-				Calendar cal = Calendar.getInstance();
-				endTime = cal.getTimeInMillis();
-				timeInterval = 0.2*(endTime-startTime);
-				currTimeInterval = timeInterval;
-				intervalset++;
-			}
+
 
 			if (!sendingGlass)
 				stopConveyor();
@@ -268,6 +255,22 @@ public class Conveyor extends Agent{
 				Integer[] newArgs = new Integer[1];
 				newArgs[0] = (Integer)args[0] %2;
 				sensorPressed((Integer)newArgs[0]);	
+			}
+			else if ((Integer)args[0] == 0) {
+				if (intervalset== 0) {
+					Calendar cal = Calendar.getInstance();
+					startTime = cal.getTimeInMillis();
+					intervalset++;
+				}
+			}
+			else if ((Integer)args[0] == 1) {
+				if (intervalset == 1) {
+					Calendar cal = Calendar.getInstance();
+					endTime = cal.getTimeInMillis();
+					timeInterval = 0.2*(endTime-startTime);
+					currTimeInterval = timeInterval;
+					intervalset++;
+				}
 			}
 		}
 		else if (channel == TChannel.SHUTTLE && event == TEvent.SHUTTLE_FINISHED_LOADING) {
