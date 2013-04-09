@@ -6,7 +6,6 @@ import engine.util.Glass;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
@@ -47,7 +46,7 @@ public class ConveyorAgent extends Agent
 	{
 		super("Conveyor Belt " + index);
 		this.transducer=t;
-		this.transducer.register(this, TChannel.PAINTER);
+		this.transducer.register(this, myChannel);
 		this.conveyorIndex=index;
 		this.conveyorAfter=conveyorAfter;
 		this.myChannel=myChannel;
@@ -60,6 +59,10 @@ public class ConveyorAgent extends Agent
 	
 	public void msgPreviousCFGaveGlass(Glass g)
 	{
+		if(conveyorIndex==2)
+		{
+			System.out.println("Conveyor 2 received the glass");
+		}
 		glasses.add(new MyGlass(g,MyGlassState.STOPLEFT));
 		stateChanged();
 	}
@@ -72,6 +75,7 @@ public class ConveyorAgent extends Agent
 
 	public void msgGlassArrived()
 	{
+		System.out.println("Conveyor Index "+conveyorIndex+":Glass arrived");
 		glasses.get(0).state=MyGlassState.STOPRIGHT;
 		sensorAfterState=SensorAfterState.PRESSED;
 		stateChanged();
@@ -79,6 +83,7 @@ public class ConveyorAgent extends Agent
 	
 	public void msgNextCFRready()
 	{
+		System.out.println("Next CF, index:"+(conveyorIndex+1)+" says it is ready");
 		nextCFState=NextCFState.AVAILABLE;
 	}
 
@@ -94,16 +99,18 @@ public class ConveyorAgent extends Agent
 		if(conveyorIndex==1)
 		{
 			conveyorAfter.msgHereIsGlass(g.glass); 
+			glasses.remove(g);
+			nextCFState = NextCFState.UNAVAILABLE;
 		}
 	}
 
-	public void tellGUIConveyorStartMoving()
+	public void tellGUIConveyorStartMoving(MyGlass mg)
 	{
 		Object[] args=new Object[1];
 		args[0]=new Integer(conveyorIndex);
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START,args);
 		conveyorState=ConveyorState.MOVING;
-		glasses.get(0).state=MyGlassState.MOVING;
+		mg.state=MyGlassState.MOVING;
 		stateChanged();
 	}
 
@@ -156,7 +163,7 @@ public class ConveyorAgent extends Agent
 				{
 					if(mg.state==MyGlassState.STOPLEFT&&sensorAfterState==SensorAfterState.RELEASED)
 					{
-						tellGUIConveyorStartMoving();
+						tellGUIConveyorStartMoving(mg);
 						return true;
 					}
 				}
@@ -219,7 +226,6 @@ public class ConveyorAgent extends Agent
 					{
 						if(mg.state == MyGlassState.PROCESSING)
 						{
-							System.out.println(conveyorIndex+ " is giveing glass to "+(conveyorIndex+1));
 							conveyorAfter.msgHereIsGlass(mg.glass);
 							glasses.remove(mg);
 							nextCFState = NextCFState.UNAVAILABLE;

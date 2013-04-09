@@ -174,7 +174,6 @@ public class GUIShuttle extends GuiComponent
 					args[0] = 1; // index of adjacent conveyor
 					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
 				}
-					System.out.println("center reaached");
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() - 1);
 			}
 		}

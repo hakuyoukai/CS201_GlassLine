@@ -325,9 +325,7 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
-
-		if (channel.toString().equals(this.channel))
-			;
+		if (channel==this.channel)
 		{
 			if (event == TEvent.WORKSTATION_DO_ACTION)
 			{

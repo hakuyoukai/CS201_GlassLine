@@ -3,7 +3,6 @@ package engine.conveyorfamily.online;
 import engine.agent.Agent;
 import transducer.TChannel;
 import transducer.TEvent;
-import transducer.TReceiver;
 import transducer.Transducer;
 
 public class SensorAfterAgent extends Agent
@@ -42,7 +41,6 @@ public class SensorAfterAgent extends Agent
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
-		
 		if(args!=null)
 		{
 			Object[] arguments=args;

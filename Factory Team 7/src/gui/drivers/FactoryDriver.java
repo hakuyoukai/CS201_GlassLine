@@ -41,12 +41,7 @@ public class FactoryDriver
 		FactoryFrame myFactory = new FactoryFrame();
 		myFactory.setLocation(50, 50);
 		myFactory.showFrame();
-		
-		
-		
-		//~~~~MICHAEL~~~~
-		//ConveyorFamilyM  conveyor2 = new ConveyorFamilyM(2,myFactory.getLinkedTransducer());
-		
+
 		System.out.println("Factory frame displayed.");
 		
 		

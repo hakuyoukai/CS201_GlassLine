@@ -29,6 +29,7 @@ public enum TChannel
 	UV_LAMP,
 	OVEN,
 	PAINTER,
+	NO_WORKSTATION,
 	
 	// shuttle
 	SHUTTLE,

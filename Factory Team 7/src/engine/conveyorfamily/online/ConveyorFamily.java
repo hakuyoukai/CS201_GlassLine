@@ -1,6 +1,7 @@
 package engine.conveyorfamily.online;
 
 import engine.util.ConveyorFamilyInterface;
+import engine.util.Glass;
 import transducer.TChannel;
 import transducer.Transducer;
 
@@ -51,9 +52,8 @@ public class ConveyorFamily implements ConveyorFamilyInterface
 	}
 
 	@Override
-	public void msgHereIsGlass(engine.util.Glass g)
+	public void msgHereIsGlass(Glass g)
 	{
 		conveyor.msgPreviousCFGaveGlass(g);
-		System.out.println(familyIndex+ " is given a glass");
 	}
 }

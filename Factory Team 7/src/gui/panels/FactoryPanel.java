@@ -1,12 +1,14 @@
 
 package gui.panels;
 
+import engine.conveyorfamily.online.ConveyorFamily;
 import engine.conveyorfamily.zero.ConveyorFamilyZero;
 import gui.drivers.FactoryFrame;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import transducer.TChannel;
 import transducer.Transducer;
 
 /**
@@ -31,6 +33,9 @@ public class FactoryPanel extends JPanel
 	private Transducer transducer;
 
 	ConveyorFamilyZero conveyor0;
+	ConveyorFamily conveyor1;
+	ConveyorFamily conveyor2;
+	ConveyorFamily conveyor3;
 	
 	/**
 	 * Constructor links this panel to its frame
@@ -85,6 +90,24 @@ public class FactoryPanel extends JPanel
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
 		conveyor0= new ConveyorFamilyZero(transducer);
+		conveyor1=new ConveyorFamily(null,null,transducer,1,TChannel.NO_WORKSTATION);
+		conveyor2=new ConveyorFamily(null,null,transducer,2,TChannel.BREAKOUT);
+		conveyor3=new ConveyorFamily(null,null,transducer,3,TChannel.MANUAL_BREAKOUT);
+		
+		conveyor0.setNextConveyor(conveyor1);
+		
+		conveyor1.setNextCF(conveyor2);
+		conveyor1.setPreviousCF(conveyor0);
+		
+		conveyor2.setNextCF(conveyor3);
+		conveyor2.setPreviousCF(conveyor1);
+		
+		conveyor3.setNextCF(null);
+		conveyor3.setPreviousCF(conveyor2);
+		
+		conveyor1.startAllAgentThreads();
+		conveyor2.startAllAgentThreads();
+		conveyor3.startAllAgentThreads();
 		System.out.println("Back end initialization finished.");
 	}
 

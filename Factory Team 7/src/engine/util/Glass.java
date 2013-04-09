@@ -10,6 +10,8 @@ public class Glass
 	
 	public Glass(String barcode)
 	{
-		recipe = new HashMap();
+		recipe = new HashMap<Integer, Boolean>();
+		recipe.put(2, true);
+		recipe.put(3, true);
 	}
 }

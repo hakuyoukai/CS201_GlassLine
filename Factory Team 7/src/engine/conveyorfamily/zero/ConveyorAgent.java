@@ -44,7 +44,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 		sensorOne = SensorState.OFF;
 		sensorTwo = SensorState.OFF;
 		//TODO Change the following line if you are doing testing
-		//nextState = SendState.DEFAULT;
+		nextState = SendState.DEFAULT;
 		nextState = SendState.APPROVED;
 		prevState = SendState.DEFAULT;
 		cutterState = AnimState.DEFAULT;
@@ -84,7 +84,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 		{
 			if(nextState==SendState.APPROVED)
 			{
-				System.out.println("SEND NEXT");
 				sendNext();
 				return true;
 			}
@@ -96,7 +95,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 			{
 				if(sensorOne!=SensorState.ON && sensorTwo!=SensorState.ON)
 				{
-					System.out.println("ASK FOR GLASS");
 					askForGlass();
 					return true;
 				}
@@ -108,9 +106,8 @@ public class ConveyorAgent extends Agent implements TReceiver
 	//!!ACTIONS!!
 	public void sendNext()
 	{
-		
 		//TODO REMOVE IF YOU ARE TESTING WITH YOUR CONVEYOR
-		//nextConveyor.msgHereIsGlass(glass.remove(0));
+		nextConveyor.msgHereIsGlass(glass.remove(0));
 		cutterState = AnimState.WAITING;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 		nextState = SendState.DEFAULT;
@@ -119,7 +116,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 	
 	public void sendCutter()
 	{
-		System.out.println("WORKSTATION_DO_LOAD_GLASS");
 		transducer.fireEvent(TChannel.CONVEYOR,TEvent.CONVEYOR_DO_START, newArgs);
 		cutterState = AnimState.LOADING;
 		stateChanged();
@@ -150,18 +146,16 @@ public class ConveyorAgent extends Agent implements TReceiver
 		{
 			if(event == TEvent.WORKSTATION_LOAD_FINISHED)
 			{
-				System.out.println("LOAD FINISHED");
 				cutterState = AnimState.WORKING;
 				transducer.fireEvent(TChannel.CUTTER,TEvent.WORKSTATION_DO_ACTION,null);
 				stateChanged();
 			}
 			if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 			{
-				System.out.println("ACTION FINISHED");
 				cutterState = AnimState.DEFAULT;
 				//TODO If testing, change the below line to...
-				//nextState = SendState.DEFAULT;
-				nextState = SendState.APPROVED;
+				nextState = SendState.DEFAULT;
+				//nextState = SendState.APPROVED;
 				transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, null);
 				stateChanged();
 			}
@@ -176,7 +170,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 					sensorOne = SensorState.ON;
 					if(prevState == SendState.WAITING)
 					{
-						System.out.println("YES");
 						glass.add(incomingGlass);
 						incomingGlass = null;
 						prevState = SendState.DEFAULT;
@@ -187,7 +180,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 				if((Integer)args[0] == 1)
 				{
 					sensorTwo = SensorState.ON;
-					System.out.println(cutterState);
 					/*
 					if(cutterState == AnimState.WAITING)
 					{
@@ -220,7 +212,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 		{
 			if(event == TEvent.BIN_PART_CREATED)
 			{
-				System.out.println("GLASS RECEIVED");
 				incomingGlass = (Glass)args[0];
 				prevState = SendState.WAITING;
 				stateChanged();
