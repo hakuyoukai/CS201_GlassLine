@@ -26,19 +26,19 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 	ConveyorFamilyType type;
 	MyConveyorFamily mcf;
 	Map<Integer,Integer> recipe;
-	
+
 	Glass g = null;
 	boolean ready = true;
 	int ID;
 	boolean sensorPressed = false;
 	ArrayList<Glass> glassList = new ArrayList<Glass>();
-	
+
 	public class MyConveyorFamily {
-//TODO
+		//TODO
 		//		ConveyorFamilyJ conveyorFamily;
 		ConveyorFamilyShuttle conveyorFamily;
 		ConveyorFamilyType type;
-		
+
 		public MyConveyorFamily(ConveyorFamilyInterface cf,ConveyorFamilyType ty) {
 			//TODO
 			//conveyorFamily = (ConveyorFamilyJ) cf;
@@ -51,6 +51,7 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 		t = trans;
 		type = typ;
 		t.register(this, TChannel.SENSOR);
+		t.register(this, TChannel.POPUP);
 		ID = id;
 		recipe = new HashMap<Integer,Integer>();
 		recipe.put(0, 1);
@@ -65,7 +66,7 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 		recipe.put(9, 1);
 		recipe.put(10,1);
 	}
-	
+
 	@Override
 	public void msgHereIsGlass(Glass g) {
 		if (type == ConveyorFamilyType.TO) {
@@ -77,9 +78,9 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 			}
 			else
 				System.out.println("TO not ready");
-			*/
+			 */
 			mcf.conveyorFamily.msgIAmReady();
-			
+
 		}
 		else {
 			glassList.add(g);
@@ -92,24 +93,24 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 
 	@Override
 	public void msgIAmReady() {
-		
+
 		System.out.println("READY " + type);
 		ready = true;
 		Integer[] newArgs = new Integer[1];
 		newArgs[0] = ID;
 		if (sensorPressed == true) {
-	///		Glass g = new Glass(null);
-	//		mcf.conveyorFamily.msgHereIsGlass(g);	
+			///		Glass g = new Glass(null);
+			//		mcf.conveyorFamily.msgHereIsGlass(g);	
 			mcf.conveyorFamily.msgHereIsGlass(glassList.remove(0));
 		}
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 	}
 
-//TODO
+	//TODO
 	//public void setNeighbor(ConveyorFamilyJ fam, ConveyorFamilyType ty) {
 	public void setNeighbor(ConveyorFamilyShuttle fam,ConveyorFamilyType ty) {
-	mcf = new MyConveyorFamily(fam,ty);
-		
+		mcf = new MyConveyorFamily(fam,ty);
+
 	}
 
 	@Override
@@ -121,11 +122,11 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 			Integer[] newArgs = new Integer[1];
 			newArgs[0] = (Integer)args[0] / 2;
 			if ((Integer)args[0] == sensor0ID) {
-		/*		if (mcf.type == ConveyorFamilyType.FROM) {
+				/*		if (mcf.type == ConveyorFamilyType.FROM) {
 				g = new Glass(null);
 				msgHereIsGlass(g);
 				}*/
-			/*	if (sensorPressed)
+				/*	if (sensorPressed)
 					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
 				else {
 					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
@@ -134,15 +135,20 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 			}
 			else if ((Integer)args[0]== sensor1ID) {
 				sensorPressed = true;
-			//	if (ready == false) {
-			//		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);	
-			//	} else {
-					//ready = false;
-					Glass g = new Glass(null);
-					mcf.conveyorFamily.msgHereIsGlass(g);
-					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
-			//	}
+				//	if (ready == false) {
+				//		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);	
+				//	} else {
+				//ready = false;
+				Glass g = new Glass(null);
+				mcf.conveyorFamily.msgHereIsGlass(g);
+				t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
+				//	}
 			}
+			else if (((Integer)args[0] % 2) == 0 && (Integer)args[0] > 9)
+				{
+					newArgs[0] = (Integer)args[0] / 2;
+					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
+				}
 		}
 		else if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED) {
 			Integer[] newArgs = new Integer[1];
@@ -152,12 +158,17 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 			}
 
 		}
+		else if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED)
+		{
+			t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+		}
 
-		
+
+
 	}
 
 
-	
+
 }
 
 
