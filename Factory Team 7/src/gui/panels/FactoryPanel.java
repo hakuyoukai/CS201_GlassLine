@@ -175,4 +175,11 @@ public class FactoryPanel extends JPanel
 	{
 		return transducer;
 	}
+	
+	public ConveyorFamilyInterface getConveyor(int num) {
+		if (num == 0)
+			return conveyor0;
+		else
+			return null;
+	}
 }

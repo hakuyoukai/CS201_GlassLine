@@ -48,7 +48,8 @@ public class TestPanel extends JPanel implements ActionListener {
 		oneLine.add(startButton);
 		oneLine.add(stopButton);
 		add(oneLine);
-		
+		// JOEY
+		/*
 		receiveLabel = new JLabel("receive: false");
 		sendLabel = new JLabel("send: false");
 		receiveToggle = new JButton("Toggle");
@@ -63,20 +64,16 @@ public class TestPanel extends JPanel implements ActionListener {
 		secondLine.add(sendLabel);
 		secondLine.add(sendToggle);
 		add(secondLine);
+		*/
 	}
-//TODO: remove
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+
 	
 	/**
 	 * Returns the parent panel
 	 * @return the parent panel
 	 */
 	
-	/*
+	
 	public ControlPanel getGuiParent()
 	{
 		return parent;
@@ -85,23 +82,24 @@ public class TestPanel extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == newGlass) {
-			parent.transducer.fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
+			parent.getTransducer().fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART, null);
 			Glass g = new Glass(null);
-			parent.parent.dPanel.JTest.mockCF1.msgHereIsGlass(g);
+			parent.getGuiParent().getConveyor(0).msgHereIsGlass(g);
 			
 		}
 		else if (e.getSource() == stopButton) {
 			Integer[] newArgs = new Integer[1];
 				newArgs[0] = conveyorNum.getSelectedIndex();
-				parent.transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
+				parent.getTransducer().fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
 
 		}
 		else if (e.getSource() == startButton) {
 			Integer[] newArgs = new Integer[1];
 				newArgs[0] = conveyorNum.getSelectedIndex();
-				parent.transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
+				parent.getTransducer().fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 		}
-		else if (e.getSource() == receiveToggle) {
+		//JOEY
+		/*else if (e.getSource() == receiveToggle) {
 			boolean a =	parent.parent.dPanel.JTest.conveyorFamily.receiveOK;
 			a = !a;
 			parent.parent.dPanel.JTest.conveyorFamily.receiveOK = a;
@@ -116,10 +114,10 @@ public class TestPanel extends JPanel implements ActionListener {
 			}
 			sendLabel.setText("send: " + a);
 		}
-
+*/
 		
 	}
 
-	*/
+	
 	
 }
