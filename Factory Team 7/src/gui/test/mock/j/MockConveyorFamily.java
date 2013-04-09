@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import engine.conveyorfamily.j.ConveyorFamilyJ;
-import engine.conveyorfamily.j.ConveyorFamilyJ.ConveyorFamilyType;
+import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle;
+import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle.ConveyorFamilyType;
+//TODO
+//import engine.conveyorfamily.j.ConveyorFamilyJ;
+//import engine.conveyorfamily.j.ConveyorFamilyJ.ConveyorFamilyType;
 import engine.util.ConveyorFamilyInterface;
 import engine.util.Glass;
 
@@ -31,11 +34,15 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 	ArrayList<Glass> glassList = new ArrayList<Glass>();
 	
 	public class MyConveyorFamily {
-		ConveyorFamilyJ conveyorFamily;
+//TODO
+		//		ConveyorFamilyJ conveyorFamily;
+		ConveyorFamilyShuttle conveyorFamily;
 		ConveyorFamilyType type;
 		
 		public MyConveyorFamily(ConveyorFamilyInterface cf,ConveyorFamilyType ty) {
-			conveyorFamily = (ConveyorFamilyJ) cf;
+			//TODO
+			//conveyorFamily = (ConveyorFamilyJ) cf;
+			conveyorFamily = (ConveyorFamilyShuttle)cf;
 			type = ty;
 		}
 	}
@@ -98,9 +105,10 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 	}
 
-
-	public void setNeighbor(ConveyorFamilyJ fam, ConveyorFamilyType ty) {
-		mcf = new MyConveyorFamily(fam,ty);
+//TODO
+	//public void setNeighbor(ConveyorFamilyJ fam, ConveyorFamilyType ty) {
+	public void setNeighbor(ConveyorFamilyShuttle fam,ConveyorFamilyType ty) {
+	mcf = new MyConveyorFamily(fam,ty);
 		
 	}
 
@@ -129,7 +137,7 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 			//	if (ready == false) {
 			//		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);	
 			//	} else {
-					ready = false;
+					//ready = false;
 					Glass g = new Glass(null);
 					mcf.conveyorFamily.msgHereIsGlass(g);
 					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);

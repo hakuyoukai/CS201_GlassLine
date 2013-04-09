@@ -1,9 +1,14 @@
 
 package gui.panels;
 
+
 import engine.conveyorfamily.online.ConveyorFamily;
+import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle;
+import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle.ConveyorFamilyType;
 import engine.conveyorfamily.zero.ConveyorFamilyZero;
+import engine.util.ConveyorFamilyInterface;
 import gui.drivers.FactoryFrame;
+import gui.test.mock.j.MockConveyorFamily;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -33,9 +38,13 @@ public class FactoryPanel extends JPanel
 	private Transducer transducer;
 
 	ConveyorFamilyZero conveyor0;
-	ConveyorFamily conveyor1;
+	ConveyorFamilyShuttle conveyor1;
 	ConveyorFamily conveyor2;
 	ConveyorFamily conveyor3;
+	ConveyorFamilyShuttle conveyor4;
+	ConveyorFamilyShuttle conveyor9;
+	ConveyorFamilyShuttle conveyor12;
+	MockConveyorFamily conveyormock;
 	
 	/**
 	 * Constructor links this panel to its frame
@@ -90,24 +99,45 @@ public class FactoryPanel extends JPanel
 		// TODO initialize and start Agent threads here
 		// ===========================================================================
 		conveyor0= new ConveyorFamilyZero(transducer);
-		conveyor1=new ConveyorFamily(null,null,transducer,1,TChannel.NO_WORKSTATION);
+		//conveyor1=new ConveyorFamily(null,null,transducer,1,TChannel.NO_WORKSTATION);
+		conveyor1= new ConveyorFamilyShuttle(1,transducer);
 		conveyor2=new ConveyorFamily(null,null,transducer,2,TChannel.BREAKOUT);
 		conveyor3=new ConveyorFamily(null,null,transducer,3,TChannel.MANUAL_BREAKOUT);
+		conveyor4= new ConveyorFamilyShuttle(4,transducer);
+		conveyor9= new ConveyorFamilyShuttle(9,transducer);
+		conveyor12= new ConveyorFamilyShuttle(12,transducer);
+		conveyormock = new MockConveyorFamily(5,ConveyorFamilyType.TO,transducer);
+		
 		
 		conveyor0.setNextConveyor(conveyor1);
 		
-		conveyor1.setNextCF(conveyor2);
-		conveyor1.setPreviousCF(conveyor0);
+		conveyor1.setNeighbor(conveyor0,ConveyorFamilyType.FROM);
+		conveyor1.setNeighbor(conveyor2,ConveyorFamilyType.TO);
 		
 		conveyor2.setNextCF(conveyor3);
 		conveyor2.setPreviousCF(conveyor1);
 		
-		conveyor3.setNextCF(null);
+		conveyor3.setNextCF(conveyor4);
 		conveyor3.setPreviousCF(conveyor2);
 		
-		conveyor1.startAllAgentThreads();
+		conveyor4.setNeighbor(conveyor3,ConveyorFamilyType.FROM);
+		conveyor4.setNeighbor(conveyormock,ConveyorFamilyType.TO);
+		
+		conveyormock.setNeighbor(conveyor4,ConveyorFamilyType.FROM);
+
+		conveyor9.setNeighbor(null,ConveyorFamilyType.FROM);
+		conveyor9.setNeighbor(null,ConveyorFamilyType.TO);
+		
+		conveyor12.setNeighbor(null,ConveyorFamilyType.FROM);
+		conveyor12.setNeighbor(null,ConveyorFamilyType.TO);
+		
+		
+
+		conveyor1.startUp();
 		conveyor2.startAllAgentThreads();
 		conveyor3.startAllAgentThreads();
+		conveyor4.startUp();
+		conveyormock.msgIAmReady();
 		System.out.println("Back end initialization finished.");
 	}
 

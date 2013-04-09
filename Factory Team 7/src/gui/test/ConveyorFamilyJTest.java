@@ -39,14 +39,20 @@ public class ConveyorFamilyJTest implements TReceiver
 		t.register(this, TChannel.OVEN);
 		t.register(this, TChannel.PAINTER);
 		t.register(this, TChannel.TRUCK);//added by monroe
-
-		conveyorFamily = new ConveyorFamilyJ(disp,1,t,0);
+//TODO:testing
+	//	conveyorFamily = new ConveyorFamilyJ(disp,1,t,0);
 		mockCF1 = new ConveyorFamilyZero(t);
 	//	mockCF1 = new MockConveyorFamily(0,ConveyorFamilyType.FROM,t);
+		//	mockCF1.setNeighbor(conveyorFamily,ConveyorFamilyType.TO);
+		
+		
+		//TODO
+		/*
 		mockCF2 = new MockConveyorFamily(2,ConveyorFamilyType.TO,t);
 		mockCF1.setNextConveyor(conveyorFamily);
-	//	mockCF1.setNeighbor(conveyorFamily,ConveyorFamilyType.TO);
+
 		mockCF2.setNeighbor(conveyorFamily,ConveyorFamilyType.FROM);
+		*/
 		conveyorFamily.setNeighbor(mockCF1,ConveyorFamilyType.FROM);
 		conveyorFamily.setNeighbor(mockCF2,ConveyorFamilyType.TO);
 		

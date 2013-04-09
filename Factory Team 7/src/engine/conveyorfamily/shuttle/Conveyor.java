@@ -1,4 +1,4 @@
-package engine.conveyorfamily.j;
+package engine.conveyorfamily.shuttle;
 
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class Conveyor extends Agent{
 	public boolean sensorState[] = {false,false};
 	public boolean receiveOK = false;
 	public boolean sendOK = false;
-	ConveyorFamilyJ conveyorFamily;
+	ConveyorFamilyShuttle conveyorFamily;
 	public boolean conveyorMoving = true;
 	boolean sendingGlass = false;
 	Transducer t;
@@ -60,7 +60,7 @@ public class Conveyor extends Agent{
 	}
 
 
-	public void setConveyorFamily(ConveyorFamilyJ cf) {
+	public void setConveyorFamily(ConveyorFamilyShuttle cf) {
 		conveyorFamily = cf;
 	}
 

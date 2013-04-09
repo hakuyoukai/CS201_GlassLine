@@ -1,4 +1,4 @@
-package engine.conveyorfamily.j;
+package engine.conveyorfamily.shuttle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import engine.util.ConveyorFamilyInterface;
 import engine.util.Glass;
 import gui.panels.DisplayPanel;
 
-public class ConveyorFamilyJ implements ConveyorFamilyInterface {
+public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	int ID;
 	public Conveyor conveyor;
 	//public Shuttle shuttle;
@@ -31,7 +31,7 @@ public class ConveyorFamilyJ implements ConveyorFamilyInterface {
 	
 	//TODO:testing
 //	public ConveyorFamilyJ (DisplayPanel disp,int IDnum, Transducer t,int shuttleNum) {
-	public ConveyorFamilyJ(int IDnum,Transducer t) {
+	public ConveyorFamilyShuttle(int IDnum,Transducer t) {
 	//TODO:testing
 		//display = disp;
 		ID = IDnum;

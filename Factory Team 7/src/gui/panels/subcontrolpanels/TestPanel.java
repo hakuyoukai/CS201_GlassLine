@@ -64,11 +64,19 @@ public class TestPanel extends JPanel implements ActionListener {
 		secondLine.add(sendToggle);
 		add(secondLine);
 	}
+//TODO: remove
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	/**
 	 * Returns the parent panel
 	 * @return the parent panel
 	 */
+	
+	/*
 	public ControlPanel getGuiParent()
 	{
 		return parent;
@@ -112,6 +120,6 @@ public class TestPanel extends JPanel implements ActionListener {
 		
 	}
 
-	
+	*/
 	
 }
