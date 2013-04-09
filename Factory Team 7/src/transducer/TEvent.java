@@ -10,10 +10,12 @@ public enum TEvent
 	START,
 	STOP,
 	SET_RECIPE,
-
+	CONVEYOR_SPEED_CHANGE,
+	
 	// conveyor
 	CONVEYOR_DO_START,
 	CONVEYOR_DO_STOP,
+
 
 	// sensor
 	SENSOR_GUI_PRESSED,

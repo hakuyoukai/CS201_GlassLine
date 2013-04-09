@@ -2,9 +2,12 @@ package engine.conveyorfamily.shuttle;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import engine.agent.Agent;
 import engine.util.Glass;
@@ -30,6 +33,14 @@ public class Conveyor extends Agent{
 	boolean sendingGlass = false;
 	Transducer t;
 	public Glass incomingGlass;
+	long startTime = 0;
+	long endTime = 0;
+	int intervalset = 0;
+	double timeInterval = 0;
+	double defaultInterval = 1000/24;
+	double currTimeInterval = 0;
+
+	Timer timer = new Timer();
 	public class MyGlass {
 		Glass glass;
 		GlassState state;
@@ -55,6 +66,7 @@ public class Conveyor extends Agent{
 
 		t.register(this, TChannel.SENSOR);
 		t.register(this,TChannel.SHUTTLE);
+		t.register(this,TChannel.CONTROL_PANEL);
 
 
 	}
@@ -91,6 +103,9 @@ public class Conveyor extends Agent{
 			//conveyorFamily.display.parent.cPanel.testPanel.receiveLabel.setText("receive: " + receiveOK);
 		}	
 		//	stateChanged();
+
+		Calendar cal = Calendar.getInstance();
+		cal.getTimeInMillis();
 	}
 
 
@@ -112,6 +127,11 @@ public class Conveyor extends Agent{
 
 		System.out.println("CONVEYOR " + ID + ": " + sensorNum + "pressed");
 		if (sensorNum == 0) {
+			if (intervalset== 0) {
+				Calendar cal = Calendar.getInstance();
+				startTime = cal.getTimeInMillis();
+				intervalset++;
+			}
 			if (incomingGlass == null)
 				stopConveyor();
 			else
@@ -128,6 +148,14 @@ public class Conveyor extends Agent{
 			}
 		}
 		else if (sensorNum == 1) { // and conveyor is movingg - has to be to trigger this
+			if (intervalset == 1) {
+				Calendar cal = Calendar.getInstance();
+				endTime = cal.getTimeInMillis();
+				timeInterval = 0.2*(endTime-startTime);
+				currTimeInterval = timeInterval;
+				intervalset++;
+			}
+
 			if (!sendingGlass)
 				stopConveyor();
 
@@ -163,7 +191,14 @@ public class Conveyor extends Agent{
 				conveyorFamily.msgConveyorReady();
 
 			if (sendOK == false) {
-				stopConveyor();
+				timer = new Timer();
+				timer.schedule(new TimerTask() {
+		    		@Override
+		    		public void run() {
+		    			stopConveyor();
+		    			timer.cancel();
+		    		}
+		    	},(long) currTimeInterval);
 			}	
 		} 
 		else if (sensorNum == 1) {
@@ -238,7 +273,10 @@ public class Conveyor extends Agent{
 		else if (channel == TChannel.SHUTTLE && event == TEvent.SHUTTLE_FINISHED_LOADING) {
 			if ((Integer)args[0]== ID)
 				sendingGlass = false;
-
+		}
+		else if (channel == TChannel.CONTROL_PANEL && event == TEvent.CONVEYOR_SPEED_CHANGE) {
+			double newInterval = 1000/(Integer)args[0];
+			currTimeInterval = (newInterval/defaultInterval)*timeInterval;
 		}
 	}
 

@@ -305,7 +305,11 @@ public class StatePanel extends JPanel
 			try
 			{
 				parent.getGuiParent().getGuiParent().setTimerDelay(1000 / newSpeed);
+				//System.out.println(newSpeed);
 				// System.out.println("Timer delay set to " + (1000 / newSpeed));
+				Integer[] args = new Integer[1];
+				args[0] = 1000/newSpeed;
+				parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL,TEvent.CONVEYOR_SPEED_CHANGE, args);
 			}
 			catch (NullPointerException npe)
 			{
