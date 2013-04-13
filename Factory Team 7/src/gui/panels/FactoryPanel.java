@@ -51,6 +51,7 @@ public class FactoryPanel extends JPanel
 	MockConveyorFamily conveyor5;
 	MockConveyorFamily conveyor6;
 	MockConveyorFamily conveyor7;
+	MockConveyorFamily conveyor14;
 	
 	
 	/**
@@ -121,7 +122,7 @@ public class FactoryPanel extends JPanel
 		conveyor5 = new MockConveyorFamily(5,transducer,TChannel.CROSS_SEAMER);
 		conveyor6 = new MockConveyorFamily(6,transducer,TChannel.GRINDER);
 		conveyor7 = new MockConveyorFamily(7,transducer,TChannel.DRILL);
-
+		conveyor14 = new MockConveyorFamily(14,transducer,TChannel.NO_WORKSTATION);
 		
 		conveyor0.setNextConveyor(conveyor1);
 		
@@ -161,9 +162,11 @@ public class FactoryPanel extends JPanel
 		conveyor11.setNextCF(conveyor12);
 		conveyor11.setPreviousCF(conveyor10);
 		
-	//	conveyor13.setNextCF(conveyor14);
+		conveyor13.setNextCF(conveyor14);
 		conveyor13.setPreviousCF(conveyor12);
 		
+		conveyor14.setNeighbor(conveyor13,ConveyorFamilyType.FROM);
+		conveyor14.setNeighbor(null,ConveyorFamilyType.TO);
 		
 		
 		
