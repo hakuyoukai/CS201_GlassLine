@@ -24,7 +24,6 @@ import transducer.Transducer;
 public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 
 	public Transducer t;
-	ConveyorFamilyType type;
 	MyConveyorFamily mcfTO;
 	MyConveyorFamily mcfFROM;
 	TChannel myChannel;
@@ -33,35 +32,28 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 	int ID;
 	boolean sensorPressed = false;
 	ArrayList<Glass> glassList = new ArrayList<Glass>();
-
+	boolean popupReady = true;
+	
 	public class MyConveyorFamily {
 		//TODO
 		//		ConveyorFamilyJ conveyorFamily;
-		ConveyorFamilyShuttle conveyorFamily;
+		ConveyorFamilyInterface conveyorFamily;
 		ConveyorFamilyType type;
 
 		public MyConveyorFamily(ConveyorFamilyInterface cf,ConveyorFamilyType ty) {
 			//TODO
 			//conveyorFamily = (ConveyorFamilyJ) cf;
-			conveyorFamily = (ConveyorFamilyShuttle)cf;
+			conveyorFamily = cf;
 			type = ty;
 		}
 	}
 
-	public MockConveyorFamily(int id, ConveyorFamilyType typ,Transducer trans,TChannel chan) {
+	public MockConveyorFamily(int id,Transducer trans,TChannel chan) {
 		t = trans;
-		type = typ;
-		
+
 		
 		t.register(this, TChannel.SENSOR);
 		t.register(this, TChannel.POPUP);
-	/*	t.register(this, TChannel.DRILL);
-		t.register(this,TChannel.CROSS_SEAMER);
-		t.register(this,TChannel.GRINDER);
-		t.register(this, TChannel.UV_LAMP);
-		t.register(this, TChannel.WASHER);
-		t.register(this, TChannel.OVEN);
-		t.register(this, TChannel.PAINTER); */
 		t.register(this,chan);
 		t.register(this, TChannel.TRUCK);
 		ID = id;
@@ -81,15 +73,15 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 		ready = true;
 		Integer[] newArgs = new Integer[1];
 		newArgs[0] = ID;
-		if (sensorPressed == true) {
-			mcfTO.conveyorFamily.msgHereIsGlass(glassList.remove(0));
-		}
+		/*if (sensorPressed == true) {
+			mcfTO.conveyorFamily.msgHereIsGlass(glassList.remove(0)); 
+		} */
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 	}
 
 	//TODO
 	//public void setNeighbor(ConveyorFamilyJ fam, ConveyorFamilyType ty) {
-	public void setNeighbor(ConveyorFamilyShuttle fam,ConveyorFamilyType ty) {
+	public void setNeighbor(ConveyorFamilyInterface fam,ConveyorFamilyType ty) {
 		if (ty == ConveyorFamilyType.TO)
 		mcfTO = new MyConveyorFamily(fam,ty);
 		else
@@ -112,6 +104,7 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 				if (ready) {
 					mcfTO.conveyorFamily.msgHereIsGlass(glassList.remove(0));
 					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
+					ready = false;
 				}
 				else {
 					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
@@ -133,12 +126,14 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 		}
 		else if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED)
 		{
-			if ((Integer)args[0] == 0 && ID == 5)
+		/*	if ((Integer)args[0] == 0 && ID == 5)
 				t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
-			if ((Integer)args[1] == 0 && ID == 6)
+			if ((Integer)args[1] == 1 && ID == 6)
 				t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
-			if ((Integer)args[2] == 0 && ID == 7)
-				t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+			if ((Integer)args[2] == 2 && ID == 7)
+				t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args); */
+			
+			
 		}
 		else if(channel == TChannel.WASHER && event == TEvent.WORKSTATION_LOAD_FINISHED){//added by monroe
 			t.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_DO_ACTION, null);

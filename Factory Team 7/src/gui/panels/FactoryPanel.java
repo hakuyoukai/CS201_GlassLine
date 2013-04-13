@@ -48,7 +48,10 @@ public class FactoryPanel extends JPanel
 	ConveyorFamilyShuttle conveyor4;
 	ConveyorFamilyShuttle conveyor9;
 	ConveyorFamilyShuttle conveyor12;
-	MockConveyorFamily conveyormock;
+	MockConveyorFamily conveyor5;
+	MockConveyorFamily conveyor6;
+	MockConveyorFamily conveyor7;
+	
 	
 	/**
 	 * Constructor links this panel to its frame
@@ -114,8 +117,11 @@ public class FactoryPanel extends JPanel
 		conveyor4= new ConveyorFamilyShuttle(4,transducer);
 		conveyor9= new ConveyorFamilyShuttle(9,transducer);
 		conveyor12= new ConveyorFamilyShuttle(12,transducer);
-		conveyormock = new MockConveyorFamily(5,ConveyorFamilyType.TO,transducer);
-		
+
+		conveyor5 = new MockConveyorFamily(5,transducer,TChannel.CROSS_SEAMER);
+		conveyor6 = new MockConveyorFamily(6,transducer,TChannel.GRINDER);
+		conveyor7 = new MockConveyorFamily(7,transducer,TChannel.DRILL);
+
 		
 		conveyor0.setNextConveyor(conveyor1);
 		
@@ -129,11 +135,23 @@ public class FactoryPanel extends JPanel
 		conveyor3.setPreviousCF(conveyor2);
 		
 		conveyor4.setNeighbor(conveyor3,ConveyorFamilyType.FROM);
-		conveyor4.setNeighbor(conveyormock,ConveyorFamilyType.TO);
+		conveyor4.setNeighbor(conveyor5,ConveyorFamilyType.TO);
 		
-		conveyormock.setNeighbor(conveyor4,ConveyorFamilyType.FROM);
+		conveyor9.setNeighbor(conveyor8,ConveyorFamilyType.FROM);
+		conveyor9.setNeighbor(conveyor10,ConveyorFamilyType.TO);
+		
+		conveyor12.setNeighbor(conveyor11,ConveyorFamilyType.FROM);
+		conveyor12.setNeighbor(conveyor13,ConveyorFamilyType.TO);
+		
+		conveyor5.setNeighbor(conveyor4,ConveyorFamilyType.FROM);
+		conveyor5.setNeighbor(conveyor6,ConveyorFamilyType.TO);
+		
+		conveyor6.setNeighbor(conveyor5,ConveyorFamilyType.FROM);
+		conveyor6.setNeighbor(conveyor7,ConveyorFamilyType.TO);
 
-		/*
+		conveyor7.setNeighbor(conveyor6,ConveyorFamilyType.FROM);
+		conveyor7.setNeighbor(conveyor8,ConveyorFamilyType.TO);
+		
 		conveyor8.setNextCF(conveyor9);
 		conveyor8.setPreviousCF(conveyor7);
 		
@@ -143,29 +161,28 @@ public class FactoryPanel extends JPanel
 		conveyor11.setNextCF(conveyor12);
 		conveyor11.setPreviousCF(conveyor10);
 		
-		conveyor13.setNextCF(conveyor14);
+	//	conveyor13.setNextCF(conveyor14);
 		conveyor13.setPreviousCF(conveyor12);
-		*/
 		
-		conveyor9.setNeighbor(null,ConveyorFamilyType.FROM);
-		conveyor9.setNeighbor(null,ConveyorFamilyType.TO);
 		
-		conveyor12.setNeighbor(null,ConveyorFamilyType.FROM);
-		conveyor12.setNeighbor(null,ConveyorFamilyType.TO);
 		
 		
 
 		conveyor1.startUp();
 		conveyor2.startAllAgentThreads();
 		conveyor3.startAllAgentThreads();
-		/*
+		
 		conveyor8.startAllAgentThreads();
 		conveyor10.startAllAgentThreads();
 		conveyor11.startAllAgentThreads();
 		conveyor13.startAllAgentThreads();
-		 */
+		 
 		conveyor4.startUp();
-		conveyormock.msgIAmReady();
+		conveyor9.startUp();
+		conveyor12.startUp();
+		conveyor5.msgIAmReady();
+		conveyor6.msgIAmReady();
+		conveyor7.msgIAmReady();
 		System.out.println("Back end initialization finished.");
 	}
 
