@@ -53,7 +53,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver
 	{
 		Conveyor conveyor;
 		ConveyorState state;
-		Integer action;
+		Boolean action;
 		
 		public MyConveyor(Conveyor c)
 		{
@@ -86,7 +86,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver
 		stateChanged();
 	}
 	
-	public void msgCanIGiveGlass(Integer action)
+	public void msgCanIGiveGlass(Boolean action)
 	{
 		previousConveyor.action=action;
 		previousConveyor.state = ConveyorState.ASKED;
@@ -96,7 +96,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver
 	public void msgHereIsGlass(Conveyor c, Glass g)
 	{
 		glass = g;
-		if(g.recipe.get(name) == 0)
+		if(g.recipe.get(name) == false)
 			gState = GlassState.PROCESSED;
 		else
 			gState = GlassState.UNPROCESSED;
@@ -255,7 +255,7 @@ public class PopupAgent extends Agent implements Popup, TReceiver
 			}
 
 		}
-		if(previousConveyor.action ==0)
+		if(previousConveyor.action == false)
 		{
 			previousConveyor.conveyor.msgGiveMeGlass();
 			previousConveyor.state = ConveyorState.APPROVED;

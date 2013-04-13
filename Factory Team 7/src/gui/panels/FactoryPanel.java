@@ -41,6 +41,10 @@ public class FactoryPanel extends JPanel
 	ConveyorFamilyShuttle conveyor1;
 	ConveyorFamily conveyor2;
 	ConveyorFamily conveyor3;
+	ConveyorFamily conveyor8;
+	ConveyorFamily conveyor10;
+	ConveyorFamily conveyor11;
+	ConveyorFamily conveyor13;
 	ConveyorFamilyShuttle conveyor4;
 	ConveyorFamilyShuttle conveyor9;
 	ConveyorFamilyShuttle conveyor12;
@@ -103,6 +107,10 @@ public class FactoryPanel extends JPanel
 		conveyor1= new ConveyorFamilyShuttle(1,transducer);
 		conveyor2=new ConveyorFamily(null,null,transducer,2,TChannel.BREAKOUT);
 		conveyor3=new ConveyorFamily(null,null,transducer,3,TChannel.MANUAL_BREAKOUT);
+		conveyor8=new ConveyorFamily(null,null,transducer,8,TChannel.WASHER);
+		conveyor10=new ConveyorFamily(null,null,transducer,10,TChannel.PAINTER);
+		conveyor11=new ConveyorFamily(null,null,transducer,11,TChannel.UV_LAMP);
+		conveyor13=new ConveyorFamily(null,null,transducer,13,TChannel.OVEN);
 		conveyor4= new ConveyorFamilyShuttle(4,transducer);
 		conveyor9= new ConveyorFamilyShuttle(9,transducer);
 		conveyor12= new ConveyorFamilyShuttle(12,transducer);
@@ -125,6 +133,20 @@ public class FactoryPanel extends JPanel
 		
 		conveyormock.setNeighbor(conveyor4,ConveyorFamilyType.FROM);
 
+		/*
+		conveyor8.setNextCF(conveyor9);
+		conveyor8.setPreviousCF(conveyor7);
+		
+		conveyor10.setNextCF(conveyor11);
+		conveyor10.setPreviousCF(conveyor9);
+		
+		conveyor11.setNextCF(conveyor12);
+		conveyor11.setPreviousCF(conveyor10);
+		
+		conveyor13.setNextCF(conveyor14);
+		conveyor13.setPreviousCF(conveyor12);
+		*/
+		
 		conveyor9.setNeighbor(null,ConveyorFamilyType.FROM);
 		conveyor9.setNeighbor(null,ConveyorFamilyType.TO);
 		
@@ -136,6 +158,12 @@ public class FactoryPanel extends JPanel
 		conveyor1.startUp();
 		conveyor2.startAllAgentThreads();
 		conveyor3.startAllAgentThreads();
+		/*
+		conveyor8.startAllAgentThreads();
+		conveyor10.startAllAgentThreads();
+		conveyor11.startAllAgentThreads();
+		conveyor13.startAllAgentThreads();
+		 */
 		conveyor4.startUp();
 		conveyormock.msgIAmReady();
 		System.out.println("Back end initialization finished.");
