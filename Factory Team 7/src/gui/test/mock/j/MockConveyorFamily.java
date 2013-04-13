@@ -3,6 +3,7 @@ package gui.test.mock.j;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle;
@@ -24,9 +25,9 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 
 	public Transducer t;
 	ConveyorFamilyType type;
-	MyConveyorFamily mcf;
-	Map<Integer,Integer> recipe;
-
+	MyConveyorFamily mcfTO;
+	MyConveyorFamily mcfFROM;
+	TChannel myChannel;
 	Glass g = null;
 	boolean ready = true;
 	int ID;
@@ -47,61 +48,41 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 		}
 	}
 
-	public MockConveyorFamily(int id, ConveyorFamilyType typ,Transducer trans) {
+	public MockConveyorFamily(int id, ConveyorFamilyType typ,Transducer trans,TChannel chan) {
 		t = trans;
 		type = typ;
+		
+		
 		t.register(this, TChannel.SENSOR);
 		t.register(this, TChannel.POPUP);
+	/*	t.register(this, TChannel.DRILL);
+		t.register(this,TChannel.CROSS_SEAMER);
+		t.register(this,TChannel.GRINDER);
+		t.register(this, TChannel.UV_LAMP);
+		t.register(this, TChannel.WASHER);
+		t.register(this, TChannel.OVEN);
+		t.register(this, TChannel.PAINTER); */
+		t.register(this,chan);
+		t.register(this, TChannel.TRUCK);
 		ID = id;
-		recipe = new HashMap<Integer,Integer>();
-		recipe.put(0, 1);
-		recipe.put(1,1);
-		recipe.put(2, 1);
-		recipe.put(3, 1);
-		recipe.put(4,1);
-		recipe.put(5, 1);
-		recipe.put(6, 1);
-		recipe.put(7,1);
-		recipe.put(8, 1);
-		recipe.put(9, 1);
-		recipe.put(10,1);
+		myChannel = chan;
+	
 	}
 
 	@Override
 	public void msgHereIsGlass(Glass g) {
-		if (type == ConveyorFamilyType.TO) {
 			glassList.add(g);
 			System.out.println("glass added mock" + ID);
-			/*if (ready) {
-				mcf.conveyorFamily.msgIAmReady();
-				System.out.println("TO is ready");
-			}
-			else
-				System.out.println("TO not ready");
-			 */
-			mcf.conveyorFamily.msgIAmReady();
-
-		}
-		else {
-			glassList.add(g);
-			System.out.println("glass added mock" + ID);
-		}
-
-
-
+			mcfFROM.conveyorFamily.msgIAmReady();
 	}
 
 	@Override
 	public void msgIAmReady() {
-
-		System.out.println("READY " + type);
 		ready = true;
 		Integer[] newArgs = new Integer[1];
 		newArgs[0] = ID;
 		if (sensorPressed == true) {
-			///		Glass g = new Glass(null);
-			//		mcf.conveyorFamily.msgHereIsGlass(g);	
-			mcf.conveyorFamily.msgHereIsGlass(glassList.remove(0));
+			mcfTO.conveyorFamily.msgHereIsGlass(glassList.remove(0));
 		}
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 	}
@@ -109,8 +90,10 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 	//TODO
 	//public void setNeighbor(ConveyorFamilyJ fam, ConveyorFamilyType ty) {
 	public void setNeighbor(ConveyorFamilyShuttle fam,ConveyorFamilyType ty) {
-		mcf = new MyConveyorFamily(fam,ty);
-
+		if (ty == ConveyorFamilyType.TO)
+		mcfTO = new MyConveyorFamily(fam,ty);
+		else
+			mcfFROM = new MyConveyorFamily(fam,ty);
 	}
 
 	@Override
@@ -122,33 +105,23 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 			Integer[] newArgs = new Integer[1];
 			newArgs[0] = (Integer)args[0] / 2;
 			if ((Integer)args[0] == sensor0ID) {
-				/*		if (mcf.type == ConveyorFamilyType.FROM) {
-				g = new Glass(null);
-				msgHereIsGlass(g);
-				}*/
-				/*	if (sensorPressed)
-					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
-				else {
-					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
-				} */
 				t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 			}
 			else if ((Integer)args[0]== sensor1ID) {
 				sensorPressed = true;
-				//	if (ready == false) {
-				//		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);	
-				//	} else {
-				//ready = false;
-				Glass g = new Glass(null);
-				mcf.conveyorFamily.msgHereIsGlass(g);
-				t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
-				//	}
-			}
-			else if (((Integer)args[0] % 2) == 0 && (Integer)args[0] > 9)
+				if (ready) {
+					mcfTO.conveyorFamily.msgHereIsGlass(glassList.remove(0));
+					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
+				}
+				else {
+					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
+				}
+				}
+	/*		else if (((Integer)args[0] % 2) == 0 && (Integer)args[0] > 9)
 				{
 					newArgs[0] = (Integer)args[0] / 2;
 					t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
-				}
+				}*/
 		}
 		else if (channel == TChannel.SENSOR && event == TEvent.SENSOR_GUI_RELEASED) {
 			Integer[] newArgs = new Integer[1];
@@ -160,7 +133,43 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 		}
 		else if (channel == TChannel.POPUP && event == TEvent.POPUP_GUI_LOAD_FINISHED)
 		{
-			t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+			if ((Integer)args[0] == 0 && ID == 5)
+				t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+			if ((Integer)args[1] == 0 && ID == 6)
+				t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+			if ((Integer)args[2] == 0 && ID == 7)
+				t.fireEvent(TChannel.POPUP, TEvent.POPUP_RELEASE_GLASS, args);
+		}
+		else if(channel == TChannel.WASHER && event == TEvent.WORKSTATION_LOAD_FINISHED){//added by monroe
+			t.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_DO_ACTION, null);
+		}
+		else if (channel == TChannel.WASHER && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+		{
+			t.fireEvent(TChannel.WASHER, TEvent.WORKSTATION_RELEASE_GLASS, null);
+		}
+		else if(channel == TChannel.UV_LAMP && event == TEvent.WORKSTATION_LOAD_FINISHED){//added by monroe
+			t.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_DO_ACTION, null);
+		}
+		else if (channel == TChannel.UV_LAMP && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+		{
+			t.fireEvent(TChannel.UV_LAMP, TEvent.WORKSTATION_RELEASE_GLASS, null);
+		}
+		else if(channel == TChannel.PAINTER && event == TEvent.WORKSTATION_LOAD_FINISHED){//added by monroe
+			t.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_DO_ACTION, null);
+		}
+		else if (channel == TChannel.PAINTER && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+		{
+			t.fireEvent(TChannel.PAINTER, TEvent.WORKSTATION_RELEASE_GLASS, null);
+		}
+		else if(channel == TChannel.OVEN && event == TEvent.WORKSTATION_LOAD_FINISHED){//added by monroe
+			t.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_DO_ACTION, null);
+		}
+		else if (channel == TChannel.OVEN && event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
+		{
+			t.fireEvent(TChannel.OVEN, TEvent.WORKSTATION_RELEASE_GLASS, null);
+		}
+		else if(channel==TChannel.TRUCK && event == TEvent.TRUCK_GUI_LOAD_FINISHED){//added by monroe
+			t.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null);
 		}
 
 

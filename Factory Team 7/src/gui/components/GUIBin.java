@@ -96,10 +96,11 @@ public class GUIBin extends GuiComponent
 		if (event == TEvent.BIN_CREATE_PART)
 		{
 			GUIGlass part = new GUIGlass();
-			Glass  glass = new Glass("0");
-			Glass[] newArgs = new Glass[1];
-			newArgs[0] = (Glass)glass;
-			transducer.fireEvent(TChannel.BIN, TEvent.BIN_PART_CREATED, newArgs);
+		//	Glass  glass = new Glass("0");
+		//	Glass[] newArgs = new Glass[1];
+		//	newArgs[0] = (Glass)glass;
+		//	transducer.fireEvent(TChannel.BIN, TEvent.BIN_PART_CREATED, newArgs);
+			transducer.fireEvent(TChannel.BIN,TEvent.BIN_PART_CREATED,args);
 			this.part = part;
 			part.setCenterLocation(getCenterX(), getCenterY());
 			parent.getActivePieces().add(part);

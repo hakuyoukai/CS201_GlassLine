@@ -172,7 +172,10 @@ public class Conveyor extends Agent{
 
 			updateReadyStates();
 			
-			System.out.println("CONVEYOR " + ID + ": " + "sensor released. send ok?: " + sendOK + " state: " + glassList.get(0).state);
+			if (!glassList.isEmpty()) 
+				System.out.println("CONVEYOR " + ID + ": " + "sensor released. send ok?: " + sendOK + " state: " + glassList.get(0).state);
+			else
+				System.out.println("CONVEYOR " + ID + "no glass`````````````````````");
 			updateReadyStates();
 			if (receiveOK)
 				conveyorFamily.msgConveyorReady();
@@ -267,7 +270,7 @@ public class Conveyor extends Agent{
 				if (intervalset == 1) {
 					Calendar cal = Calendar.getInstance();
 					endTime = cal.getTimeInMillis();
-					timeInterval = 0.2*(endTime-startTime);
+					timeInterval = 0.6*(endTime-startTime);
 					currTimeInterval = timeInterval;
 					intervalset++;
 				}

@@ -71,6 +71,7 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	// sent from adjacent conveyor family
 	@Override
 	public void msgHereIsGlass(Glass g) {
+		System.out.println("CONVEYOR " + ID + ": receiving msgHereIsGlass with glass != null: " + !(g==null));
 		conveyor.msgHereIsGlass(g);
 	}
 	
@@ -96,8 +97,10 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	public void msgReleaseGlass(Glass g) {
 			for (MyConveyorFamily mcf: conveyorFamilyList) {
 	
-				if (mcf.type == ConveyorFamilyType.TO)
+				if (mcf.type == ConveyorFamilyType.TO) {
+					System.out.println("CONVEYOR " + ID + ": sending msgHereIsGlass with glass != null: " + !(g==null));
 					mcf.conveyorFamily.msgHereIsGlass(g);
+				}
 		}
 	}
 
