@@ -55,7 +55,8 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 		t.register(this, TChannel.SENSOR);
 		t.register(this, TChannel.POPUP);
 		t.register(this,chan);
-		t.register(this, TChannel.TRUCK);
+		if (id == 14)
+			t.register(this,TChannel.TRUCK);
 		ID = id;
 		myChannel = chan;
 	
@@ -160,8 +161,11 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 			
 		}
 		else if(channel==TChannel.TRUCK && event == TEvent.TRUCK_GUI_LOAD_FINISHED){//added by monroe
+		if (ID == 14) {
 			t.fireEvent(TChannel.TRUCK, TEvent.TRUCK_DO_EMPTY, null);
 			mcfFROM.conveyorFamily.msgIAmReady();
+			
+		}
 		}
 
 
