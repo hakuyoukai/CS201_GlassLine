@@ -7,6 +7,7 @@ import engine.util.Glass;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
@@ -25,6 +26,7 @@ public class GUIBin extends GuiComponent
 	 * stateEmpty = whether or not the bin is empty
 	 */
 	public boolean stateEmpty;
+	private ArrayList<Glass> waitList;
 
 	private enum BinState
 	{
@@ -44,6 +46,7 @@ public class GUIBin extends GuiComponent
 	{
 		super();
 		transducer = t;
+		waitList = new ArrayList<Glass>();
 		setIcon(new ImageIcon("imageicons/binImage.png"));
 		transducer.register(this, TChannel.BIN);
 		setSize(getIcon().getIconWidth(), getIcon().getIconHeight());
@@ -64,6 +67,11 @@ public class GUIBin extends GuiComponent
 		{
 			movePartOut();
 		}
+	}
+	
+	public void addGlass(Glass g)
+	{
+		waitList.add(g);
 	}
 
 	public void movePartOut()
@@ -95,17 +103,27 @@ public class GUIBin extends GuiComponent
 	{
 		if (event == TEvent.BIN_CREATE_PART)
 		{
-			GUIGlass part = new GUIGlass();
-		/*	Glass  glass = new Glass("0");
-			Glass[] newArgs = new Glass[1];
-			newArgs[0] = (Glass)glass;
-			transducer.fireEvent(TChannel.BIN, TEvent.BIN_PART_CREATED, newArgs); */
-			transducer.fireEvent(TChannel.BIN,TEvent.BIN_PART_CREATED,args);
-			this.part = part;
-			part.setCenterLocation(getCenterX(), getCenterY());
-			parent.getActivePieces().add(part);
-			parent.getParent().getGuiParent().getTimer().addActionListener(part);
-			parent.add(part, DisplayPanel.ROOF_LAYER);
+			if(!waitList.isEmpty())
+			{
+				GUIGlass part = new GUIGlass();
+				Glass glass = waitList.remove(0);
+				Glass newArgs[] = new Glass[1];
+				newArgs[0] = glass;
+				transducer.fireEvent(TChannel.BIN,TEvent.BIN_PART_CREATED,newArgs);
+				this.part = part;
+				part.setCenterLocation(getCenterX(), getCenterY());
+				parent.getActivePieces().add(part);
+				parent.getParent().getGuiParent().getTimer().addActionListener(part);
+				parent.add(part, DisplayPanel.ROOF_LAYER);
+			}
+			else
+			{
+				transducer.fireEvent(TChannel.BIN, TEvent.BIN_CANNOT_CREATE, null);
+			}
+		}
+		else if(event == TEvent.BIN_WAIT_PART)
+		{
+			this.addGlass((Glass)args[0]);
 		}
 	}
 }
