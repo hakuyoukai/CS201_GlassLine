@@ -37,6 +37,8 @@ public class ConveyorAgent extends Agent implements TReceiver
 	
 	private Timer timer = new Timer();
 	
+	private int i =0;
+	
 	public ConveyorAgent(Integer n, Transducer t)
 	{
 		transducer = t;
@@ -83,7 +85,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 		}
 		if(!glass.isEmpty())
 		{
-			if(nextState==SendState.APPROVED)
+			if(nextState==SendState.APPROVED && cutterState == AnimState.DEFAULT)
 			{
 				sendNext();
 				return true;
@@ -178,16 +180,15 @@ public class ConveyorAgent extends Agent implements TReceiver
 				if((Integer)args[0] == 1)
 				{
 					sensorTwo = SensorState.ON;
-					/*
 					if(cutterState == AnimState.WAITING)
 					{
-						transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
-						stateChanged();
-
-					}
-					*/
 						transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
-						stateChanged();
+					}
+					else
+					{
+						transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
+					}
+					stateChanged();
 				}
 			}
 			if(event == TEvent.SENSOR_GUI_RELEASED)
