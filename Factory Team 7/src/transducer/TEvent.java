@@ -47,6 +47,8 @@ public enum TEvent
 	//bin and "Glass Ghosts"
 	BIN_CREATE_PART,
 	BIN_PART_CREATED,
+	BIN_CANNOT_CREATE,
+	BIN_WAIT_PART,
 	
 	//shuttle
 	SHUTTLE_FINISHED_LOADING,

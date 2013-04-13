@@ -100,7 +100,7 @@ public class GlassSelectPanel extends JPanel
 			Glass g = new Glass(str);
 			Glass[] glass = new Glass[1];
 			glass[0] = g;
-			parent.getTransducer().fireEvent(TChannel.BIN, TEvent.BIN_CREATE_PART,glass);
+			parent.getTransducer().fireEvent(TChannel.BIN, TEvent.BIN_WAIT_PART,glass);
 			parent.getGuiParent().getConveyor(0).msgHereIsGlass(g);
 		}
 		
