@@ -305,8 +305,6 @@ public class Conveyor extends Agent{
 		Integer[] args = new Integer[1];
 		args[0] = ID;
 		t.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, args);
-		//if (receiveOK == true)
-		//	conveyorFamily.msgConveyorReady();	// if this is true, it should already know ready
 
 	}
 

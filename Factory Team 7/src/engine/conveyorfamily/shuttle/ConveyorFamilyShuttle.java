@@ -11,7 +11,7 @@ import gui.panels.DisplayPanel;
 public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	int ID;
 	public Conveyor conveyor;
-	//public Shuttle shuttle;
+
 	public boolean receiveOK;
 	public boolean sendOK;
 	Transducer t;
@@ -29,27 +29,19 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 		}
 	}
 	
-	//TODO:testing
-//	public ConveyorFamilyJ (DisplayPanel disp,int IDnum, Transducer t,int shuttleNum) {
+
 	public ConveyorFamilyShuttle(int IDnum,Transducer t) {
-	//TODO:testing
-		//display = disp;
+
+
 		ID = IDnum;
 		this.t = t;
 
 		conveyor = new Conveyor(IDnum,t);
-	//	shuttle = new Shuttle(shuttleNum,IDnum,t);
-	//	conveyor.setShuttle(shuttle);
-	//	shuttle.setConveyor(conveyor);
 
-		
-//	shuttle.setConveyorFamily(this);
-	//	shuttle.setConveyor(conveyor);
-	//	conveyor.setShuttle(shuttle);
 		conveyor.setConveyorFamily(this);
 		
 		conveyor.startUp();
-	//	shuttle.startUp();
+
 		
 		conveyor.startThread();
 

@@ -55,6 +55,7 @@ public class GlassSelectPanel extends JPanel
 		steps.add(new JCheckBox("Shuttle 4"));
 		steps.add(new JCheckBox("Oven"));
 
+		// will not be added to display(cutter, shuttles)
 		steps.get(0).setSelected(true);
 		steps.get(1).setSelected(true);
 		steps.get(4).setSelected(true);

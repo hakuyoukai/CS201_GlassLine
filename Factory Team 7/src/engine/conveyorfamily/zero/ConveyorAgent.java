@@ -95,6 +95,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 			{
 				if(sensorOne!=SensorState.ON && sensorTwo!=SensorState.ON)
 				{
+					//TODO
 					//askForGlass();
 					return true;
 				}
