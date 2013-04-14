@@ -48,8 +48,8 @@ public class ConveyorFamily implements ConveyorFamilyInterface
 	 */
 	public void msgIAmReady()
 	{
-		if(familyIndex==8)
-			System.err.println("Joey's Shuttle tells me it is ready");
+//		if(familyIndex==8)
+//			System.err.println("Joey's Shuttle tells me it is ready");
 		conveyor.msgNextCFRready();
 	}
 

@@ -75,7 +75,6 @@ public class GUIBreakout extends GuiAnimationComponent
 		if (counter < imageIcons.size())
 		{
 			setIcon(imageIcons.get(counter));
-
 			counter++;
 		}
 		else
@@ -120,6 +119,7 @@ public class GUIBreakout extends GuiAnimationComponent
 			else{
 				animationState = AnimationState./*ANIMATING*/IDLE;//monroe changed
 				this.transducer.fireEvent(TChannel.BREAKOUT, TEvent.WORKSTATION_LOAD_FINISHED, null);//monroe added
+				System.err.println("Animation fired the event TEvent.WORKSTATION_LOAD_FINISHED");
 			}
 		}
 		else if (direction.equals(ConveyorDirections.LEFT))

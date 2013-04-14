@@ -73,7 +73,7 @@ public class ConveyorAgent extends Agent
 
 	public void msgGlassArrived()
 	{
-		System.out.println("Conveyor Index "+conveyorIndex+":Glass arrived");
+		//System.out.println("Conveyor Index "+conveyorIndex+":Glass arrived");
 		for(MyGlass mg : glasses)
 		{
 			if(mg.state==MyGlassState.MOVING)
@@ -89,7 +89,7 @@ public class ConveyorAgent extends Agent
 	
 	public void msgNextCFRready()
 	{
-		System.out.println("Next CF, index:"+(conveyorIndex+1)+" says it is ready");
+		//System.out.println("Next CF, index:"+(conveyorIndex+1)+" says it is ready");
 		nextCFState=NextCFState.AVAILABLE;
 //		for(MyGlass mg : glasses)
 //		{
@@ -104,7 +104,8 @@ public class ConveyorAgent extends Agent
 	//Actions
 	public void giveGlassToMachine(MyGlass g)
 	{
-		//System.err.println("giveGlassToNextCF is called");
+		if(conveyorIndex==2)
+			System.err.println("giveGlassToNextCF is called");
 		machineState=MachineState.LOADING;
 		g.state=MyGlassState.PROCESSING;
 		Object[] args=new Object[1];
@@ -138,16 +139,28 @@ public class ConveyorAgent extends Agent
 	//Scheduler
 	public boolean pickAndExecuteAnAction()
 	{		
+		if(conveyorIndex==2)
+		{
+			System.err.println("MachineState:"+machineState);
+			System.err.println("glasses.size():"+glasses.size());
+			for(MyGlass mg : glasses)
+			{
+				System.err.println(mg.state);
+			}
+			System.err.println(" ");
+		}
+		
+		
 		if(machineState == MachineState.LOADED){
 			
-			if(conveyorIndex==13)
-				System.err.println("TEvent.WORKSTATION_LOAD_FINISHED");
+//			if(conveyorIndex==13)
+//				System.err.println("TEvent.WORKSTATION_LOAD_FINISHED");
 			
 			synchronized(glasses)
 			{
 				for(MyGlass mg : glasses)
 				{
-					System.err.println(mg.state);
+					//System.err.println(mg.state);
 					
 					if(mg.state == MyGlassState.PROCESSING)
 					{
@@ -171,7 +184,6 @@ public class ConveyorAgent extends Agent
 					}
 				}
 			}
-			System.out.println();
 		}
 		if(machineState == MachineState.DONE){
 			synchronized(glasses)
@@ -211,7 +223,7 @@ public class ConveyorAgent extends Agent
 			}
 		}
 		
-		if(conveyorState==ConveyorState.MOVING_TO_STOP)
+		if(conveyorState==ConveyorState.MOVING_TO_STOP&&(machineState!=MachineState.AVAILABLE&&machineState!=MachineState.LOADING))
 		{
 			tellGUIConveyorStopMoving();
 			return true;
@@ -266,6 +278,8 @@ public class ConveyorAgent extends Agent
 			if(event == TEvent.WORKSTATION_LOAD_FINISHED)
 			{
 				machineState = MachineState.LOADED;
+				if(conveyorIndex==2)
+					System.err.println("Animation tells me TEvent.WORKSTATION_LOAD_FINISHED");
 				stateChanged();
 			}
 			else if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)

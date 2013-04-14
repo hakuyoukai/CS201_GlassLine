@@ -31,7 +31,8 @@ public class SensorBeforeAgent extends Agent
 	public void tellPreviousCFReady()
 	{
 		this.conveyorBefore.msgIAmReady();
-		//System.err.println("I told the previous CF I am ready");
+		if(sensorBeforeIndex==4)
+			System.err.println("I told the previous CF I am ready");
 		stateChanged();
 	}
 	
