@@ -63,8 +63,10 @@ public class GlassSelectPanel extends JPanel
 		steps.get(12).setSelected(true);
 		
 		for (JCheckBox j:steps) {
-			if (!j.isSelected())
+			if (!j.isSelected()) {
 				panel.add(j);
+				j.setSelected(true);
+			}
 		}
 		
 		add(panel);
