@@ -13,16 +13,18 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	public ArrayList<Glass> glass;
 	public enum conveyorStatus{ready, not_ready};
 	public enum pSensorState{empty, holding};
-	
+	public int hi = 30;
 	public pSensorState pStatus;
 	public conveyorStatus cStatus;
 	
 	
-	ConveyorFamilyD conveyorFamily;	
+	ConveyorFamilyInterface conveyorFamily;	
 	Sensor enterSensor, prePopupSensor;
 	
 	Transducer transducer;
 	TChannel channel;// = TChannel.CONVEYOR;
+	
+	Object[] arguments = new Object[1];
 
 	
 	//public EventLog log = new EventLog();
@@ -38,7 +40,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		//setup transducer
 		channel = TChannel.CONVEYOR;
 		transducer = t;
-		transducer.startTransducer();
+		//transducer.startTransducer();
 		transducer.register(this, TChannel.CONVEYOR);
 		
 		
@@ -47,9 +49,32 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		prePopupSensor = prepopup;
 	}
 	
+	public ConveyorAgent(int n, Transducer t){
+		//initialize arraylist to hold glass
+		glass = new ArrayList<Glass>();
+		
+		//set status
+		cStatus = conveyorStatus.ready; //default initialization
+		pStatus = pSensorState.empty; //default initialization
+		
+		//setup transducer
+		channel = TChannel.CONVEYOR;
+		transducer = t;
+		//transducer.startTransducer();
+		transducer.register(this, TChannel.CONVEYOR);
+		
+		arguments[0] = n;
+	}
+	
+	public void setUpConveyor(Sensor e, Sensor p){
+		enterSensor = e;
+		prePopupSensor = p;
+	}
+	
 	//Messages
 	public void msgHereIsGlass(Glass g){
 		//action add part glass g... statechanged
+		System.out.println("Glass g: " + g.hashCode());
 		addGlass(g);
 		stateChanged();
 	}
@@ -105,7 +130,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 		cStatus = conveyorStatus.not_ready;
 		enterSensor.msgConveyorNotReady();
 		//log.add(new LoggedEvent("Sent message msgConveyorNotReady to enter sensor"));
-		transducer.fireEvent(channel,  TEvent.CONVEYOR_DO_STOP, new Object[0]);
+		transducer.fireEvent(channel,  TEvent.CONVEYOR_DO_STOP, arguments);
 	}
 	
 	private void givePartToPrePopupSensor(){
@@ -119,6 +144,12 @@ public class ConveyorAgent extends Agent implements Conveyor {
 			}
 		}
 	}
+	
+	@Override
+	public String getName(){
+		return "DexConveyor";
+	}
+
 
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args) {

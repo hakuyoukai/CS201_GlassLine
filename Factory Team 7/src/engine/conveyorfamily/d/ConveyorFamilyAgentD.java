@@ -1,17 +1,10 @@
 package engine.conveyorfamily.d;
 
-//import mock.EventLog;
-//import mock.LoggedEvent;
-import transducer.TChannel;
-import transducer.TEvent;
-//import agent.Agent;
-//import generalClasses.Glass;
-//import interfaces.ConveyorFamily;
-//import interfaces.Transducer;
+import transducer.*;
 import engine.agent.*;
 import engine.util.*;
 
-public class ConveyorFamilyAgentD extends Agent implements ConveyorFamilyD{
+public class ConveyorFamilyAgentD extends Agent implements ConveyorFamilyInterface{
 	ConveyorAgent conveyor;
 	SensorAgent entry, prepopup;
 	PopupAgent popup;
@@ -19,7 +12,7 @@ public class ConveyorFamilyAgentD extends Agent implements ConveyorFamilyD{
 	Transducer transducer;
 	TChannel channel;
 	
-	ConveyorFamilyAgentD before, after;
+	ConveyorFamilyInterface before, after;
 	
 	Glass glass;
 	
@@ -30,27 +23,37 @@ public class ConveyorFamilyAgentD extends Agent implements ConveyorFamilyD{
 	
 	//public EventLog log = new EventLog();
 	
-	ConveyorFamilyAgentD(ConveyorFamilyAgentD before, ConveyorFamilyAgentD after, Transducer t){
+	public ConveyorFamilyAgentD(/*ConveyorFamilyInterface before, ConveyorFamilyInterface after, */Transducer t, String WS){
 		transducer = t;
-		this.before = before;
-		this.after = after;
+		//this.before = before;
+		//this.after = after;
 		
 		glass = null;
 		nextConveyor = nextState.ready;
 		
-		entry = new SensorAgent(conveyor, before, transducer);
-		prepopup = new SensorAgent(conveyor, popup, after, transducer);
-		conveyor = new ConveyorAgent(entry, prepopup, transducer);
-		popup = new PopupAgent(prepopup, after, transducer);
+//		entry = new SensorAgent(conveyor, before, transducer);
+//		prepopup = new SensorAgent(conveyor, popup, after, transducer);
+//		conveyor = new ConveyorAgent(entry, prepopup, transducer);
+//		popup = new PopupAgent(prepopup, after, transducer, WS);
 		
+		entry = new SensorAgent("entry", 10, transducer);
+		prepopup = new SensorAgent("popup", 11, transducer);
+		conveyor = new ConveyorAgent(5, transducer);
+		popup = new PopupAgent(transducer, WS, 0);
+		
+	}
+	
+	public void startALLthreads(){
+		entry.setUpEntry(conveyor, before);
+		prepopup.setUpPrePopup(conveyor, popup);
+		conveyor.setUpConveyor(entry, prepopup);
+		popup.setUp(prepopup, after);
+		
+		this.startThread();
 		popup.startThread();
-		//log.add(new LoggedEvent("Popup started"));
 		prepopup.startThread();
-		//log.add(new LoggedEvent("Prepopup sensor started"));
 		conveyor.startThread();
-		//log.add(new LoggedEvent("Conveyor started"));
 		entry.startThread();
-		//log.add(new LoggedEvent("Entry Popup started"));
 	}
 	
 	
@@ -66,10 +69,10 @@ public class ConveyorFamilyAgentD extends Agent implements ConveyorFamilyD{
 		stateChanged();
 	}
 	
-	public void msgIAmNotReady(){
-		nextConveyor = nextState.not_ready;
-		stateChanged();
-	}
+//	public void msgIAmNotReady(){
+//		nextConveyor = nextState.not_ready;
+//		stateChanged();
+//	}
 
 	public boolean pickAndExecuteAnAction() {
 		// TODO Auto-generated method stub
@@ -78,13 +81,15 @@ public class ConveyorFamilyAgentD extends Agent implements ConveyorFamilyD{
 			glass = null;
 			return true;
 		}
-		if(entry.holding != null){
-			before.msgIAmNotReady();
-		}
-		else{
+		if(entry.holding == null){
 			before.msgIAmReady();
 		}
 		return false;
+	}
+	
+	public void setNeighbors(ConveyorFamilyInterface before, ConveyorFamilyInterface after){
+		this.before = before;
+		this.after = after;
 	}
 
 	@Override
@@ -99,5 +104,10 @@ public class ConveyorFamilyAgentD extends Agent implements ConveyorFamilyD{
 		// TODO Auto-generated method stub
 		
 	}*/
+	
+	@Override
+	public String getName(){
+		return "DexConveyorFam";
+	}
 
 }
