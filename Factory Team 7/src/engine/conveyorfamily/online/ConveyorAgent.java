@@ -89,23 +89,17 @@ public class ConveyorAgent extends Agent
 	
 	public void msgNextCFRready()
 	{
-		//System.out.println("Next CF, index:"+(conveyorIndex+1)+" says it is ready");
+		if(conveyorIndex==13)
+		{
+			System.out.println("Michael told me its conveyor is ready");
+		}
 		nextCFState=NextCFState.AVAILABLE;
-//		for(MyGlass mg : glasses)
-//		{
-//			System.out.println("Glass State:" + mg.state);
-//		}
-//		System.out.println();
-//		System.out.println("NextCFState:"+nextCFState);
-//		System.out.println("MachineState:"+machineState);
 		stateChanged();
 	}
 
 	//Actions
 	public void giveGlassToMachine(MyGlass g)
 	{
-		if(conveyorIndex==2)
-			System.err.println("giveGlassToNextCF is called");
 		machineState=MachineState.LOADING;
 		g.state=MyGlassState.PROCESSING;
 		Object[] args=new Object[1];
@@ -132,101 +126,24 @@ public class ConveyorAgent extends Agent
 		args[0]=new Integer(conveyorIndex);
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP,args);
 		conveyorState=ConveyorState.STATIC;
-		//System.err.println("The Conveyor is stopped");
 		stateChanged();
 	}
 	
 	//Scheduler
 	public boolean pickAndExecuteAnAction()
 	{		
-		if(conveyorIndex==2)
+		if(conveyorIndex==13||conveyorIndex==2)
 		{
-			System.err.println("MachineState:"+machineState);
-			System.err.println("glasses.size():"+glasses.size());
-			for(MyGlass mg : glasses)
+			synchronized(glasses){
+			for(MyGlass mg:glasses)
 			{
-				System.err.println(mg.state);
+				System.out.println(mg.state);
 			}
-			System.err.println(" ");
-		}
-		
-		
-		if(machineState == MachineState.LOADED){
-			
-//			if(conveyorIndex==13)
-//				System.err.println("TEvent.WORKSTATION_LOAD_FINISHED");
-			
-			synchronized(glasses)
-			{
-				for(MyGlass mg : glasses)
-				{
-					//System.err.println(mg.state);
-					
-					if(mg.state == MyGlassState.PROCESSING)
-					{
-						if(mg.glass.recipe.get(conveyorIndex))
-						{
-							Object[] conveyorNum=new Object[1];
-							conveyorNum[0]=new Integer(conveyorIndex);
-							transducer.fireEvent(this.myChannel, TEvent.WORKSTATION_DO_ACTION, conveyorNum);
-							machineState = MachineState.DOING_ACTION;
-							transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, conveyorNum);
-							break;
-						}
-						else
-						{
-							Object[] conveyorNum=new Object[1];
-							machineState = MachineState.RELEASING;
-							conveyorNum[0]=new Integer(conveyorIndex);
-							transducer.fireEvent(this.myChannel, TEvent.WORKSTATION_RELEASE_GLASS, conveyorNum);
-							break;
-						}
-					}
-				}
 			}
-		}
-		if(machineState == MachineState.DONE){
-			synchronized(glasses)
-			{
-				for(MyGlass mg: glasses)
-				{
-					if(mg.state == MyGlassState.PROCESSING)
-					{			
-						//System.err.println("TEvent.WORKSTATION_GUI_ACTION_FINISHED - inside PROCESSING");
-						Object[] conveyorNum=new Object[1];
-						conveyorNum[0]=new Integer(conveyorIndex);
-						transducer.fireEvent(this.myChannel, TEvent.WORKSTATION_RELEASE_GLASS, conveyorNum);
-						break;
-					}
-				}
-			}
-		}
-		
-		if(machineState ==MachineState.RELEASE_FINISHED)
-		{
-			synchronized(glasses)
-			{
-				for(MyGlass mg: glasses)
-				{
-					if(mg.state == MyGlassState.PROCESSING)
-					{
-						if(conveyorIndex==13)
-							System.err.println("TEvent.WORKSTATION_RELEASE_FINISHED - delete");
-						glasses.remove(mg);
-						machineState=MachineState.AVAILABLE;
-						Object[] conveyorNum=new Object[1];
-						conveyorNum[0]=new Integer(conveyorIndex);
-						transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conveyorNum);
-						break;
-					}
-				}
-			}
-		}
-		
-		if(conveyorState==ConveyorState.MOVING_TO_STOP&&(machineState!=MachineState.AVAILABLE&&machineState!=MachineState.LOADING))
-		{
-			tellGUIConveyorStopMoving();
-			return true;
+			System.out.println("Next Conveyor State:"+nextCFState);
+			System.out.println("Machine State:"+machineState);
+			System.out.println("Conveyor State"+conveyorState);
+			System.out.println(" ");
 		}
 		
 		MyGlass temp=null;
@@ -243,12 +160,113 @@ public class ConveyorAgent extends Agent
 		}
 		if(temp!=null)
 		{
+			if(conveyorIndex==13)
+				System.out.println("execute action: giveGlassToMachine");
 			giveGlassToMachine(temp);
-			//System.err.println("giveGlassToNextCF(temp)");
 			return true;
 		}
 		
+		if(machineState == MachineState.LOADED)
+		{
+			synchronized(glasses)
+			{
+				for(MyGlass mg : glasses)
+				{
+					if(mg.state == MyGlassState.PROCESSING)
+					{
+						if(mg.glass.recipe.get(conveyorIndex))
+						{
+							if(conveyorIndex==13)
+								System.out.println("execute action: workstation do action");
+							Object[] conveyorNum=new Object[1];
+							conveyorNum[0]=new Integer(conveyorIndex);
+							transducer.fireEvent(this.myChannel, TEvent.WORKSTATION_DO_ACTION, conveyorNum);
+							machineState = MachineState.DOING_ACTION;
+							transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, conveyorNum);
+							return true;
+						}
+						else
+						{
+							if(conveyorIndex==13)
+								System.out.println("execute action: workstation release glass--glass does not need to be processed");
+							Object[] conveyorNum=new Object[1];
+							machineState = MachineState.RELEASING;
+							conveyorNum[0]=new Integer(conveyorIndex);
+							transducer.fireEvent(this.myChannel, TEvent.WORKSTATION_RELEASE_GLASS, conveyorNum);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		if(machineState == MachineState.DONE)
+		{
+			synchronized(glasses)
+			{
+				for(MyGlass mg: glasses)
+				{
+					if(mg.state == MyGlassState.PROCESSING)
+					{	
+						if(conveyorIndex==13)
+							System.out.println("execute action: workstation release glass");
+						machineState = MachineState.RELEASING;
+						Object[] conveyorNum=new Object[1];
+						conveyorNum[0]=new Integer(conveyorIndex);
+						transducer.fireEvent(this.myChannel, TEvent.WORKSTATION_RELEASE_GLASS, conveyorNum);
+						return true;
+					}
+				}
+			}
+		}
 		
+		if(machineState == MachineState.RELEASE_FINISHED)
+		{
+			synchronized(glasses)
+			{
+				for(MyGlass mg: glasses)
+				{
+					if(mg.state == MyGlassState.PROCESSING)
+					{
+						if(conveyorIndex==13)
+							System.out.println("execute action: removeglass and clean up");
+						glasses.remove(mg);
+						machineState=MachineState.AVAILABLE;
+						Object[] conveyorNum=new Object[1];
+						conveyorNum[0]=new Integer(conveyorIndex);
+						boolean start=true;
+						for(MyGlass mg_g: glasses)
+						{
+							if(mg_g.state==MyGlassState.STOPRIGHT)
+							{
+								start=false;
+							}
+						}
+						if(start)
+							transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conveyorNum);
+						return true;
+					}
+				}
+			}
+		}
+		if(conveyorState==ConveyorState.MOVING_TO_STOP)
+		{
+			if((machineState!=MachineState.LOADING)&&((machineState!=MachineState.AVAILABLE||nextCFState==NextCFState.UNAVAILABLE)))
+			{
+					if(conveyorIndex==13||conveyorIndex==2)
+						System.out.println("execute action: tellGUIConveyorStopMoving");
+					tellGUIConveyorStopMoving();
+					return true;
+			}
+			else
+			{
+				conveyorState=ConveyorState.MOVING;
+				return true;
+			}
+		}
+	
+		
+
+		temp=null;
 		synchronized(glasses)
 		{
 			for(MyGlass mg : glasses)
@@ -264,10 +282,15 @@ public class ConveyorAgent extends Agent
 		
 		if(temp!=null)
 		{
+			if(conveyorIndex==13)
+				System.out.println("execute action: tellGUIConveyorStartMoving");
 			tellGUIConveyorStartMoving(temp);
 			sensorAfterState=SensorAfterState.EMPTY;
 			return true;
 		}
+		
+		if(conveyorIndex==13)
+			System.out.println("execute action: Nothing");
 		return false;
 	}
 
@@ -278,13 +301,10 @@ public class ConveyorAgent extends Agent
 			if(event == TEvent.WORKSTATION_LOAD_FINISHED)
 			{
 				machineState = MachineState.LOADED;
-				if(conveyorIndex==2)
-					System.err.println("Animation tells me TEvent.WORKSTATION_LOAD_FINISHED");
 				stateChanged();
 			}
 			else if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 			{
-				//System.err.println("TEvent.WORKSTATION_GUI_ACTION_FINISHED");
 				machineState=MachineState.DONE;
 				stateChanged();
 			}

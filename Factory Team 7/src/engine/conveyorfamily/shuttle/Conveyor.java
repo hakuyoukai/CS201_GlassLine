@@ -192,7 +192,7 @@ public class Conveyor extends Agent{
 	public void moveGlass() {
 
 		glassList.get(0).state = GlassState.RELEASING;
-		System.out.println("CONVEYOR " + ID + ": moveGlass");
+		//System.out.println("CONVEYOR " + ID + ": moveGlass");
 		sendingGlass = true;
 		glassList.get(0).state = GlassState.RELEASING;
 		if (!conveyorMoving)
@@ -227,16 +227,15 @@ public class Conveyor extends Agent{
 				sendingGlass = false;
 
 				stopConveyor();
-				System.out.println("CONVEYOR " + ID + ": xxxxxxxxxxxxxxxxxxxxxxxxxxxx2");
+				//System.out.println("CONVEYOR " + ID + ": xxxxxxxxxxxxxxxxxxxxxxxxxxxx2");
 				stateChanged();
 			}
 		}
 	}
 
-
 	public void sendGlass() {
 		sendOK = false;
-		System.out.println("CONVEYOR " + ID + ": sending glass");
+		//System.out.println("CONVEYOR " + ID + ": sending glass");
 		MyGlass mg = glassList.remove(0);
 		conveyorFamily.msgReleaseGlass(mg.glass);
 		updateReadyStates();
