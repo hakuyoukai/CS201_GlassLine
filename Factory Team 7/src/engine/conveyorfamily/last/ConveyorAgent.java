@@ -69,10 +69,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 	@Override
 	public boolean pickAndExecuteAnAction() 
 	{
-		System.err.println("RUNNING");
-		System.err.println("Glass: " + glass.size());
-		System.err.println("Truck: " + truckState);
-		System.err.println("Next State: " + nextState);
 		if(truckState == AnimState.WAITING)
 		{
 			if(sensorTwo == SensorState.ON)
@@ -113,7 +109,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 	
 	public void sendNext()
 	{
-		System.err.println("THIS YO< SDFLKSJD:FLKJ");
 		glass.remove(0);
 		truckState = AnimState.WAITING;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
@@ -123,7 +118,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 	
 	public void askForGlass()
 	{
-		System.err.println("MSG I AM READY BITCH");
 		prevConveyor.msgIAmReady();
 		prevState = SendState.APPROVED;
 		stateChanged();
@@ -153,8 +147,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 			{
 				if((Integer)args[0] == 28)
 				{
-					System.err.println("Truck State " + truckState);
-					System.err.println("Next State " + nextState);
 					sensorOne = SensorState.ON;
 					if(prevState == SendState.WAITING)
 					{
