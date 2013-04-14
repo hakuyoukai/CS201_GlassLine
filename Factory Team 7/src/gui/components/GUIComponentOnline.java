@@ -274,11 +274,17 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 		}
 		else if (direction.equals(ConveyorDirections.LEFT))
 		{
+			
 			if (guiPart.getCenterX() > getCenterX())
 				guiPart.setCenterLocation(guiPart.getCenterX() - 1, guiPart.getCenterY());
-			else{
+			else
+			{
 				animationState = AnimationState./*ANIMATING*/IDLE;//changed by monroe
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_LOAD_FINISHED, null);
+				if(this.channel==TChannel.OVEN)
+				{
+					System.err.println("I sent the damn message!!!!!!!IT(*&@IOGR");
+				}
 			}
 		}
 		else
