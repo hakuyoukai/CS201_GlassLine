@@ -1,21 +1,30 @@
 package engine.conveyorfamily.last;
 
+import transducer.Transducer;
 import engine.util.ConveyorFamilyInterface;
 import engine.util.Glass;
 
 public class ConveyorFamilyLast implements ConveyorFamilyInterface
 {
-	private Integer number;
+	private Integer number = 14;
+	private ConveyorAgent conveyor;
+	
+	public ConveyorFamilyLast(Transducer t, ConveyorFamilyInterface cF)
+	{
+		conveyor = new ConveyorAgent(number,t);
+		conveyor.setPrevConveyor(cF);
+		conveyor.startThread();
+	}
 
 	@Override
 	public void msgHereIsGlass(Glass g)
 	{
-		// TODO Auto-generated method stub
+		conveyor.msgHereIsGlass(g);
 	}
 
 	@Override
 	public void msgIAmReady()
 	{
-		// TODO Auto-generated method stub
+		//Not necessary
 	}
 }

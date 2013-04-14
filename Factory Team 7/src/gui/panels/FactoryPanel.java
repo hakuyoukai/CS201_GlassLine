@@ -2,6 +2,7 @@
 package gui.panels;
 
 
+import engine.conveyorfamily.last.ConveyorFamilyLast;
 import engine.conveyorfamily.online.ConveyorFamily;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle.ConveyorFamilyType;
@@ -48,10 +49,10 @@ public class FactoryPanel extends JPanel
 	ConveyorFamilyShuttle conveyor4;
 	ConveyorFamilyShuttle conveyor9;
 	ConveyorFamilyShuttle conveyor12;
+	ConveyorFamilyLast conveyor14;
 	MockConveyorFamily conveyor5;
 	MockConveyorFamily conveyor6;
 	MockConveyorFamily conveyor7;
-	MockConveyorFamily conveyor14;
 	
 	
 	/**
@@ -118,11 +119,11 @@ public class FactoryPanel extends JPanel
 		conveyor4= new ConveyorFamilyShuttle(4,transducer);
 		conveyor9= new ConveyorFamilyShuttle(9,transducer);
 		conveyor12= new ConveyorFamilyShuttle(12,transducer);
+		conveyor14 = new ConveyorFamilyLast(transducer, conveyor13);
 
 		conveyor5 = new MockConveyorFamily(5,transducer,TChannel.CROSS_SEAMER);
 		conveyor6 = new MockConveyorFamily(6,transducer,TChannel.GRINDER);
 		conveyor7 = new MockConveyorFamily(7,transducer,TChannel.DRILL);
-		conveyor14 = new MockConveyorFamily(14,transducer,TChannel.NO_WORKSTATION);
 		
 		conveyor0.setNextConveyor(conveyor1);
 		
@@ -164,13 +165,7 @@ public class FactoryPanel extends JPanel
 		
 		conveyor13.setNextCF(conveyor14);
 		conveyor13.setPreviousCF(conveyor12);
-		
-		conveyor14.setNeighbor(conveyor13,ConveyorFamilyType.FROM);
-		conveyor14.setNeighbor(null,ConveyorFamilyType.TO);
-		
-		
-		
-
+				
 		conveyor1.startUp();
 		conveyor2.startAllAgentThreads();
 		conveyor3.startAllAgentThreads();

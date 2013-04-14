@@ -92,16 +92,18 @@ public class ConveyorAgent extends Agent
 	public void giveGlassToNextCF(MyGlass g)
 	{
 		g.state=MyGlassState.PROCESSING;
+		conveyorAfter.msgHereIsGlass(g.glass);
+		nextCFState = NextCFState.UNAVAILABLE;
 		Object[] args=new Object[1];
 		args[0]=new Integer(conveyorIndex);
 		transducer.fireEvent(TChannel.CONVEYOR,TEvent.CONVEYOR_DO_START,args);
 		//for testing
-		if(conveyorIndex==1)
-		{
-			conveyorAfter.msgHereIsGlass(g.glass); 
-			glasses.remove(g);
-			nextCFState = NextCFState.UNAVAILABLE;
-		}
+//		if(conveyorIndex==1)
+//		{
+//			conveyorAfter.msgHereIsGlass(g.glass); 
+//			glasses.remove(g);
+//			nextCFState = NextCFState.UNAVAILABLE;
+//		}
 	}
 
 	public void tellGUIConveyorStartMoving(MyGlass mg)
@@ -226,9 +228,7 @@ public class ConveyorAgent extends Agent
 					{
 						if(mg.state == MyGlassState.PROCESSING)
 						{
-							conveyorAfter.msgHereIsGlass(mg.glass);
 							glasses.remove(mg);
-							nextCFState = NextCFState.UNAVAILABLE;
 							break;
 						}
 					}
