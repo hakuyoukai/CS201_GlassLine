@@ -171,7 +171,7 @@ public class GUIShuttle extends GuiComponent
 			{
 				if (part.getCenterY() == getCenterY() && part.getCenterX() == getCenterX()) {
 					Integer[] args = new Integer[1];
-					args[0] = 1; // index of adjacent conveyor
+					args[0] = 1; // index of adjacent conveyors
 					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
 				}
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() - 1);
@@ -187,7 +187,7 @@ public class GUIShuttle extends GuiComponent
 			{
 				if (part.getCenterY() == getCenterY() && part.getCenterX() == getCenterX()) {
 					Integer[] args = new Integer[1];
-					args[0] = 4; // index of adjacent conveyor
+					args[0] = 9; // index of adjacent conveyor
 					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
 				}
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() + 1);
@@ -203,7 +203,7 @@ public class GUIShuttle extends GuiComponent
 			{
 				if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY()) {
 					Integer[] args = new Integer[1];
-					args[0] = 9; // index of adjacent conveyor
+					args[0] = 12; // index of adjacent conveyor
 					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
 				}
 				part.setCenterLocation(part.getCenterX() - 1, part.getCenterY());
@@ -219,7 +219,7 @@ public class GUIShuttle extends GuiComponent
 			{
 				if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY()) {
 					Integer[] args = new Integer[1];
-					args[0] = 12; // index of adjacent conveyor
+					args[0] = 4; // index of adjacent conveyor
 					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
 				}
 				part.setCenterLocation(part.getCenterX() + 1, part.getCenterY());
