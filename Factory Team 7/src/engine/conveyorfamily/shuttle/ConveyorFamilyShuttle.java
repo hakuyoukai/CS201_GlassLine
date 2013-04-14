@@ -70,7 +70,7 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	// next conveyor family is ready to accept
 	@Override
 	public void msgIAmReady() {
-		System.out.println("conveyor family: msgIamready TO");
+		System.out.println("CONVEYOR " + ID + " : received msgIAmReady");
 		conveyor.msgIAmReady();		
 	}
 	
@@ -79,6 +79,7 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	public void msgConveyorReady() {
 		for (MyConveyorFamily mcf:conveyorFamilyList) {
 			if (mcf.type == ConveyorFamilyType.FROM) {
+				System.out.println("CONVEYOR " + ID + ": sending iamreadymessage");
 				mcf.conveyorFamily.msgIAmReady();
 			}
 		}
