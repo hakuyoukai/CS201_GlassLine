@@ -18,7 +18,7 @@ import transducer.Transducer;
 public class Conveyor extends Agent{
 	public int ID;
 	public List<MyGlass> glassList = new ArrayList<MyGlass>();
-	public enum GlassState {LOADING,WAITINGTOSEND,TOSEND,SENDING,RELEASING};
+	public enum GlassState {LOADING,WAITINGTOSEND,RELEASING};
 	public boolean sensorState[] = {false,false};
 	public boolean receiveOK = false;
 	public boolean sendOK = false;
@@ -190,9 +190,11 @@ public class Conveyor extends Agent{
 	}
 
 	public void moveGlass() {
-		//System.out.println("CONVEYOR " + ID + ": moveGlass");
+
 		glassList.get(0).state = GlassState.RELEASING;
+		System.out.println("CONVEYOR " + ID + ": moveGlass");
 		sendingGlass = true;
+		glassList.get(0).state = GlassState.RELEASING;
 		if (!conveyorMoving)
 			startConveyor();
 	}
@@ -224,7 +226,8 @@ public class Conveyor extends Agent{
 			if ((Integer)args[0] == ID) {
 				sendingGlass = false;
 
-				//System.out.println("CONVEYOR " + ID + ": xxxxxxxxxxxxxxxxxxxxxxxxxxxx2");
+				stopConveyor();
+				System.out.println("CONVEYOR " + ID + ": xxxxxxxxxxxxxxxxxxxxxxxxxxxx2");
 				stateChanged();
 			}
 		}
