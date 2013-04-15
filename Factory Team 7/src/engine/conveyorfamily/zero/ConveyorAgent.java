@@ -173,9 +173,9 @@ public class ConveyorAgent extends Agent implements TReceiver
 						glass.add(incomingGlass);
 						incomingGlass = null;
 						prevState = SendState.DEFAULT;
-						stateChanged();
-
 					}
+					stateChanged();
+
 				}
 				if((Integer)args[0] == 1)
 				{

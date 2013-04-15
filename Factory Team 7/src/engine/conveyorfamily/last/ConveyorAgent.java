@@ -154,6 +154,8 @@ public class ConveyorAgent extends Agent implements TReceiver
 						incomingGlass = null;
 						prevState = SendState.DEFAULT;
 					}
+					if(sensorTwo == SensorState.OFF)
+						transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 					stateChanged();
 				}
 				if((Integer)args[0] == 29)
