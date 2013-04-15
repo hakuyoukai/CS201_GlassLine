@@ -6,19 +6,15 @@ import java.util.List;
 import transducer.Transducer;
 import engine.util.ConveyorFamilyInterface;
 import engine.util.Glass;
-import gui.panels.DisplayPanel;
+
 
 public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	int ID;
 	public Conveyor conveyor;
-
-	public boolean receiveOK;
-	public boolean sendOK;
 	Transducer t;
-	List<MyConveyorFamily> conveyorFamilyList = new ArrayList<MyConveyorFamily>();
-
-	DisplayPanel display;
+	List<MyConveyorFamily> conveyorFamilyList = new ArrayList<MyConveyorFamily>(); //neighbors
 	public enum ConveyorFamilyType {TO,FROM};
+	
 	class MyConveyorFamily {
 		ConveyorFamilyInterface conveyorFamily;
 		ConveyorFamilyType type;
@@ -31,18 +27,12 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	
 
 	public ConveyorFamilyShuttle(int IDnum,Transducer t) {
-
-
 		ID = IDnum;
 		this.t = t;
 
 		conveyor = new Conveyor(IDnum,t);
-
 		conveyor.setConveyorFamily(this);
-		
 		conveyor.startUp();
-
-		
 		conveyor.startThread();
 
 	}
@@ -57,8 +47,6 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 		conveyorFamilyList.add(new MyConveyorFamily(cf,cft));
 	}
 
-	
-	
 	
 	// sent from adjacent conveyor family
 	@Override
@@ -83,12 +71,11 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	}
 
 	
-	// popup request release animation
+	// request release - send glass to next conveyor
 	public void msgReleaseGlass(Glass g) {
 			for (MyConveyorFamily mcf: conveyorFamilyList) {
 	
 				if (mcf.type == ConveyorFamilyType.TO) {
-					//System.out.println("CONVEYOR " + ID + ": sending msgHereIsGlass with glass != null: " + !(g==null));
 					mcf.conveyorFamily.msgHereIsGlass(g);
 				}
 		}
