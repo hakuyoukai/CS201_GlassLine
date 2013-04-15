@@ -2,9 +2,6 @@
 package gui.panels;
 
 
-import engine.conveyorfamily.n.ControllerAgent;
-import engine.conveyorfamily.n.interfaces.Controller;
-import engine.conveyorfamily.last.ConveyorFamilyLast;
 import engine.conveyorfamily.online.ConveyorFamily;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle.ConveyorFamilyType;
@@ -12,6 +9,8 @@ import engine.conveyorfamily.zero.ConveyorFamilyZero;
 import engine.util.ConveyorFamilyInterface;
 import gui.drivers.FactoryFrame;
 import gui.test.mock.j.MockConveyorFamily;
+import engine.conveyorfamily.d.*;
+
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -51,10 +50,16 @@ public class FactoryPanel extends JPanel
 	ConveyorFamilyShuttle conveyor4;
 	ConveyorFamilyShuttle conveyor9;
 	ConveyorFamilyShuttle conveyor12;
-	ConveyorFamilyLast conveyor14;
-	ControllerAgent conveyor5;
+	
+	//MockConveyorFamily conveyor5;
+	ConveyorFamilyAgentD conveyor5;
+//	ConveyorFamilyAgentD2 conveyor6;
+//	ConveyorFamilyAgentD3 conveyor7;
 	MockConveyorFamily conveyor6;
 	MockConveyorFamily conveyor7;
+	
+//	
+	MockConveyorFamily conveyor14;
 	
 	
 	/**
@@ -121,11 +126,15 @@ public class FactoryPanel extends JPanel
 		conveyor4= new ConveyorFamilyShuttle(4,transducer);
 		conveyor9= new ConveyorFamilyShuttle(9,transducer);
 		conveyor12= new ConveyorFamilyShuttle(12,transducer);
-		conveyor14 = new ConveyorFamilyLast(transducer, conveyor13);
-
-		conveyor5 = new ControllerAgent(transducer, 5, TChannel.DRILL);
-		conveyor6 = new MockConveyorFamily(6,transducer,TChannel.CROSS_SEAMER);
-		conveyor7 = new MockConveyorFamily(7,transducer,TChannel.GRINDER);
+		
+		//System.out.println("Hi there");
+		conveyor5 = new ConveyorFamilyAgentD(transducer, "DRILL");
+//		conveyor6 = new ConveyorFamilyAgentD2(transducer, "CROSS_SEAMER");
+//		conveyor7 = new ConveyorFamilyAgentD3(transducer, "GRINDER");
+		
+		conveyor6 = new MockConveyorFamily(6,transducer,TChannel.GRINDER);
+		conveyor7 = new MockConveyorFamily(7,transducer,TChannel.DRILL);
+		conveyor14 = new MockConveyorFamily(14,transducer,TChannel.NO_WORKSTATION);
 		
 		conveyor0.setNextConveyor(conveyor1);
 		
@@ -139,7 +148,7 @@ public class FactoryPanel extends JPanel
 		conveyor3.setPreviousCF(conveyor2);
 		
 		conveyor4.setNeighbor(conveyor3,ConveyorFamilyType.FROM);
-		conveyor4.setNeighbor((ConveyorFamilyInterface) conveyor5,ConveyorFamilyType.TO);
+		conveyor4.setNeighbor(conveyor5,ConveyorFamilyType.TO);
 		
 		conveyor9.setNeighbor(conveyor8,ConveyorFamilyType.FROM);
 		conveyor9.setNeighbor(conveyor10,ConveyorFamilyType.TO);
@@ -147,17 +156,20 @@ public class FactoryPanel extends JPanel
 		conveyor12.setNeighbor(conveyor11,ConveyorFamilyType.FROM);
 		conveyor12.setNeighbor(conveyor13,ConveyorFamilyType.TO);
 		
-		conveyor5.bindNeighbors(conveyor4, conveyor6);
-		
 		//conveyor5.setNeighbor(conveyor4,ConveyorFamilyType.FROM);
 		//conveyor5.setNeighbor(conveyor6,ConveyorFamilyType.TO);
+//		conveyor7.setNeighbors(conveyor6, conveyor8);
+//		conveyor6.setNeighbors(conveyor5, conveyor7);
+		conveyor5.setNeighbors(conveyor4, conveyor6);
 		
-		conveyor6.setNeighbor((ConveyorFamilyInterface) conveyor5,ConveyorFamilyType.FROM);
+		
+		
+		conveyor6.setNeighbor(conveyor5,ConveyorFamilyType.FROM);
 		conveyor6.setNeighbor(conveyor7,ConveyorFamilyType.TO);
 
 		conveyor7.setNeighbor(conveyor6,ConveyorFamilyType.FROM);
 		conveyor7.setNeighbor(conveyor8,ConveyorFamilyType.TO);
-		
+//		
 		conveyor8.setNextCF(conveyor9);
 		conveyor8.setPreviousCF(conveyor7);
 		
@@ -169,11 +181,20 @@ public class FactoryPanel extends JPanel
 		
 		conveyor13.setNextCF(conveyor14);
 		conveyor13.setPreviousCF(conveyor12);
-				
+		
+		conveyor14.setNeighbor(conveyor13,ConveyorFamilyType.FROM);
+		conveyor14.setNeighbor(null,ConveyorFamilyType.TO);
+		
+		
+		
+
 		conveyor1.startUp();
 		conveyor2.startAllAgentThreads();
 		conveyor3.startAllAgentThreads();
 		
+		conveyor5.startALLthreads();
+//		conveyor6.startALLthreads();
+//		conveyor7.startALLthreads();
 		conveyor8.startAllAgentThreads();
 		conveyor10.startAllAgentThreads();
 		conveyor11.startAllAgentThreads();
@@ -182,7 +203,7 @@ public class FactoryPanel extends JPanel
 		conveyor4.startUp();
 		conveyor9.startUp();
 		conveyor12.startUp();
-		conveyor5.msgIAmReady();
+		conveyor4.msgIAmReady();
 		conveyor6.msgIAmReady();
 		conveyor7.msgIAmReady();
 		System.out.println("Back end initialization finished.");
