@@ -19,20 +19,19 @@ public class Conveyor extends Agent{
 	public int ID;
 	public List<MyGlass> glassList = new ArrayList<MyGlass>();
 	public enum GlassState {LOADING,WAITINGTOSEND,RELEASING};
-	public boolean sensorState[] = {false,false};
+	public boolean sensorState[] = {false,false};	// pressed = true
 	public boolean receiveOK = false;
 	public boolean sendOK = false;	// permission to send active until a glass is sent
-	ConveyorFamilyShuttle conveyorFamily;
+	public ConveyorFamilyShuttle conveyorFamily;
 	public boolean conveyorMoving = false;
-	boolean sendingGlass = false;	// from intent to send a glass to GUI release
-	Transducer t;
+	public boolean sendingGlass = false;	// from intent to send a glass to GUI release
+	public Transducer t;
 	public Glass incomingGlass;
 	boolean moveOK = false;
-	int sensorCount = 0;
+	int sensorCount = 0;	// keeps track of how many glasses are between the sensors
 	boolean shuttleFinished = false;
-	int msgReceivedCount = 0;
-	int msgGlassSentCount = 0;
-	int GuiGlassSentCount = 0;
+	int readyCount = 0;
+	int completed = 0;
 
 	
 	public class MyGlass {
@@ -77,11 +76,6 @@ public class Conveyor extends Agent{
 		System.out.println("CONVEYOR " + ID + ": " + "got msgHereIsGlass.");
 			incomingGlass = g;
 			
-			//if (!receiveOK && moveOK)
-			//updateReadyStates();
-			/*if (moveOK && !conveyorMoving)	// hasn't moved to make space
-					startConveyor();		// else already moved and has space
-			*/
 			if (!glassList.isEmpty()) {
 				if (glassList.get(glassList.size()-1).glass == null) {
 					glassList.get(glassList.size()-1).glass = g;
@@ -100,21 +94,21 @@ public class Conveyor extends Agent{
 
 
 	public void msgIAmReady() {
-		msgReceivedCount++;
-		System.out.println("CONVEYOR " + ID + ": msgIAmReady received =====================================" + msgReceivedCount + conveyorMoving);
+		readyCount++;
+		System.out.println("CONVEYOR " + ID + ": msgIAmReady received =====================================" + readyCount + conveyorMoving);
 		
 		sendOK = true;
 
 		
 		if (!glassList.isEmpty()) {
-	//		System.out.println("CONVEYOR " + ID + ": xxxxxxxxxxxxxxxxxxxxxxxxxxxx4");
+		//	System.out.println("CONVEYOR " + ID + ": xxxxxxxxxxxxxxxxxxxxxxxxxxxx4");
 			stateChanged();
 		}	
 	}
 
 
 	public void sensorPressed(Integer sensorNum) {
-		System.out.println("CONVEYOR " + ID + ": " + sensorNum + "pressed");
+//		System.out.println("CONVEYOR " + ID + ": " + sensorNum + "pressed");
 		sensorState[sensorNum] = true;
 		if (sensorNum == 0) {
 			sensorCount++;
@@ -129,9 +123,9 @@ public class Conveyor extends Agent{
 				incomingGlass = null;
 				System.out.println("CONVEYOR " + ID + ": ready to go.glass loaded2");
 				updateReadyStates();
-				if(glassList.size() == 1 || (moveOK)) {
+				if(glassList.size() == 1){ // || (moveOK)) {
 
-			//		System.out.println("CONVEYOR " + ID + ": xxxxxxxxxxxxxxxxxxxxxxxxxxxx1");
+				//	System.out.println("CONVEYOR " + ID + ": xxxxxxxxxxxxxxxxxxxxxxxxxxxx1");
 					stateChanged();
 					
 				}
@@ -151,7 +145,7 @@ public class Conveyor extends Agent{
 	// first sensor released
 
 	public void sensorReleased(Integer sensorNum) {
-		System.out.println("CONVEYOR " + ID + ": " + sensorNum + "released");
+//		System.out.println("CONVEYOR " + ID + ": " + sensorNum + "released");
 		sensorState[sensorNum] = false;
 
 		if (sensorNum == 0) {	// check ready conditions
@@ -165,32 +159,35 @@ public class Conveyor extends Agent{
 
 		} 
 		else if (sensorNum == 1) {
+			if (!sendingGlass)
+				stopConveyor();
 		}
 	}
 
 	@Override
 	public boolean pickAndExecuteAnAction() {
-	//	System.out.println("CONVEYOR " + ID + ": inside pick");
+//		System.out.println("CONVEYOR " + ID + ": inside pick");
 		updateReadyStates();
 		if (glassList.isEmpty()) {
 			return false;
 		}
 		else {
+			// sendingGlass always true before glassstate.releasing
 			
+			if (glassList.get(0).state != GlassState.RELEASING && conveyorMoving)
+				stopConveyor();
+			
+			// reaches shuttle and is ready to send
 			if (glassList.get(0).state == GlassState.RELEASING && sendingGlass == false) {
 				sendGlass();
 				return true;
 			}
 			
-			if (glassList.get(0).state == GlassState.WAITINGTOSEND) {
-				if (sendOK)
+			if (glassList.get(0).state == GlassState.WAITINGTOSEND && sendOK && sendingGlass == false && (readyCount > completed)) {
 					moveGlass();
-			/*	else if (moveOK) {
-					if (!conveyorMoving)
-						startConveyor();
-				}*/
 				return true;
 			}
+
 			
 		}
 		return false;
@@ -244,8 +241,8 @@ public class Conveyor extends Agent{
 		System.out.println("CONVEYOR " + ID + ": sending glass");
 		MyGlass mg = glassList.remove(0);
 		conveyorFamily.msgReleaseGlass(mg.glass);
-		msgGlassSentCount++;
-		System.out.println("CONVEYOR " + ID + ": msgHereIsGlass sent====================" + msgGlassSentCount);
+		completed++;
+		System.out.println("CONVEYOR " + ID + ": msgHereIsGlass sent====================" + completed);
 	}
 
 	public void startConveyor() {
