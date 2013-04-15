@@ -235,7 +235,7 @@ public class Conveyor extends Agent{
 
 	public void sendGlass() {
 		sendOK = false;
-		//System.out.println("CONVEYOR " + ID + ": sending glass");
+		System.out.println("CONVEYOR " + ID + ": sending glass");
 		MyGlass mg = glassList.remove(0);
 		conveyorFamily.msgReleaseGlass(mg.glass);
 		updateReadyStates();
