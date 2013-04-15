@@ -1,0 +1,12 @@
+CONVEYOR FAMILY DOCUMENTATION:
+
+For conveyor family 5;
+
+The way this conveyor family works is that it assumes the following setup:
+
+Sensor -> conveyor -> pre-popup sensor -> popup -> workstations -> next conveyor
+
+When a message is sent to the family, the family will message the first sensor, and the sensor will pass the item to the conveyor, and then to the popup.
+The popup will then send the class to the appropriate workstation. The workstation returns the item to the popup, and passes it to the next conveyor family.
+
+The offline conveyors concern conveyor familys 5,6 and 7, corresponding to "DRILL", "CROSS_SEAMER", and "GRINDER".
