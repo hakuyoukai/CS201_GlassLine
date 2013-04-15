@@ -6,5 +6,5 @@ import engine.util.*;
 public interface Popup {
 	public void msgHereIsGlass(Glass g);
 	public void msgNextConveyorReady();
-	public void msgNextConveyorNotReady();
+//	public void msgNextConveyorNotReady();
 }

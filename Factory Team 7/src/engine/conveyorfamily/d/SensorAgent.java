@@ -27,23 +27,7 @@ public class SensorAgent extends Agent implements Sensor, TReceiver{
 	int IDnumber;
 	
 	Transducer transducer;
-	//TChannel channel;
-	
-	//EventLog log = new EventLog();
-	//entry sensor
-	//has a conveyer after it
-	//setup is sensor -> conveyer
-//	public SensorAgent(Conveyor c, ConveyorFamilyInterface cf, Transducer tr){
-//		t = type.entry;
-//		conveyor = c;
-//		conveyorFamily = cf;
-//		holding = null;
-//		transducer = tr;
-//		//transducer.startTransducer();
-//		cStatus = conveyorStatus.ready; //set by default
-//		transducer.register(this, TChannel.SENSOR);
-//		gStatus = glassStatus.none;
-//	}
+
 	public SensorAgent(String e, int n, Transducer tr){
 		arguments[0] = n;
 		
@@ -79,26 +63,7 @@ public class SensorAgent extends Agent implements Sensor, TReceiver{
 		//next popup
 		popup = p;
 	}
-	
-	
-	//prepopup sensor
-	//has a conveyer before it, and a popup after it
-	//setup is conveyer -> sensor -> popup
-//	public SensorAgent(Conveyor c, Popup p, ConveyorFamilyInterface cf, Transducer tr){
-//		t = type.pre_popup;
-//		popup = p;
-//		conveyorFamily = cf;
-//		pStatus = popupStatus.lowered; // set by default
-//		cfStatus = conveyorFamilyStatus.ready; //set by default
-//		holding = null;
-//		gStatus = glassStatus.none;
-//		conveyor = c;
-//		transducer = tr;
-//		transducer.register(this, TChannel.SENSOR);
-//	}
-//	
-	//Messages
-	
+
 	//****
 	//message if popup sensor
 	//****
@@ -258,6 +223,7 @@ public class SensorAgent extends Agent implements Sensor, TReceiver{
 					System.err.println("conveyor.msgHereIsGlass");
 				}
 				else if (t == type.pre_popup){
+					
 					popup.msgHereIsGlass(holding);
 					System.err.println("popup.msgHereIsGlass");
 				}

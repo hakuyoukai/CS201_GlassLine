@@ -9,7 +9,9 @@ import engine.util.*;
 public class PopupAgent extends Agent implements Popup{
 	//Data
 	public enum popupStatus {raised, lowered};
-	public enum glassStatus {no_glass, waiting, working, done};
+	public enum glassStatus {no_glass, waiting, working, done}; 
+	//waiting == on raised popup, finished working
+	//working == on workstation
 	public enum nextConveyorStatus {ready, not_ready};
 	public enum conveyorType {DRILL, CROSS_SEAMER, GRINDER};
 	
@@ -22,42 +24,71 @@ public class PopupAgent extends Agent implements Popup{
 	
 	String workstation;
 	
-	public Glass workingOn;
+	public Glass topWorkingOn, botWorkingOn;
 	Sensor preSensor;
-	ConveyorFamilyInterface nextConveyor;//next conveyor family
+	ConveyorFamilyInterface nextConveyor;
 	
 	Transducer transducer;
 	TChannel channel;
-	//public EventLog log = new EventLog();
 	
-	Object[] arguments = new Object[1];
+	String name;
+	int conveyorNumber;
 	
-	public PopupAgent(Transducer t, String ws, int n){
-		arguments[0] = n;
-		//preSensor = p;
+	Object[] argTopWorkstation = new Object[1];
+	Object[] argBotWorkstation = new Object[1];
+	
+	Object[] argPopupLocation = new Object[1];//for popup location
+	
+	public PopupAgent(Transducer t, String ws){//, int n){
+		name = ws;	
+		//POPUP STATUS
 		pStatus = popupStatus.lowered; //initialize popup as lowered
-		workingOn = null;
-		gStatus = glassStatus.no_glass;
-		//nextConveyor = c;
-		cStatus = nextConveyorStatus.ready;
-		workOneStatus = glassStatus.no_glass;
-		workTwoStatus = glassStatus.no_glass;
 		
-		workstation = ws;
-		if(ws == "DRILL")
-			cType = conveyorType.DRILL;
-		else if (ws == "CROSS_SEAMER")
-			cType = conveyorType.CROSS_SEAMER;
-		else if (ws == "GRINDER")
-			cType = conveyorType.GRINDER;
+		//GLASS STATUS
+		topWorkingOn = null;
+		botWorkingOn = null;
+		gStatus = glassStatus.no_glass;
+		
+		//NEXT CONVEYOR STATUS
+		cStatus = nextConveyorStatus.ready;
 		
 		//setup transducer
 		transducer = t;
 		channel = TChannel.POPUP;
 		transducer.register(this, TChannel.POPUP);
-		transducer.register(this, TChannel.CROSS_SEAMER);
-		transducer.register(this, TChannel.DRILL);
-		transducer.register(this, TChannel.GRINDER);
+		
+		
+		//WORKSTATION STATUS
+		workOneStatus = glassStatus.no_glass;
+		workTwoStatus = glassStatus.no_glass;
+		
+		workstation = ws;
+		if(ws == "DRILL"){
+			argPopupLocation[0] = 0;
+			argTopWorkstation[0] = 0;
+			argBotWorkstation[0] = 1;
+			cType = conveyorType.DRILL;
+			conveyorNumber = 5;
+			transducer.register(this, TChannel.DRILL);
+		}
+			
+		else if (ws == "CROSS_SEAMER"){
+			argPopupLocation[0] = 1;
+			argTopWorkstation[0] = 2;
+			argBotWorkstation[0] = 3;
+			cType = conveyorType.CROSS_SEAMER;
+			conveyorNumber = 6;
+			transducer.register(this, TChannel.CROSS_SEAMER);
+		}
+			
+		else if (ws == "GRINDER"){
+			argPopupLocation[0] = 2;
+			argTopWorkstation[0] = 4;
+			argBotWorkstation[0] = 5;
+			cType = conveyorType.GRINDER;
+			conveyorNumber = 7;
+			transducer.register(this, TChannel.GRINDER);
+		}
 	}
 	
 	public void setUp(Sensor p, ConveyorFamilyInterface c){
@@ -68,7 +99,7 @@ public class PopupAgent extends Agent implements Popup{
 	//Messages
 	public void msgHereIsGlass(Glass g) {
 		System.out.println("Hi");
-		workingOn = g;
+		topWorkingOn = g;
 		//raisePopup();	
 		//stateChanged();
 	}
@@ -106,14 +137,14 @@ public class PopupAgent extends Agent implements Popup{
 		gStatus = glassStatus.waiting;
 		System.err.println("I'M GONNNA RAISE ZE ROOF");
 		
-		transducer.fireEvent(channel, TEvent.POPUP_DO_MOVE_UP, arguments);
+		transducer.fireEvent(channel, TEvent.POPUP_DO_MOVE_UP, argPopupLocation);
 	}
 	
 	private void lowerPopup()
 	{
 		pStatus = popupStatus.lowered;
 		gStatus = glassStatus.waiting;
-		transducer.fireEvent(channel, TEvent.POPUP_DO_MOVE_DOWN,arguments);
+		transducer.fireEvent(channel, TEvent.POPUP_DO_MOVE_DOWN,argPopupLocation);
 	}
 	
 
@@ -146,8 +177,8 @@ public class PopupAgent extends Agent implements Popup{
 			
 		}
 		else if(channel == TChannel.POPUP && event == TEvent.POPUP_GUI_RELEASE_FINISHED){
-			nextConveyor.msgHereIsGlass(workingOn);
-			workingOn = null;
+			nextConveyor.msgHereIsGlass(topWorkingOn);
+			topWorkingOn = null;
 			gStatus = glassStatus.no_glass;
 			workOneStatus = glassStatus.no_glass;
 			System.out.println("Finished with part");

@@ -35,11 +35,25 @@ public class ConveyorFamilyAgentD extends Agent implements ConveyorFamilyInterfa
 //		prepopup = new SensorAgent(conveyor, popup, after, transducer);
 //		conveyor = new ConveyorAgent(entry, prepopup, transducer);
 //		popup = new PopupAgent(prepopup, after, transducer, WS);
-		
-		entry = new SensorAgent("entry", 10, transducer);
-		prepopup = new SensorAgent("popup", 11, transducer);
-		conveyor = new ConveyorAgent(5, transducer);
-		popup = new PopupAgent(transducer, WS, 0);
+		if(WS == "DRILL"){
+			entry = new SensorAgent("entry", 10, transducer);
+			prepopup = new SensorAgent("popup", 11, transducer);
+			conveyor = new ConveyorAgent(5, transducer);
+			popup = new PopupAgent(transducer, WS);//, 0);
+		}
+//		else if(WS == "CROSS_SEAMER"){
+//			entry = new SensorAgent("entry", 12, transducer);
+//			prepopup = new SensorAgent("popup", 13, transducer);
+//			conveyor = new ConveyorAgent(6, transducer);
+//			popup = new PopupAgent(transducer, WS);//, 0);
+//		}
+//		else if(WS == "GRINDER"){
+//			entry = new SensorAgent("entry", 14, transducer);
+//			prepopup = new SensorAgent("popup", 15, transducer);
+//			conveyor = new ConveyorAgent(7, transducer);
+//			popup = new PopupAgent(transducer, WS);//, 0);
+//		}
+//		
 		
 	}
 	

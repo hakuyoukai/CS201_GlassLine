@@ -74,7 +74,7 @@ public class ConveyorAgent extends Agent implements Conveyor {
 	//Messages
 	public void msgHereIsGlass(Glass g){
 		//action add part glass g... statechanged
-		System.out.println("Glass g: " + g.hashCode());
+		System.out.println("received Glass g: " + g.hashCode());
 		addGlass(g);
 		stateChanged();
 	}
