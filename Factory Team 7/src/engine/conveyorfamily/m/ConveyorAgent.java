@@ -165,7 +165,7 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver
 		{
 			if(event == TEvent.SENSOR_GUI_PRESSED)
 			{
-				if((int)args[0]==startIndex)
+				if((Integer)args[0]==startIndex)
 				{
 					sensorOne = SensorState.ON;
 					start = true;
@@ -176,7 +176,7 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver
 						animIn = AnimState.NONE;
 					}
 				}
-				else if((int)args[0]==endIndex)
+				else if((Integer)args[0]==endIndex)
 				{
 					sensorTwo = SensorState.ON;
 					end = true;
@@ -186,12 +186,12 @@ public class ConveyorAgent extends Agent implements Conveyor, TReceiver
 			}
 			if(event == TEvent.SENSOR_GUI_RELEASED)
 			{
-				if((int)args[0]==0)
+				if((Integer)args[0]==0)
 				{
 					sensorOne = SensorState.OFF;
 					start = false;
 				}
-				else if((int)args[0]==1)
+				else if((Integer)args[0]==1)
 				{
 					sensorTwo = SensorState.OFF;
 					end = false;
