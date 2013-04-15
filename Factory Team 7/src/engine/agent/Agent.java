@@ -22,7 +22,7 @@ public abstract class Agent implements TReceiver
 	protected String name;
 
 	/** Semaphore controlling whether the Agent scheduler continues */
-	private Semaphore stateChange = new Semaphore(1, true);
+	protected Semaphore stateChange = new Semaphore(1, true);
 
 	/** The thread devoted to the Agent */
 	private AgentThread agentThread;

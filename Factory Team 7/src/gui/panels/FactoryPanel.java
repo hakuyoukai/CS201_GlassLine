@@ -2,6 +2,8 @@
 package gui.panels;
 
 
+import engine.conveyorfamily.n.ControllerAgent;
+import engine.conveyorfamily.n.interfaces.Controller;
 import engine.conveyorfamily.last.ConveyorFamilyLast;
 import engine.conveyorfamily.online.ConveyorFamily;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle;
@@ -50,7 +52,7 @@ public class FactoryPanel extends JPanel
 	ConveyorFamilyShuttle conveyor9;
 	ConveyorFamilyShuttle conveyor12;
 	ConveyorFamilyLast conveyor14;
-	MockConveyorFamily conveyor5;
+	ControllerAgent conveyor5;
 	MockConveyorFamily conveyor6;
 	MockConveyorFamily conveyor7;
 	
@@ -121,9 +123,9 @@ public class FactoryPanel extends JPanel
 		conveyor12= new ConveyorFamilyShuttle(12,transducer);
 		conveyor14 = new ConveyorFamilyLast(transducer, conveyor13);
 
-		conveyor5 = new MockConveyorFamily(5,transducer,TChannel.CROSS_SEAMER);
-		conveyor6 = new MockConveyorFamily(6,transducer,TChannel.GRINDER);
-		conveyor7 = new MockConveyorFamily(7,transducer,TChannel.DRILL);
+		conveyor5 = new ControllerAgent(transducer, 5, TChannel.DRILL);
+		conveyor6 = new MockConveyorFamily(6,transducer,TChannel.CROSS_SEAMER);
+		conveyor7 = new MockConveyorFamily(7,transducer,TChannel.GRINDER);
 		
 		conveyor0.setNextConveyor(conveyor1);
 		
@@ -137,7 +139,7 @@ public class FactoryPanel extends JPanel
 		conveyor3.setPreviousCF(conveyor2);
 		
 		conveyor4.setNeighbor(conveyor3,ConveyorFamilyType.FROM);
-		conveyor4.setNeighbor(conveyor5,ConveyorFamilyType.TO);
+		conveyor4.setNeighbor((ConveyorFamilyInterface) conveyor5,ConveyorFamilyType.TO);
 		
 		conveyor9.setNeighbor(conveyor8,ConveyorFamilyType.FROM);
 		conveyor9.setNeighbor(conveyor10,ConveyorFamilyType.TO);
@@ -145,10 +147,12 @@ public class FactoryPanel extends JPanel
 		conveyor12.setNeighbor(conveyor11,ConveyorFamilyType.FROM);
 		conveyor12.setNeighbor(conveyor13,ConveyorFamilyType.TO);
 		
-		conveyor5.setNeighbor(conveyor4,ConveyorFamilyType.FROM);
-		conveyor5.setNeighbor(conveyor6,ConveyorFamilyType.TO);
+		conveyor5.bindNeighbors(conveyor4, conveyor6);
 		
-		conveyor6.setNeighbor(conveyor5,ConveyorFamilyType.FROM);
+		//conveyor5.setNeighbor(conveyor4,ConveyorFamilyType.FROM);
+		//conveyor5.setNeighbor(conveyor6,ConveyorFamilyType.TO);
+		
+		conveyor6.setNeighbor((ConveyorFamilyInterface) conveyor5,ConveyorFamilyType.FROM);
 		conveyor6.setNeighbor(conveyor7,ConveyorFamilyType.TO);
 
 		conveyor7.setNeighbor(conveyor6,ConveyorFamilyType.FROM);
