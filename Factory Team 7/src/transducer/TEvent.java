@@ -10,7 +10,7 @@ public enum TEvent
 	START,
 	STOP,
 	SET_RECIPE,
-	CONVEYOR_SPEED_CHANGE,
+
 	
 	// conveyor
 	CONVEYOR_DO_START,
@@ -52,4 +52,8 @@ public enum TEvent
 	
 	//shuttle
 	SHUTTLE_FINISHED_LOADING,
+	
+	// non-norms
+	CONVEYOR_JAM,
+	CONVEYOR_UNJAM
 }

@@ -21,6 +21,7 @@ public class TestPanel extends JPanel implements ActionListener {
 	public JLabel sendLabel;
 	JButton receiveToggle;
 	JButton sendToggle;
+	JComboBox conveyorNumJam;
 	
 	public TestPanel(ControlPanel cp) {
 		setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
@@ -43,28 +44,34 @@ public class TestPanel extends JPanel implements ActionListener {
 		Integer[] nums = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
 		conveyorNum = new JComboBox(nums);
 		conveyorNum.addActionListener(this);
-		conveyorNum.setMaximumSize(new Dimension(40,25));
+		conveyorNum.setPreferredSize(new Dimension(40,26));
+		conveyorNum.setMaximumSize(new Dimension(40,26));
+		oneLine.add(new JLabel("Animation Only"));
+		oneLine.add(Box.createRigidArea(new Dimension(5,0)));
 		oneLine.add(conveyorNum);
+		oneLine.add(Box.createRigidArea(new Dimension(5,0)));
 		oneLine.add(startButton);
+		oneLine.add(Box.createRigidArea(new Dimension(5,0)));
 		oneLine.add(stopButton);
 		add(oneLine);
-		// JOEY
-		/*
-		receiveLabel = new JLabel("receive: false");
-		sendLabel = new JLabel("send: false");
-		receiveToggle = new JButton("Toggle");
-		sendToggle = new JButton("Toggle");
-		receiveToggle.addActionListener(this);
-		sendToggle.addActionListener(this);
+	
+		conveyorNumJam = new JComboBox(nums);
+		conveyorNumJam.setMaximumSize(new Dimension(40,26));
+		Box box = Box.createHorizontalBox();
+		box.add(new JLabel("Conveyor Jam"));
+		box.add(Box.createRigidArea(new Dimension(5,0)));
+		box.add(conveyorNumJam);
+		box.add(Box.createRigidArea(new Dimension(5,0)));
 		
-
-		Box secondLine = Box.createHorizontalBox();
-		secondLine.add(receiveLabel);
-		secondLine.add(receiveToggle);
-		secondLine.add(sendLabel);
-		secondLine.add(sendToggle);
-		add(secondLine);
-		*/
+		JButton button = new JButton("Jam");
+		button.addActionListener(this);
+		box.add(button);
+		box.add(Box.createRigidArea(new Dimension(5,0)));
+		button = new JButton("Unjam");
+		button.addActionListener(this);
+		box.add(button);
+		
+		add(box);
 	}
 
 	
@@ -98,23 +105,23 @@ public class TestPanel extends JPanel implements ActionListener {
 				newArgs[0] = conveyorNum.getSelectedIndex();
 				parent.getTransducer().fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 		}
-		//JOEY
-		/*else if (e.getSource() == receiveToggle) {
-			boolean a =	parent.parent.dPanel.JTest.conveyorFamily.receiveOK;
-			a = !a;
-			parent.parent.dPanel.JTest.conveyorFamily.receiveOK = a;
-			receiveLabel.setText("receive: " + a);
-		}
-		else if (e.getSource() == sendToggle) {
-			boolean a =	parent.parent.dPanel.JTest.conveyorFamily.sendOK;
-			a = !a;
-			parent.parent.dPanel.JTest.conveyorFamily.sendOK = a;
-			if (a == true) {
-				parent.parent.dPanel.JTest.conveyorFamily.msgIAmReady();
+		else if (e.getSource() instanceof JButton) {
+			JButton button = (JButton) e.getSource();
+			if (button.getText().equals("Jam")) {
+
+				Integer[] newArgs = new Integer[1];
+					newArgs[0] = conveyorNumJam.getSelectedIndex();
+
+				parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL,TEvent.CONVEYOR_JAM,newArgs);
 			}
-			sendLabel.setText("send: " + a);
+			else if (button.getText().equals("Unjam")) {
+
+				Integer[] newArgs = new Integer[1];
+					newArgs[0] = conveyorNumJam.getSelectedIndex();
+					parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL,TEvent.CONVEYOR_UNJAM,newArgs);
+
+			}
 		}
-*/
 		
 	}
 
