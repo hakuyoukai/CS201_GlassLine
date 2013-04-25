@@ -2,7 +2,10 @@
 package gui.panels.subcontrolpanels;
 
 import gui.panels.ControlPanel;
+import gui.panels.subcontrolpanels.nonnorm.ConveyorPanel;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,12 +21,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import transducer.Transducer;
+
 /**
  * The NonNormPanel is responsible for initiating and managing non-normative
  * situations. It contains buttons for each possible non-norm.
  * 
  * The non-normative situations are:
- * 1.
+ * 1. Conveyor Jam
  * 2.
  * 3.
  * 4.
@@ -46,6 +51,7 @@ public class NonNormPanel extends JPanel
 
 	/** Title label **/
 	JLabel titleLabel;
+	public JPanel cardContainer;
 
 	/**
 	 * Creates a new HavocPanel and links the control panel to it
@@ -56,12 +62,18 @@ public class NonNormPanel extends JPanel
 	public NonNormPanel(ControlPanel cp)
 	{
 		parent = cp;
-
-		this.setBackground(Color.black);
-		this.setForeground(Color.black);
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBackground(Color.black);
+		mainPanel.setForeground(Color.black);
+		
+		cardContainer = new JPanel();
+		cardContainer.setLayout(new CardLayout());
+		setLayout(new BorderLayout());
+		
+		ConveyorPanel conveyorPanel = new ConveyorPanel(this);
 
 		// set up layout
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
 		// set up button panel
 		JPanel buttonPanel = new JPanel();
@@ -82,7 +94,7 @@ public class NonNormPanel extends JPanel
 
 		// make buttons
 		nonNormButtons = new ArrayList<JButton>(NUM_NON_NORMS);
-		nonNormButtons.add(new JButton("NON NORM 1"));
+		nonNormButtons.add(new JButton("Conveyor Jam"));
 		nonNormButtons.add(new JButton("NON NORM 2"));
 		nonNormButtons.add(new JButton("NON NORM 3"));
 		nonNormButtons.add(new JButton("NON NORM 4"));
@@ -114,7 +126,7 @@ public class NonNormPanel extends JPanel
 			nonNormButtons.get(i).setPreferredSize(new Dimension(20, 40));
 		}
 		// add to panel
-		this.add(titleLabelPanel);
+		mainPanel.add(titleLabelPanel);
 
 		JPanel colorLinesPanel1 = new JPanel();
 		colorLinesPanel1.setPreferredSize(new Dimension(350, 2));
@@ -122,21 +134,27 @@ public class NonNormPanel extends JPanel
 		ImageIcon cl = new ImageIcon("imageicons/singleColoredLine.png");
 		JLabel clLabel1 = new JLabel(cl);
 		colorLinesPanel1.add(clLabel1);
-		this.add(colorLinesPanel1);
+		mainPanel.add(colorLinesPanel1);
 
 		for (JButton j : nonNormButtons)
 		{
 			buttonPanel.add(j);
 		}
 		buttonPanel.setAlignmentY(JPanel.CENTER_ALIGNMENT);
-		this.add(buttonPanel);
+		mainPanel.add(buttonPanel);
 
 		JPanel colorLinesPanel2 = new JPanel();
 		colorLinesPanel2.setPreferredSize(new Dimension(350, 40));
 		colorLinesPanel2.setBackground(Color.black);
 		JLabel clLabel2 = new JLabel();
 		colorLinesPanel2.add(clLabel2);
-		this.add(colorLinesPanel2);
+		mainPanel.add(colorLinesPanel2);
+		
+		
+		cardContainer.add(mainPanel,"MAINPANEL");
+		cardContainer.add(conveyorPanel,"NONNORM1");
+		
+		this.add(cardContainer,BorderLayout.CENTER);
 	}
 
 	/**
@@ -157,9 +175,12 @@ public class NonNormPanel extends JPanel
 		/**
 		 * Invoked whenever the button is pressed
 		 */
+		
+		// Conveyor Jam
 		public void actionPerformed(ActionEvent ae)
 		{
-
+			 CardLayout cl = (CardLayout)(cardContainer.getLayout());
+		        cl.show(cardContainer, "NONNORM1");
 		}
 	}
 
@@ -259,6 +280,10 @@ public class NonNormPanel extends JPanel
 		{
 
 		}
+	}
+	
+	public Transducer getTransducer() {
+		return parent.getTransducer();
 	}
 
 }

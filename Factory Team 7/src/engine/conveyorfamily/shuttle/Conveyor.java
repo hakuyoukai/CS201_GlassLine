@@ -32,7 +32,8 @@ public class Conveyor extends Agent{
 	boolean shuttleFinished = false;
 	int readyCount = 0;
 	int completed = 0;
-
+	public boolean conveyorJam = false;
+	boolean allowed;
 	
 	public class MyGlass {
 		Glass glass;
@@ -56,6 +57,7 @@ public class Conveyor extends Agent{
 
 		t.register(this, TChannel.SENSOR);
 		t.register(this,TChannel.SHUTTLE);
+		t.register(this, TChannel.CONTROL_PANEL);
 	}
 
 
@@ -68,6 +70,7 @@ public class Conveyor extends Agent{
 		receiveOK = true;
 		sendOK = true;
 		moveOK = true;
+		allowed = true;
 	}
 
 
@@ -95,9 +98,10 @@ public class Conveyor extends Agent{
 	public void msgIAmReady() {
 		readyCount++;
 		System.out.println("CONVEYOR " + ID + ": msgIAmReady received =====================================" + readyCount + conveyorMoving);
+		allowed = true;
+		if (!conveyorJam)
+			sendOK = true;
 		
-		sendOK = true;
-
 		
 		if (!glassList.isEmpty()) {
 			stateChanged();
@@ -140,7 +144,7 @@ public class Conveyor extends Agent{
 		if (sensorNum == 0) {	
 
 			updateReadyStates();
-			if (receiveOK && moveOK) {	// cok to accept glass
+			if (receiveOK && moveOK && !conveyorJam) {	// cok to accept glass
 				conveyorFamily.msgConveyorReady();
 				System.out.println("CONVEYOR " + ID + ": READY ===============");
 			}
@@ -217,10 +221,29 @@ public class Conveyor extends Agent{
 				stateChanged();
 			}
 		}
+		else if (channel == TChannel.CONTROL_PANEL && event == TEvent.CONVEYOR_JAM) {
+			if ((Integer)args[0] == ID)
+				conveyorJam = true;
+		}
+		else if (channel == TChannel.CONTROL_PANEL && event == TEvent.CONVEYOR_UNJAM) {
+			if ((Integer)args[0] == ID) {
+				conveyorJam = false;
+				updateReadyStates();
+				if (receiveOK && moveOK && !conveyorJam) {	// cok to accept glass
+					conveyorFamily.msgConveyorReady();
+					System.out.println("CONVEYOR " + ID + ": READY ===============");
+				}
+				if (allowed == true) {
+					sendOK = true;
+					stateChanged();
+				}
+			}
+		}
 	}
 
 // send glass to next conveyor
 	public void sendGlass() {
+		allowed = false;
 		sendOK = false;
 		MyGlass mg = glassList.remove(0);
 		conveyorFamily.msgReleaseGlass(mg.glass);
@@ -257,7 +280,7 @@ public class Conveyor extends Agent{
 			moveOK = true;
 		
 		receiveOK = false; // receiveOK is only positional
-		if (sensorState[0] == false)
+		if (sensorState[0] == false && !conveyorJam)
 			receiveOK = true;
 		}
 

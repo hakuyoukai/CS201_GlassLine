@@ -6,7 +6,7 @@ import gui.panels.subcontrolpanels.GlassSelectPanel;
 import gui.panels.subcontrolpanels.LogoPanel;
 import gui.panels.subcontrolpanels.NonNormPanel;
 import gui.panels.subcontrolpanels.StatePanel;
-import gui.panels.subcontrolpanels.TestPanel;
+//import gui.panels.subcontrolpanels.TestPanel;
 import gui.panels.subcontrolpanels.TitlePanel;
 import gui.panels.subcontrolpanels.TracePanel;
 
@@ -80,7 +80,7 @@ public class ControlPanel extends JPanel implements TReceiver
 	 */
 	TracePanel tracePanel;
 	
-	TestPanel testPanel;
+	//TestPanel testPanel;
 
 	public final static Dimension size = new Dimension(400, 880);
 
@@ -108,7 +108,7 @@ public class ControlPanel extends JPanel implements TReceiver
 		nonNormPanel = new NonNormPanel(this);
 		tracePanel = new TracePanel(this, "Begin");
 		logoPanel = new LogoPanel(this);
-		testPanel = new TestPanel(this);
+		//testPanel = new TestPanel(this);
 
 		// make tabbed panels
 
@@ -117,7 +117,7 @@ public class ControlPanel extends JPanel implements TReceiver
 		JTabbedPane selectTabbedPanel = new JTabbedPane(JTabbedPane.TOP);
 		selectTabbedPanel.add("Glass Select", glassSelectPanel);
 		selectTabbedPanel.add("Non Norms", nonNormPanel);
-		selectTabbedPanel.add("Testing",testPanel);
+		//selectTabbedPanel.add("Testing",testPanel);
 		selectTabbedPanel.setBackground(Color.black);
 		selectTabbedPanel.setForeground(Color.white);
 		selectTabbedPanel.setBorder(BorderFactory.createEmptyBorder());
