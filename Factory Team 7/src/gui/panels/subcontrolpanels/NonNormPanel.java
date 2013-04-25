@@ -3,6 +3,7 @@ package gui.panels.subcontrolpanels;
 
 import gui.panels.ControlPanel;
 import gui.panels.subcontrolpanels.nonnorm.ConveyorPanel;
+import gui.panels.subcontrolpanels.nonnorm.PopUpPanel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -71,6 +72,7 @@ public class NonNormPanel extends JPanel
 		setLayout(new BorderLayout());
 		
 		ConveyorPanel conveyorPanel = new ConveyorPanel(this);
+		PopUpPanel popUpPanel = new PopUpPanel(this);
 
 		// set up layout
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -95,7 +97,7 @@ public class NonNormPanel extends JPanel
 		// make buttons
 		nonNormButtons = new ArrayList<JButton>(NUM_NON_NORMS);
 		nonNormButtons.add(new JButton("Conveyor Jam"));
-		nonNormButtons.add(new JButton("NON NORM 2"));
+		nonNormButtons.add(new JButton("Popup Jam"));
 		nonNormButtons.add(new JButton("NON NORM 3"));
 		nonNormButtons.add(new JButton("NON NORM 4"));
 		nonNormButtons.add(new JButton("NON NORM 5"));
@@ -152,7 +154,8 @@ public class NonNormPanel extends JPanel
 		
 		
 		cardContainer.add(mainPanel,"MAINPANEL");
-		cardContainer.add(conveyorPanel,"NONNORM1");
+		cardContainer.add(conveyorPanel,"conveyor");
+		cardContainer.add(popUpPanel,"popupworkstations");
 		
 		this.add(cardContainer,BorderLayout.CENTER);
 	}
@@ -180,7 +183,7 @@ public class NonNormPanel extends JPanel
 		public void actionPerformed(ActionEvent ae)
 		{
 			 CardLayout cl = (CardLayout)(cardContainer.getLayout());
-		        cl.show(cardContainer, "NONNORM1");
+		        cl.show(cardContainer, "conveyor");
 		}
 	}
 
@@ -194,7 +197,8 @@ public class NonNormPanel extends JPanel
 		 */
 		public void actionPerformed(ActionEvent ae)
 		{
-
+			 CardLayout cl = (CardLayout)(cardContainer.getLayout());
+		        cl.show(cardContainer, "popupworkstations");
 		}
 	}
 

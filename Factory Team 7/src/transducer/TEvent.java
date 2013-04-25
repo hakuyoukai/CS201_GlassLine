@@ -55,5 +55,7 @@ public enum TEvent
 	
 	// non-norms
 	CONVEYOR_JAM,
-	CONVEYOR_UNJAM
+	CONVEYOR_UNJAM,
+	POPUP_JAM,
+	POPUP_UNJAM,
 }
