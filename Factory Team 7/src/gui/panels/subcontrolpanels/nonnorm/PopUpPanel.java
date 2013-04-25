@@ -10,6 +10,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,6 +36,7 @@ public class PopUpPanel extends JPanel implements ActionListener {
 	
 	List<JLabel> popUpButtons;
 	List<JLabel> workStationButtons;
+	List<JCheckBox> breakGlassCheck;
 	Map<String,ImageIcon> icons;
 	
 	public PopUpPanel(NonNormPanel p) {
@@ -81,6 +85,14 @@ public class PopUpPanel extends JPanel implements ActionListener {
 			j.addMouseListener(workStationListener);
 		}
 		
+		breakGlassCheck = new ArrayList<JCheckBox>();
+		
+		BreakGlassListener breakGlassListener = new BreakGlassListener();
+		for (int i = 0; i < 6; i++) {
+			JCheckBox cb = new JCheckBox();
+			cb.addItemListener(breakGlassListener);
+			breakGlassCheck.add(cb);
+		}
 		panel.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridy = 1;
@@ -93,13 +105,22 @@ public class PopUpPanel extends JPanel implements ActionListener {
 		c.gridy = 2;
 		c.gridwidth = 1;
 		c.gridx = 1;
+		panel.add(breakGlassCheck.get(0),c);
+		c.gridx = 2;
+		panel.add(breakGlassCheck.get(2),c);
+		c.gridx = 3;
+		panel.add(breakGlassCheck.get(4),c);
+		
+		
+		c.gridy = 3;
+		c.gridx = 1;
 		panel.add(workStationButtons.get(0),c);
 		c.gridx = 2;
 		panel.add(workStationButtons.get(2),c);
 		c.gridx = 3;
 		panel.add(workStationButtons.get(4),c);
 		
-		c.gridy = 3;
+		c.gridy = 4;
 		c.gridx = 1;
 		panel.add(popUpButtons.get(0),c);
 		c.gridx = 2;
@@ -107,7 +128,7 @@ public class PopUpPanel extends JPanel implements ActionListener {
 		c.gridx = 3;
 		panel.add(popUpButtons.get(2),c);
 		
-		c.gridy = 4;
+		c.gridy = 5;
 		c.gridx = 1;
 		panel.add(workStationButtons.get(1),c);
 		c.gridx = 2;
@@ -115,7 +136,19 @@ public class PopUpPanel extends JPanel implements ActionListener {
 		c.gridx = 3;
 		panel.add(workStationButtons.get(5),c);
 
+		c.gridy = 6;
+		c.gridx = 1;
+		panel.add(breakGlassCheck.get(1),c);
+		c.gridx = 2;
+		panel.add(breakGlassCheck.get(3),c);
+		c.gridx = 3;
+		panel.add(breakGlassCheck.get(5),c);
 		
+		c.gridy = 2;
+		c.gridx = 4;
+		panel.add(new JLabel("break glass"),c);
+		c.gridy = 6;
+		panel.add(new JLabel("break glass"),c);
 
 	}
 	@Override
@@ -159,44 +192,93 @@ public class PopUpPanel extends JPanel implements ActionListener {
 			for (int i = 0; i < workStationButtons.size(); i++) {
 				JLabel label = workStationButtons.get(i);
 				if (e.getSource() == label) {
+					Integer[] args = new Integer[2];
 					int stationIndex = i%2;
 					if (i < 2) {
-						if ((ImageIcon)label.getIcon() == icons.get("drill")) {
+						args[0] = 0;
+					}
+					else if (i < 4) {
+						args[0] = 1;
+					}
+					else  {
+						args[0] = 2;
+					}
+					args[1] = stationIndex;
+					if (i < 2) {
+						if ((ImageIcon)label.getIcon() == icons.get("drill")) { 
 							label.setIcon(icons.get("drill-good"));
-					/*		Integer[] args = new Integer[2];
-							args[0] = 0;
-							args[1] = stationIndex;
-							parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.POPUP_JAM,args);
-					*/
+							parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.WORKSTATION_WORKING,args);
+							breakGlassCheck.get(i).setEnabled(true);
 						}
 						else {
 							label.setIcon(icons.get("drill"));
-						/*	Integer[] args = new Integer[2];
-							args[0] = 0;
-							args[1] = stationIndex;
-							parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.POPUP_JAM,args);
-					*/
+							parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.WORKSTATION_BROKEN,args);
+							breakGlassCheck.get(i).setEnabled(false);
 						}
 					}
 					else if (i < 4) {
 						if ((ImageIcon)label.getIcon() == icons.get("crossseamer")) {
 							label.setIcon(icons.get("crossseamer-good"));
+							parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.WORKSTATION_WORKING,args);
+							breakGlassCheck.get(i).setEnabled(true);
 						}
 						else {
 							label.setIcon(icons.get("crossseamer"));
+							parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.WORKSTATION_BROKEN,args);
+							breakGlassCheck.get(i).setEnabled(false);
 						}
 					}
 					else {
 						if ((ImageIcon)label.getIcon() == icons.get("grinder")) {
 							label.setIcon(icons.get("grinder-good"));
+							parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.WORKSTATION_WORKING,args);
+							breakGlassCheck.get(i).setEnabled(true);
 						}
 						else {
 							label.setIcon(icons.get("grinder"));
+							parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.WORKSTATION_BROKEN,args);
+							breakGlassCheck.get(i).setEnabled(false);
 						}
 					}
 				}
 			}
 
 		}
+	}
+	
+	public class BreakGlassListener implements ItemListener {
+
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			for (int i = 0; i < breakGlassCheck.size();i++) {
+				JCheckBox c = breakGlassCheck.get(i);
+				int stationIndex = i%2;
+				Integer[] args = new Integer[2];
+				args[1] = stationIndex;
+				if (i < 2) {
+					args[0] = 0;
+				}
+				else if (i < 4) {
+					args[0] = 1;
+				}
+				else  {
+					args[0] = 2;
+				}
+				if (e.getSource() == c) {
+					boolean a = c.isSelected();
+				//	a = !a;
+				//	breakGlassCheck.get(i).setSelected(a);
+					if (a == true) {	///
+						parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL,TEvent.WORKSTATION_BREAK_GLASS,args);
+					}
+					else {
+						parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL,TEvent.WORKSTATION_DONT_BREAK_GLASS,args);
+						
+					}
+				}
+			}
+			
+		}
+		
 	}
 }

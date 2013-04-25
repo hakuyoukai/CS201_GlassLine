@@ -53,9 +53,20 @@ public enum TEvent
 	//shuttle
 	SHUTTLE_FINISHED_LOADING,
 	
-	// non-norms
-	CONVEYOR_JAM,
-	CONVEYOR_UNJAM,
-	POPUP_JAM,
-	POPUP_UNJAM,
+	// non-norms	// ALL CHANNEL= CONTROL_PANEL
+	CONVEYOR_JAM, // args[0] = conveyor number
+	CONVEYOR_UNJAM,// args[0] = conveyor number
+	POPUP_JAM,// args[0] = popup number (0-2)
+	POPUP_UNJAM,// args[0] = popup number (0-2)
+	
+	// args[0] = workstation assembly number
+	//		0 = drill
+	//		1 = crossseamer
+	//		2 = grinder
+	// args[1] = workstation number (0 or 1)
+	
+	WORKSTATION_BREAK_GLASS, 
+	WORKSTATION_DONT_BREAK_GLASS,
+	WORKSTATION_BROKEN,
+	WORKSTATION_WORKING,
 }
