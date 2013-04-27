@@ -291,6 +291,18 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 					this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_LOAD_FINISHED, null);
 				}
 			}
+			if(this.channel == TChannel.CUTTER)
+			{
+				if(guiPart.getCenterX()-45>getCenterX())
+				{
+					guiPart.setCenterLocation(guiPart.getCenterX() - 1, guiPart.getCenterY());
+				}
+				else
+				{
+					animationState = AnimationState.IDLE;
+					this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_LOAD_FINISHED, null);
+				}
+			}
 			else
 			{
 				if (guiPart.getCenterX() > getCenterX())

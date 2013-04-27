@@ -70,7 +70,7 @@ public class InlineStationPanel extends JPanel implements ActionListener
 		c.gridwidth = 4;
 		c.gridheight = 1;
 		c.insets = new Insets(0,0,15,0); 
-		panel.add(new JLabel("Conveyor Jam"),c);
+		panel.add(new JLabel("Disable Inline"),c);
 
 
 		
@@ -79,7 +79,7 @@ public class InlineStationPanel extends JPanel implements ActionListener
 		c.anchor = GridBagConstraints.LINE_START;
 		c.gridy = 2;
 		
-		panel.add(new JLabel("Conveyor "),c);
+		panel.add(new JLabel("Inline "),c);
 		c.gridx = 2;
 		panel.add(stationNum,c);
 		c.gridx = 3;

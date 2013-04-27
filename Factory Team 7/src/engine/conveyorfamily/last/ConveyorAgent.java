@@ -20,6 +20,9 @@ public class ConveyorAgent extends Agent implements TReceiver
 	private Glass incomingGlass;
 	private Integer capacity = 3;
 	private Integer[] newArgs;
+	private boolean quieted = false;
+	private Boolean jammed = false;
+	private boolean initialJam = false;
 	
 	private enum SensorState {ON,OFF};
 	private enum SendState {APPROVED,DEFAULT,WAITING,DENIED};
@@ -87,21 +90,30 @@ public class ConveyorAgent extends Agent implements TReceiver
 		}
 		if(prevState!=SendState.APPROVED && prevState!=SendState.WAITING && prevState!=SendState.DENIED)
 		{
-			if(glass.size()<capacity)
-			{
 				if(sensorOne!=SensorState.ON && sensorTwo!=SensorState.ON)
 				{
 					askForGlass();
 					return true;
 				}
-			}
+		}
+		if(glass.isEmpty() && truckState == AnimState.DEFAULT && prevState == SendState.APPROVED && !quieted)
+		{
+			quietConveyor();
+			return true;
 		}
 		return false;
 	}
 	
 	//!!ACTIONS!!
+	public void quietConveyor()
+	{
+		quieted = true;
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
+		stateChanged();
+	}
 	public void sendTruck()
 	{
+		quieted = false;
 		transducer.fireEvent(TChannel.TRUCK, TEvent.CONVEYOR_DO_START, newArgs);
 		truckState = AnimState.LOADING;
 		stateChanged();
@@ -111,6 +123,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 	{
 		glass.remove(0);
 		truckState = AnimState.WAITING;
+		quieted = false;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 		nextState = SendState.DEFAULT;
 		stateChanged();
@@ -161,6 +174,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 					sensorTwo = SensorState.ON;
 					if(truckState == AnimState.WAITING)
 					{
+						quieted = false;
 						transducer.fireEvent(TChannel.CONVEYOR,TEvent.CONVEYOR_DO_START,newArgs);
 					}
 					else
