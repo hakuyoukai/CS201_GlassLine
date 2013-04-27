@@ -22,7 +22,10 @@ public class ConveyorAgent extends Agent implements TReceiver
 	
 	private enum SendState {DEFAULT, APPROVED, WAITING, ASKED}
 	private enum SensorState {ON,OFF}
+	private enum ThisState {ON, OFF, JAMMED}
 	
+	
+	private ThisState status;
 	private SensorState sensorOne;
 	private SensorState sensorTwo;
 	private SendState nextState;
@@ -39,6 +42,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 		sensorTwo = SensorState.OFF;
 		nextState = SendState.APPROVED;
 		prevState = SendState.DEFAULT;
+		status = ThisState.ON;
 		
 		glass = new ArrayList<Glass>();
 		conArgs = new Integer[1];
@@ -46,6 +50,18 @@ public class ConveyorAgent extends Agent implements TReceiver
 	}
 
 	//!!MESSAGES!!
+	public void msgJamIt(){
+		status = ThisState.JAMMED;
+	}
+	
+	public void msgTurnOff(){
+		status = ThisState.OFF;
+	}
+	
+	public void msgTurnOn(){
+		status = ThisState.ON;
+	}
+	
 	public void msgHereIsGlass(Glass g)
 	{
 		incomingGlass = g;
@@ -60,29 +76,24 @@ public class ConveyorAgent extends Agent implements TReceiver
 	}
 
 	@Override
-	public boolean pickAndExecuteAnAction()
-	{
-		if(!glass.isEmpty())
-		{
-			if(nextState == SendState.APPROVED)
-			{
-				sendNext();
-				return true;
-			}
-			if(nextState == SendState.DEFAULT)
-			{
-				askNext();
-				return true;
-			}
-		}
-		if(prevState == SendState.DEFAULT)
-		{
-			if(glass.size()<capacity)
-			{
-				if(sensorOne == SensorState.OFF)
-				{
-					askForGlass();
+	public boolean pickAndExecuteAnAction(){
+		if(status == ThisState.ON){
+			if(!glass.isEmpty()){
+				if(nextState == SendState.APPROVED)	{
+					sendNext();
 					return true;
+				}
+				if(nextState == SendState.DEFAULT) {
+					askNext();
+					return true;
+				}
+			}
+			if(prevState == SendState.DEFAULT){
+				if(glass.size()<capacity){
+					if(sensorOne == SensorState.OFF){
+						askForGlass();
+						return true;
+					}
 				}
 			}
 		}

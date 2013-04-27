@@ -50,6 +50,18 @@ public class ConveyorFamilyOffline5 implements ConveyorFamilyInterface
 	public void disableBoth(){
 		popup.msgNoWorkstations();
 	}
+	
+	public void jam(){
+		conveyor.msgJamIt();
+	}
+	
+	public void turnOff(){
+		conveyor.msgTurnOff();
+	}
+	
+	public void turnOn(){
+		conveyor.msgTurnOn();
+	}
 		
 	public void starThread()
 	{

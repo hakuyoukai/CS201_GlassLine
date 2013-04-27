@@ -197,7 +197,10 @@ public class PopupAgent extends Agent implements TReceiver
 								{
 									if(popStatus == PopupStatus.DOWN)
 									{
+										
 										giveConveyorGlass();
+										//o.state = OperatorState.
+										givePrevAnswer();
 										return true;
 									}
 									else
@@ -284,7 +287,7 @@ public class PopupAgent extends Agent implements TReceiver
 	{
 		for(MyOperator o:operators)
 		{
-			if(o.state == OperatorState.EMPTY)
+			if(o.state == OperatorState.EMPTY || o.state == OperatorState.DISABLED)
 			{
 				prevConveyor.conveyor.msgGiveMeGlass();
 				prevConveyor.state = ConveyorState.APPROVED;
