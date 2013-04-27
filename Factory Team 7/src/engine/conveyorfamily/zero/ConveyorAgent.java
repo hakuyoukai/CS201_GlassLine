@@ -35,6 +35,8 @@ public class ConveyorAgent extends Agent implements TReceiver
 	private SendState prevState;
 	private AnimState cutterState;
 	boolean quieted = false;
+	Boolean jammed = false;
+	boolean initialJam = false;
 	
 	private Timer timer = new Timer();
 	
@@ -46,6 +48,8 @@ public class ConveyorAgent extends Agent implements TReceiver
 		transducer.register(this, TChannel.CUTTER);
 		transducer.register(this, TChannel.BIN);
 		transducer.register(this, TChannel.SENSOR);
+		transducer.register(this, TChannel.CONVEYOR);
+		transducer.register(this, TChannel.CONTROL_PANEL);
 		number = n;
 		sensorOne = SensorState.OFF;
 		sensorTwo = SensorState.OFF;
@@ -76,39 +80,50 @@ public class ConveyorAgent extends Agent implements TReceiver
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
-		
-		if(cutterState == AnimState.WAITING )
+		if(!jammed)
 		{
-			if(sensorTwo == SensorState.ON)
+			if(cutterState == AnimState.WAITING )
 			{
-				synchronized(nextState){sendCutter();}
+				if(sensorTwo == SensorState.ON)
+				{
+					synchronized(nextState){sendCutter();}
+					return true;
+				}
+			}
+			if(!glass.isEmpty())
+			{
+				synchronized(nextState){
+					if(nextState==SendState.APPROVED && cutterState == AnimState.DEFAULT)
+					{
+						sendNext();
+						return true;
+					}}
+			}
+		
+			if(prevState!=SendState.APPROVED && prevState!=SendState.WAITING && prevState!=SendState.DENIED)
+			{
+					if(sensorOne!=SensorState.ON && sensorTwo!=SensorState.ON)
+					{
+						askForGlass();
+						return true;
+					}
+			}
+			if(glass.isEmpty() && nextState == SendState.DEFAULT && cutterState == AnimState.DEFAULT && !quieted)
+			{
+				quietConveyor();
 				return true;
 			}
 		}
-		if(!glass.isEmpty())
+		else if(!initialJam)
 		{
-			synchronized(nextState){
-			if(nextState==SendState.APPROVED && cutterState == AnimState.DEFAULT)
+			if(cutterState != AnimState.LOADING)
 			{
-				sendNext();
+				initialJam = true;
+				transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
 				return true;
-			}}
+			}
 		}
-		
-		if(prevState!=SendState.APPROVED && prevState!=SendState.WAITING && prevState!=SendState.DENIED)
-		{
-				if(sensorOne!=SensorState.ON && sensorTwo!=SensorState.ON)
-				{
-					askForGlass();
-					return true;
-				}
-		}
-		if(glass.isEmpty() && nextState == SendState.DEFAULT && cutterState == AnimState.DEFAULT && !quieted)
-		{
-			quietConveyor();
-			return true;
-		}
-		return false;
+			return false;
 	}
 	
 	//!!ACTIONS!!
@@ -210,10 +225,6 @@ public class ConveyorAgent extends Agent implements TReceiver
 				if((Integer)args[0] == 0)
 				{
 					sensorOne = SensorState.OFF;
-					if(cutterState != AnimState.WAITING && cutterState != AnimState.LOADING)
-					{
-						transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
-					}
 					stateChanged();
 
 				}
@@ -247,6 +258,33 @@ public class ConveyorAgent extends Agent implements TReceiver
 					}
 				},1000);
 				stateChanged();
+			}
+		}
+		if(channel == TChannel.CONTROL_PANEL)
+		{
+			if((Integer)args[0] == 0)
+			{
+				if(event == TEvent.CONVEYOR_JAM)
+				{
+					synchronized(jammed)
+					{
+						jammed = true;
+						stateChanged();
+					}
+				}
+				if(event == TEvent.CONVEYOR_UNJAM)
+				{
+					synchronized(jammed)
+					{
+						initialJam = false;
+						jammed = false;
+						if(cutterState == AnimState.WAITING)
+						{
+							transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
+						}
+						stateChanged();
+					}
+				}
 			}
 		}
 	}

@@ -21,6 +21,8 @@ public class ConveyorAgent extends Agent implements TReceiver
 	private Integer capacity = 3;
 	private Integer[] newArgs;
 	private boolean quieted = false;
+	private Boolean jammed = false;
+	private boolean initialJam = false;
 	
 	private enum SensorState {ON,OFF};
 	private enum SendState {APPROVED,DEFAULT,WAITING,DENIED};
