@@ -34,6 +34,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 	private SendState nextState;
 	private SendState prevState;
 	private AnimState cutterState;
+	boolean quieted = false;
 	
 	private Timer timer = new Timer();
 	
@@ -102,14 +103,25 @@ public class ConveyorAgent extends Agent implements TReceiver
 					return true;
 				}
 		}
+		if(glass.isEmpty() && nextState == SendState.DEFAULT && cutterState == AnimState.DEFAULT && !quieted)
+		{
+			quietConveyor();
+			return true;
+		}
 		return false;
 	}
 	
 	//!!ACTIONS!!
+	public void quietConveyor()
+	{
+		quieted = true;
+		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
+	}
 	public void sendNext()
 	{
 		nextConveyor.msgHereIsGlass(glass.remove(0));
 		cutterState = AnimState.WAITING;
+		quieted = false;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
 		nextState = SendState.DEFAULT;
 		stateChanged();
@@ -117,6 +129,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 	
 	public void sendCutter()
 	{
+		quieted = false;
 		transducer.fireEvent(TChannel.CONVEYOR,TEvent.CONVEYOR_DO_START, newArgs);
 		cutterState = AnimState.LOADING;
 		stateChanged();
