@@ -77,6 +77,13 @@ public class Conveyor extends Agent{
 		// readycount set in conveyorfamily sending msgiamready initially
 	}
 
+	public void msgDeleteGlass() {
+		if (incomingGlass != null) {
+			System.out.println("CONVEYOR: " + ID + ": deleted glass");
+			incomingGlass = null;
+			receiveCount--;
+		}
+	}
 
 	// sent by conveyor family, receiving glass
 	public void msgHereIsGlass(Glass g) {
@@ -205,8 +212,6 @@ public class Conveyor extends Agent{
 					moveGlass();
 				return true;
 			}
-
-			
 		}
 		return false;
 	}
@@ -215,7 +220,7 @@ public class Conveyor extends Agent{
 	public void moveGlass() {
 		sendingGlass = true;
 		glassList.get(0).state = GlassState.RELEASING;
-		if (!conveyorMoving)
+		if (!conveyorMoving && !conveyorJam)
 			startConveyor();
 	}
 
@@ -249,8 +254,10 @@ public class Conveyor extends Agent{
 			}
 		}
 		else if (channel == TChannel.CONTROL_PANEL && event == TEvent.CONVEYOR_JAM) {
-			if ((Integer)args[0] == ID)
+			if ((Integer)args[0] == ID) {
 				conveyorJam = true;
+				stopConveyor();
+			}
 		}
 		else if (channel == TChannel.CONTROL_PANEL && event == TEvent.CONVEYOR_UNJAM) {
 			if ((Integer)args[0] == ID) {
@@ -263,6 +270,7 @@ public class Conveyor extends Agent{
 				}
 				if (allowed == true) {
 					sendOK = true;
+					startConveyor();
 					stateChanged();
 				}
 			}
