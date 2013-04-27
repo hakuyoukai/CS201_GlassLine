@@ -59,6 +59,10 @@ public enum TEvent
 	POPUP_JAM,// args[0] = popup number (0-2)
 	POPUP_UNJAM,// args[0] = popup number (0-2)
 	
+	//inline machine breaks non-norm
+	INLINE_WORKSTATION_BREAK,
+	INLINE_WORKSTATION_UNBREAK,
+	
 	// args[0] = workstation assembly number
 	//		0 = drill
 	//		1 = crossseamer

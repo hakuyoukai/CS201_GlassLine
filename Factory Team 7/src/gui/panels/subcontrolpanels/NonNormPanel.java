@@ -3,6 +3,7 @@ package gui.panels.subcontrolpanels;
 
 import gui.panels.ControlPanel;
 import gui.panels.subcontrolpanels.nonnorm.ConveyorPanel;
+import gui.panels.subcontrolpanels.nonnorm.InlineStationPanel;
 import gui.panels.subcontrolpanels.nonnorm.PopUpPanel;
 
 import java.awt.BorderLayout;
@@ -73,7 +74,7 @@ public class NonNormPanel extends JPanel
 		
 		ConveyorPanel conveyorPanel = new ConveyorPanel(this);
 		PopUpPanel popUpPanel = new PopUpPanel(this);
-
+		InlineStationPanel inlineBreakPanel = new InlineStationPanel(this);
 		// set up layout
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
@@ -98,8 +99,9 @@ public class NonNormPanel extends JPanel
 		nonNormButtons = new ArrayList<JButton>(NUM_NON_NORMS);
 		nonNormButtons.add(new JButton("Conveyor Jam"));
 		nonNormButtons.add(new JButton("Popup Jam"));
-		nonNormButtons.add(new JButton("Disable Offline"));
+
 		nonNormButtons.add(new JButton("Disable Online"));
+		nonNormButtons.add(new JButton("Disable Offline"));
 		nonNormButtons.add(new JButton("Offline - Break Glass"));
 		nonNormButtons.add(new JButton("Offline Malfunction"));
 		nonNormButtons.add(new JButton("Broken Truck"));
@@ -156,6 +158,7 @@ public class NonNormPanel extends JPanel
 		cardContainer.add(mainPanel,"MAINPANEL");
 		cardContainer.add(conveyorPanel,"conveyor");
 		cardContainer.add(popUpPanel,"popupworkstations");
+		cardContainer.add(inlineBreakPanel,"inlineStation");
 		
 		this.add(cardContainer,BorderLayout.CENTER);
 	}
@@ -212,9 +215,8 @@ public class NonNormPanel extends JPanel
 		 */
 		public void actionPerformed(ActionEvent ae)
 		{
-			 CardLayout cl = (CardLayout)(cardContainer.getLayout());
-		        cl.show(cardContainer, "popupworkstations");
-	
+			CardLayout cl = (CardLayout)(cardContainer.getLayout());
+	        cl.show(cardContainer, "inlineStation");
 		}
 	}
 
@@ -228,7 +230,8 @@ public class NonNormPanel extends JPanel
 		 */
 		public void actionPerformed(ActionEvent ae)
 		{
-
+			CardLayout cl = (CardLayout)(cardContainer.getLayout());
+	        cl.show(cardContainer, "popupworkstations");
 		}
 	}
 
