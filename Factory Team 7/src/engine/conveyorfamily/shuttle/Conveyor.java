@@ -107,6 +107,14 @@ public class Conveyor extends Agent{
 			stateChanged();
 		}	
 	}
+	
+	public void askedIfAvailable()
+	{
+		if(receiveOK)
+		{
+			conveyorFamily.tellPreviousIAmReady();
+		}
+	}
 
 
 	public void sensorPressed(Integer sensorNum) {
@@ -124,7 +132,6 @@ public class Conveyor extends Agent{
 				incomingGlass = null;
 				if(glassList.size() == 1){ // ready to process
 					stateChanged();
-					
 				}
 			}
 		}

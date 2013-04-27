@@ -80,6 +80,18 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 				}
 		}
 	}
+	
+	public void tellPreviousIAmReady()
+	{
+		for (MyConveyorFamily mcf: conveyorFamilyList) 
+		{
+			
+			if (mcf.type == ConveyorFamilyType.FROM) 
+			{
+				mcf.conveyorFamily.msgIAmReady();
+			}
+		}
+	}
 
 
 }

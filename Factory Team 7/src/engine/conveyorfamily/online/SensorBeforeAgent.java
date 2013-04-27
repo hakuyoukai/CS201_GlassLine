@@ -30,9 +30,9 @@ public class SensorBeforeAgent extends Agent
 	//when this sensor is released
 	public void tellPreviousCFReady()
 	{
-		if(sensorBeforeIndex==4)
+		if(sensorBeforeIndex==24)
 		{
-			System.out.println("Conveyor 4 tells Joey it is ready");
+			System.out.println("Conveyor 12 told conveyor 11 it is ready");
 		}
 		this.conveyorBefore.msgIAmReady();
 		stateChanged();
