@@ -14,6 +14,13 @@ import transducer.TChannel;
 import transducer.TEvent;
 import transducer.Transducer;
 
+// Andrew made a slight change to this file's behavior.
+// Before, if the glass left the end sensor and hadn't arrived on the next component, stopping the conveyor would stop that glass.
+// Now, the glass leaving the end sensor guarantees that it will move on to the next component.
+// All of our team's agents made that assumption and it's tricky to work around it,
+// so this change in the animation made things considerably easier for all of us.
+// Search "Andrew" (without quotes) to find Andrew's changes.
+
 /**
  * GUIConveyor is a graphical representation of the conveyer component
  * that transfers glass around the factory
@@ -107,6 +114,7 @@ public class GUIConveyor extends GuiComponent
 			parent.setLayer(arrow, DisplayPanel.DND_LAYER + 1);
 		}
 		transducer.register(this, TChannel.CONVEYOR);
+		transducer.register(this, TChannel.SENSOR); // Andrew
 	}
 
 	/**
@@ -115,14 +123,17 @@ public class GUIConveyor extends GuiComponent
 	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
-		if (moving)
-		{
-			moveParts();
-		}
+		// Andrew
+		//if (moving)
+		//{
+		moveParts();
+		//}
 		for (int i = guiParts.size() - 1; i >= 0; i--)
 		{
 			if (!guiParts.get(i).getBounds().intersects(this.getBounds()))
 			{
+				//System.out.println("GUIConveyor " + myIndex + ": part " + i + "/" + (guiParts.size() - 1) + " moved to next component, offConveyor = " + guiParts.get(i).offConveyor);
+				guiParts.get(i).offConveyor = false; // Andrew
 				nextComponent.addPart(guiParts.get(i));
 				guiParts.remove(i);
 			}
@@ -141,21 +152,23 @@ public class GUIConveyor extends GuiComponent
 	{
 		for (GUIGlass p : guiParts)
 		{
-			if (direction.equals(ConveyorDirections.DOWN))
-			{
-				p.setCenterLocation(p.getCenterX(), p.getCenterY() + 1);
-			}
-			else if (direction.equals(ConveyorDirections.UP))
-			{
-				p.setCenterLocation(p.getCenterX(), p.getCenterY() - 1);
-			}
-			else if (direction.equals(ConveyorDirections.LEFT))
-			{
-				p.setCenterLocation(p.getCenterX() - 1, p.getCenterY());
-			}
-			else
-			{
-				p.setCenterLocation(p.getCenterX() + 1, p.getCenterY());
+			if (moving || p.offConveyor) { // Andrew
+				if (direction.equals(ConveyorDirections.DOWN))
+				{
+					p.setCenterLocation(p.getCenterX(), p.getCenterY() + 1);
+				}
+				else if (direction.equals(ConveyorDirections.UP))
+				{
+					p.setCenterLocation(p.getCenterX(), p.getCenterY() - 1);
+				}
+				else if (direction.equals(ConveyorDirections.LEFT))
+				{
+					p.setCenterLocation(p.getCenterX() - 1, p.getCenterY());
+				}
+				else
+				{
+					p.setCenterLocation(p.getCenterX() + 1, p.getCenterY());
+				}
 			}
 		}
 	}
@@ -168,6 +181,7 @@ public class GUIConveyor extends GuiComponent
 	public void msgDoAddFirstPart(GUIGlass guipart)
 	{
 		// print("GUIConveyorNew Received  msgDoAddFirstPart(GUIPart guipart)");
+		guipart.offConveyor = false; // Andrew
 		guiParts.add(0, guipart);
 		guiParts.get(0).setCenterLocation((int)positions[0].getX(), (int)positions[0].getY());
 	}
@@ -301,6 +315,7 @@ public class GUIConveyor extends GuiComponent
 
 	public void addPart(GUIGlass part)
 	{
+		part.offConveyor = false; // Andrew
 		guiParts.add(part);
 	}
 
@@ -326,6 +341,23 @@ public class GUIConveyor extends GuiComponent
 			if (event.equals(TEvent.CONVEYOR_DO_STOP))
 			{
 				moving = false;
+			}
+		}
+		// Andrew added this to check if glass leaves end conveyor.
+		// The animation always sets the end sensor index to the conveyorIndex * 2 + 1, so this is a bit of a hack.
+		else if (channel.equals(TChannel.SENSOR) && event.equals(TEvent.SENSOR_GUI_RELEASED) && ((Integer)args[0]).equals(myIndex * 2 + 1))
+		{
+			synchronized (guiParts)
+			{
+				for (int i = 0; i < guiParts.size(); i++)
+				{
+					if (!guiParts.get(i).offConveyor)
+					{
+						guiParts.get(i).offConveyor = true;
+						//System.out.println("GUIConveyor " + myIndex + ": part " + i + "/" + (guiParts.size() - 1) + " left end sensor");
+						break;
+					}
+				}
 			}
 		}
 
