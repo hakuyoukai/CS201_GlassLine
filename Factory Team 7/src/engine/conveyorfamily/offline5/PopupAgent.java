@@ -1,4 +1,4 @@
-package engine.conveyorfamily.offline;
+package engine.conveyorfamily.offline5;
 
 import java.util.ArrayList;
 
@@ -356,60 +356,3 @@ public class PopupAgent extends Agent implements TReceiver
 		return "CONVEYOR " + name;
 	}
 }
-/*
-package engine.conveyorfamily.offline;
-
-import transducer.*;
-import engine.agent.Agent;
-import engine.util.ConveyorFamilyInterface;
-import engine.util.Glass;
-
-public class PopupAgent extends Agent implements TReceiver
-{
-	private Transducer transducer;
-	private Integer number;
-	private ConveyorAgent prev;
-	private ConveyorFamilyInterface next;
-	
-	public PopupAgent(Transducer t, Integer num)
-	{
-		transducer = t;
-		number = num;
-	}
-
-	public void msgHereIsGlass(Glass remove)
-	{
-		// TODO Auto-generated method stub
-	}
-	
-	public void msgCanIGive()
-	{
-		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	public boolean pickAndExecuteAnAction()
-	{
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void eventFired(TChannel channel, TEvent event, Object[] args)
-	{
-		// TODO Auto-generated method stub	
-	}
-	
-	public void setPrevious(ConveyorAgent c)
-	{
-		prev = c;
-	}
-	
-	public void setNext(ConveyorFamilyInterface cF)
-	{
-		next = cF;
-	}
-
-
-}
-*/
