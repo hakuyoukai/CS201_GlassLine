@@ -38,6 +38,18 @@ public class ConveyorFamilyOffline5 implements ConveyorFamilyInterface
 	{
 		popup.setNext(cF);
 	}
+	
+	public void disableBot(){
+		popup.msgOnlyTopWorkstation();
+	}
+	
+	public void disableTop(){
+		popup.msgOnlyBotWorkstation();
+	}
+	
+	public void disableBoth(){
+		popup.msgNoWorkstations();
+	}
 		
 	public void starThread()
 	{
