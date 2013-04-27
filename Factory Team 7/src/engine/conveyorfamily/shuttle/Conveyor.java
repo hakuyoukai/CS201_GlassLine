@@ -102,14 +102,16 @@ public class Conveyor extends Agent{
 
 	public void msgIAmReady() {
 		readyCount++;
-		System.out.println("CONVEYOR " + ID + ": msgIAmReady received =====================================" + readyCount + conveyorMoving);
+		System.out.println("CONVEYOR " + ID + ": msgIAmReady received ============= ready received completed" + readyCount +receiveCount + completed+ "size: " + glassList.size());
 		allowed = true;
 		if (!conveyorJam)
 			sendOK = true;
 		
 		
 		if (!glassList.isEmpty()) {
+			System.out.println("CCONVEYOR " + ID + ": state" + glassList.get(glassList.size()-1).state);
 			stateChanged();
+		
 		}	
 	}
 	
@@ -123,7 +125,7 @@ public class Conveyor extends Agent{
 
 
 	public void sensorPressed(Integer sensorNum) {
-		System.out.println("CONVEYOR " + ID + ": sensor " + sensorNum + " pressed");
+		System.out.println("CONVEYOR " + ID + ": sensor " + sensorNum + " pressed " + (incomingGlass != null));
 		sensorState[sensorNum] = true;
 		if (sensorNum == 0) {
 			sensorCount++;
@@ -131,10 +133,12 @@ public class Conveyor extends Agent{
 			if (incomingGlass == null) { // create new glass holder if message hasn't arrived
 				 mg = new MyGlass(incomingGlass,GlassState.LOADING);
 				glassList.add(mg);
+				System.out.println("CONVEYOR " + ID + ": null glass added");
 			}
 			else {
 				mg = new MyGlass(incomingGlass,GlassState.WAITINGTOSEND); // add glass to list
 				glassList.add(mg);
+				System.out.println("CONVEYOR " + ID + ": regular glass added");
 				incomingGlass = null;
 				if(glassList.size() == 1){ // ready to process
 					stateChanged();
@@ -149,7 +153,7 @@ public class Conveyor extends Agent{
 			}
 			
 
-			if ((receiveCount == conveyorReadyCount) && glassList.size() == 1 && !conveyorJam) {	// cok to accept glass
+			if ((receiveCount == conveyorReadyCount) && glassList.size() == 1 && !conveyorJam && (incomingGlass == null)) {	// cok to accept glass
 				conveyorFamily.msgConveyorReady();
 				conveyorReadyCount++;
 				System.out.println("CONVEYOR " + ID + ": Iam ready sent ===============");
@@ -270,6 +274,8 @@ public class Conveyor extends Agent{
 		allowed = false;
 		sendOK = false;
 		MyGlass mg = glassList.remove(0);
+
+		System.out.println("CONVEYOR " + ID + ": glass released " + glassList.size());
 		conveyorFamily.msgReleaseGlass(mg.glass);
 		completed++;
 		//System.out.println("CONVEYOR " + ID + ": msgHereIsGlass sent====================" + completed);
