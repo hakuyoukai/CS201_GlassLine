@@ -77,6 +77,13 @@ public class Conveyor extends Agent{
 		// readycount set in conveyorfamily sending msgiamready initially
 	}
 
+	public void msgDeleteGlass() {
+		if (incomingGlass != null) {
+			System.out.println("CONVEYOR: " + ID + ": deleted glass");
+			incomingGlass = null;
+			receiveCount--;
+		}
+	}
 
 	// sent by conveyor family, receiving glass
 	public void msgHereIsGlass(Glass g) {
