@@ -39,7 +39,10 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 	
 	public void startUp() {
 		msgConveyorReady();
-		msgIAmReady();
+		
+		//TODO: change later
+		if (ID != 4)
+			msgIAmReady();
 	}
 	
 	// adds an adjacent conveyor family, specifying to/from
