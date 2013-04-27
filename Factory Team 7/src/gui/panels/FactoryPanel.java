@@ -153,7 +153,7 @@ public class FactoryPanel extends JPanel
 		
 
 		conveyor5.setNext(conveyor6);
-		conveyor5.disableBoth();
+		//conveyor5.disableBot();
 		
 		conveyor6.setNext(conveyor7);
 		conveyor7.setNext(conveyor8);
@@ -189,6 +189,8 @@ public class FactoryPanel extends JPanel
 		conveyor6.msgIAmReady();
 		conveyor7.msgIAmReady();
 		System.out.println("Back end initialization finished.");
+		
+		conveyor5.disableTop();
 	}
 
 	/**
