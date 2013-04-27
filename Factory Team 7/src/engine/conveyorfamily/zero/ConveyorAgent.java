@@ -66,7 +66,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 	
 	public void msgIAmReady()
 	{
-		nextState = SendState.APPROVED;
+		synchronized(nextState){nextState = SendState.APPROVED;}
 		stateChanged();
 	}
 	
@@ -75,21 +75,23 @@ public class ConveyorAgent extends Agent implements TReceiver
 	@Override
 	public boolean pickAndExecuteAnAction()
 	{
+		
 		if(cutterState == AnimState.WAITING )
 		{
 			if(sensorTwo == SensorState.ON)
 			{
-				sendCutter();
+				synchronized(nextState){sendCutter();}
 				return true;
 			}
 		}
 		if(!glass.isEmpty())
 		{
+			synchronized(nextState){
 			if(nextState==SendState.APPROVED && cutterState == AnimState.DEFAULT)
 			{
 				sendNext();
 				return true;
-			}
+			}}
 		}
 		
 		if(prevState!=SendState.APPROVED && prevState!=SendState.WAITING && prevState!=SendState.DENIED)
@@ -154,10 +156,12 @@ public class ConveyorAgent extends Agent implements TReceiver
 			}
 			if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 			{
-				cutterState = AnimState.DEFAULT;
-				nextState = SendState.DEFAULT;
-				transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, null);
-				stateChanged();
+				synchronized(nextState)
+				{
+					cutterState = AnimState.DEFAULT;
+					transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, null);
+					stateChanged();
+				}
 			}
 			//For some reason release finished is continually sent by the GUI, with no regard for common sense, so it has been omitted here
 		}
