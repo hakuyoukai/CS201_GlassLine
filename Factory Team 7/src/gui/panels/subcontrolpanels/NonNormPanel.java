@@ -98,11 +98,11 @@ public class NonNormPanel extends JPanel
 		nonNormButtons = new ArrayList<JButton>(NUM_NON_NORMS);
 		nonNormButtons.add(new JButton("Conveyor Jam"));
 		nonNormButtons.add(new JButton("Popup Jam"));
-		nonNormButtons.add(new JButton("NON NORM 3"));
-		nonNormButtons.add(new JButton("NON NORM 4"));
-		nonNormButtons.add(new JButton("NON NORM 5"));
-		nonNormButtons.add(new JButton("NON NORM 6"));
-		nonNormButtons.add(new JButton("NON NORM 7"));
+		nonNormButtons.add(new JButton("Disable Offline"));
+		nonNormButtons.add(new JButton("Disable Online"));
+		nonNormButtons.add(new JButton("Offline - Break Glass"));
+		nonNormButtons.add(new JButton("Offline Malfunction"));
+		nonNormButtons.add(new JButton("Broken Truck"));
 		nonNormButtons.add(new JButton("NON NORM 8"));
 
 		// add listeners
@@ -212,7 +212,9 @@ public class NonNormPanel extends JPanel
 		 */
 		public void actionPerformed(ActionEvent ae)
 		{
-
+			 CardLayout cl = (CardLayout)(cardContainer.getLayout());
+		        cl.show(cardContainer, "popupworkstations");
+	
 		}
 	}
 
@@ -240,7 +242,9 @@ public class NonNormPanel extends JPanel
 		 */
 		public void actionPerformed(ActionEvent ae)
 		{
-
+			 CardLayout cl = (CardLayout)(cardContainer.getLayout());
+		        cl.show(cardContainer, "popupworkstations");
+	
 		}
 	}
 
@@ -254,7 +258,8 @@ public class NonNormPanel extends JPanel
 		 */
 		public void actionPerformed(ActionEvent ae)
 		{
-
+			 CardLayout cl = (CardLayout)(cardContainer.getLayout());
+		        cl.show(cardContainer, "popupworkstations");
 		}
 	}
 
