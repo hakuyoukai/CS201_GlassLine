@@ -87,14 +87,11 @@ public class ConveyorAgent extends Agent implements TReceiver
 		}
 		if(prevState!=SendState.APPROVED && prevState!=SendState.WAITING && prevState!=SendState.DENIED)
 		{
-			if(glass.size()<capacity)
-			{
 				if(sensorOne!=SensorState.ON && sensorTwo!=SensorState.ON)
 				{
 					askForGlass();
 					return true;
 				}
-			}
 		}
 		return false;
 	}

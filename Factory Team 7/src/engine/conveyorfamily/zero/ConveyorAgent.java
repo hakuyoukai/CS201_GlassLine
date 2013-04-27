@@ -197,7 +197,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 				if((Integer)args[0] == 0)
 				{
 					sensorOne = SensorState.OFF;
-					if(nextState != SendState.APPROVED && cutterState == AnimState.DEFAULT)
+					if(cutterState != AnimState.WAITING && cutterState != AnimState.LOADING)
 					{
 						transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
 					}
