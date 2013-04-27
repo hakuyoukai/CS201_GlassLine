@@ -26,7 +26,7 @@ public class PopupAgent extends Agent implements TReceiver
 	enum ConveyorState {ASKED, APPROVED, DEFAULT};
 	enum NextConveyorState {READY, DEFAULT};
 	enum GlassState {PROCESSED, UNPROCESSED};
-	enum OperatorState {FULL, EMPTY, DONE, APPROVED};
+	enum OperatorState {FULL, EMPTY, DONE, APPROVED, DISABLED};
 	enum AnimState {DONE, RUN, DEFAULT};
 	
 	GlassState gState;
@@ -120,7 +120,8 @@ public class PopupAgent extends Agent implements TReceiver
 	public void msgOnlyTopWorkstation(){
 		for(MyOperator o: operators){
 			if(o.args[0] == 1){
-				operators.remove(o);
+				//operators.remove(o);
+				o.state = OperatorState.DISABLED;
 			}
 		}
 	}
@@ -128,20 +129,23 @@ public class PopupAgent extends Agent implements TReceiver
 	public void msgOnlyBotWorkstation(){
 		for(MyOperator o: operators){
 			if(o.args[0] == 0){
-				operators.remove(o);
+				//operators.remove(o);
+				o.state = OperatorState.DISABLED;
 			}
 		}
 	}
 	
 	public void msgNoWorkstations(){
 		for(MyOperator o: operators){
-			if(o.args[0] == 0){
-				operators.remove(o);
+			if(o.args[0] == 1){
+				//operators.remove(o);
+				o.state = OperatorState.DISABLED;
 			}
 		}
 		for(MyOperator o: operators){
-			if(o.args[0] == 1){
-				operators.remove(o);
+			if(o.args[0] == 0){
+				//operators.remove(o);
+				o.state = OperatorState.DISABLED;
 			}
 		}
 	}
