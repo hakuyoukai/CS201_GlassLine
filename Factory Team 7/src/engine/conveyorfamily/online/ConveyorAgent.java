@@ -16,6 +16,7 @@ public class ConveyorAgent extends Agent
 	public List<MyGlass> glasses= Collections.synchronizedList(new ArrayList<MyGlass>());
 	public enum MyGlassState{STOPLEFT,STOPRIGHT,MOVING,PROCESSING,BROKEN};
 	public boolean conveyorBroken=false;
+	public boolean forgetToProcess=false;
 
 	public enum ConveyorState{MOVING,STATIC,MOVING_TO_STOP};
 	public ConveyorState conveyorState=ConveyorState.STATIC;
@@ -197,7 +198,7 @@ public class ConveyorAgent extends Agent
 					{
 						if(mg.state == MyGlassState.PROCESSING)
 						{
-							if(mg.glass.recipe.get(conveyorIndex))
+							if(!forgetToProcess&&mg.glass.recipe.get(conveyorIndex))
 							{
 //								if(conveyorIndex==11)
 //									System.out.println("execute action: workstation do action");

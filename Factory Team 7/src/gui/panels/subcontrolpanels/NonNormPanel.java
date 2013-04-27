@@ -101,11 +101,11 @@ public class NonNormPanel extends JPanel
 		nonNormButtons.add(new JButton("Popup Jam"));
 
 		nonNormButtons.add(new JButton("Disable Online"));
+		nonNormButtons.add(new JButton("Online No Process"));
 		nonNormButtons.add(new JButton("Disable Offline"));
 		nonNormButtons.add(new JButton("Offline - Break Glass"));
 		nonNormButtons.add(new JButton("Offline Malfunction"));
 		nonNormButtons.add(new JButton("Broken Truck"));
-		nonNormButtons.add(new JButton("NON NORM 8"));
 
 		// add listeners
 		nonNormButtons.get(0).addActionListener(new NonNorm1Listener());
