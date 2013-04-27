@@ -4,6 +4,7 @@ package gui.panels;
 
 import engine.conveyorfamily.last.ConveyorFamilyLast;
 import engine.conveyorfamily.offline.ConveyorFamilyOffline;
+import engine.conveyorfamily.offline5.ConveyorFamilyOffline5;
 import engine.conveyorfamily.online.ConveyorFamily;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle.ConveyorFamilyType;
@@ -53,7 +54,7 @@ public class FactoryPanel extends JPanel
 	ConveyorFamilyShuttle conveyor9;
 	ConveyorFamilyShuttle conveyor12;
 	
-	ConveyorFamilyOffline conveyor5;
+	ConveyorFamilyOffline5 conveyor5;
 	ConveyorFamilyOffline conveyor6;
 	ConveyorFamilyOffline conveyor7;
 	
@@ -124,7 +125,7 @@ public class FactoryPanel extends JPanel
 		conveyor9= new ConveyorFamilyShuttle(9,transducer);
 		conveyor12= new ConveyorFamilyShuttle(12,transducer);
 		
-		conveyor5 = new ConveyorFamilyOffline(transducer,conveyor4,5);
+		conveyor5 = new ConveyorFamilyOffline5(transducer,conveyor4,5);
 		conveyor6 = new ConveyorFamilyOffline(transducer,conveyor5,6);
 		conveyor7 = new ConveyorFamilyOffline(transducer,conveyor6,7);
 		
@@ -152,6 +153,8 @@ public class FactoryPanel extends JPanel
 		
 
 		conveyor5.setNext(conveyor6);
+		conveyor5.disableBoth();
+		
 		conveyor6.setNext(conveyor7);
 		conveyor7.setNext(conveyor8);
 		

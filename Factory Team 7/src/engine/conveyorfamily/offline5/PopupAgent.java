@@ -116,6 +116,35 @@ public class PopupAgent extends Agent implements TReceiver
 		popState = PopupState.WAIT;
 		stateChanged();
 	}
+	
+	public void msgOnlyTopWorkstation(){
+		for(MyOperator o: operators){
+			if(o.args[0] == 1){
+				operators.remove(o);
+			}
+		}
+	}
+	
+	public void msgOnlyBotWorkstation(){
+		for(MyOperator o: operators){
+			if(o.args[0] == 0){
+				operators.remove(o);
+			}
+		}
+	}
+	
+	public void msgNoWorkstations(){
+		for(MyOperator o: operators){
+			if(o.args[0] == 0){
+				operators.remove(o);
+			}
+		}
+		for(MyOperator o: operators){
+			if(o.args[0] == 1){
+				operators.remove(o);
+			}
+		}
+	}
 
 	//!!SCHEDULER!!
 	@Override
@@ -143,19 +172,21 @@ public class PopupAgent extends Agent implements TReceiver
 				}
 				if(gState == GlassState.UNPROCESSED)
 				{
-					for(MyOperator o:operators)
-					{
-						if(o.state == OperatorState.EMPTY)
+					if(!operators.isEmpty()){
+						for(MyOperator o:operators)
 						{
-							if(popStatus == PopupStatus.UP)
+							if(o.state == OperatorState.EMPTY)
 							{
-								giveOperatorGlass(o);
-								return true;
-							}
-							else
-							{
-								raisePopup();
-								return true;
+								if(popStatus == PopupStatus.UP)
+								{
+									giveOperatorGlass(o);
+									return true;
+								}
+								else
+								{
+									raisePopup();
+									return true;
+								}
 							}
 						}
 					}
@@ -163,23 +194,26 @@ public class PopupAgent extends Agent implements TReceiver
 			}
 			else
 			{
-				for(MyOperator o:operators)
-				{
-					if(o.state == OperatorState.DONE)
-						{
-							if(popStatus == PopupStatus.UP)
+				if(!operators.isEmpty()){
+					for(MyOperator o:operators)
+					{
+						if(o.state == OperatorState.DONE)
 							{
-								sendPart(o);
-								return true;
-							}
-							else 
-							{
-								raisePopup();
-								return true;
+								if(popStatus == PopupStatus.UP)
+								{
+									sendPart(o);
+									return true;
+								}
+								else 
+								{
+									raisePopup();
+									return true;
+								}
 							}
 						}
 					}
 				}
+				
 				if(prevConveyor.state == ConveyorState.ASKED)
 				{
 					if(popStatus == PopupStatus.DOWN)
