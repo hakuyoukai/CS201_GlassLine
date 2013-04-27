@@ -108,7 +108,7 @@ public class ConveyorAgent extends Agent
 		g.state=MyGlassState.PROCESSING;
 		Object[] args=new Object[1];
 		args[0]=new Integer(conveyorIndex);
-		//conveyorAfter.msgHereIsGlass(g.glass);
+		conveyorAfter.msgHereIsGlass(g.glass);
 		nextCFState = NextCFState.UNAVAILABLE;
 		transducer.fireEvent(TChannel.CONVEYOR,TEvent.CONVEYOR_DO_START,args);
 		stateChanged();
@@ -245,7 +245,7 @@ public class ConveyorAgent extends Agent
 							{
 								if(conveyorIndex==3)
 									System.out.println("execute action: removeglass and clean up");
-								conveyorAfter.msgHereIsGlass(mg.glass);
+								//conveyorAfter.msgHereIsGlass(mg.glass);
 								glasses.remove(mg);
 								machineState=MachineState.AVAILABLE;
 								Object[] conveyorNum=new Object[1];
