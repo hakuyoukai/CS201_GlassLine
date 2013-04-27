@@ -13,8 +13,6 @@ import shared.enums.ComponentOperations;
 import transducer.TChannel;
 import transducer.TEvent;
 
-// Andrew added the offConveyor instance variable to help with a change in GUIConveyor.
-
 /**
  * GUIPart is a graphical representation of the glass that
  * is to be removed around on the conveyer
@@ -112,8 +110,6 @@ public class GUIGlass extends GuiComponent implements Serializable
 	 * The list of operations done on the part
 	 */
 	ArrayList<ComponentOperations> operationsOnPart;
-	/** Whether left a conveyor end sensor but still on the conveyor. Added by Andrew. */
-	boolean offConveyor = false;
 	
 	/**
 	 * Public constructor for GUIPart
