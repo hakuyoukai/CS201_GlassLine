@@ -182,7 +182,6 @@ public class FactoryPanel extends JPanel
 		conveyor4.startUp();
 		conveyor9.startUp();
 		conveyor12.startUp();
-		conveyor4.msgIAmReady();
 		conveyor5.msgIAmReady();
 		conveyor6.msgIAmReady();
 		conveyor7.msgIAmReady();
