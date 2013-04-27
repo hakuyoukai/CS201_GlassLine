@@ -192,6 +192,21 @@ public class PopupAgent extends Agent implements TReceiver
 									return true;
 								}
 							}
+							if(o.state == OperatorState.DISABLED){
+								if(nextState == NextConveyorState.READY)
+								{
+									if(popStatus == PopupStatus.DOWN)
+									{
+										giveConveyorGlass();
+										return true;
+									}
+									else
+									{
+										lowerPopup();
+										return true;
+									}
+								}
+							}
 						}
 					}
 				}
