@@ -205,8 +205,6 @@ public class Conveyor extends Agent{
 					moveGlass();
 				return true;
 			}
-
-			
 		}
 		return false;
 	}
@@ -215,7 +213,7 @@ public class Conveyor extends Agent{
 	public void moveGlass() {
 		sendingGlass = true;
 		glassList.get(0).state = GlassState.RELEASING;
-		if (!conveyorMoving)
+		if (!conveyorMoving && !conveyorJam)
 			startConveyor();
 	}
 
@@ -249,8 +247,10 @@ public class Conveyor extends Agent{
 			}
 		}
 		else if (channel == TChannel.CONTROL_PANEL && event == TEvent.CONVEYOR_JAM) {
-			if ((Integer)args[0] == ID)
+			if ((Integer)args[0] == ID) {
 				conveyorJam = true;
+				stopConveyor();
+			}
 		}
 		else if (channel == TChannel.CONTROL_PANEL && event == TEvent.CONVEYOR_UNJAM) {
 			if ((Integer)args[0] == ID) {
@@ -263,6 +263,7 @@ public class Conveyor extends Agent{
 				}
 				if (allowed == true) {
 					sendOK = true;
+					startConveyor();
 					stateChanged();
 				}
 			}
