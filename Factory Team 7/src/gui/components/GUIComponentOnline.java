@@ -50,6 +50,7 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	 */
 	int counter = 0;
 
+	int myIndex;
 	/**
 	 * Boolean to represent whether or not the truck should drive back
 	 */
@@ -84,6 +85,7 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 		transducer = t;
 		initializeImages();
 		targetPos = new Point(this.getCenterX(), this.getCenterY());
+		transducer.register(this, TChannel.CONTROL_PANEL);
 
 	}
 
@@ -119,29 +121,34 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("cutter");
 			channel = TChannel.CUTTER;
 			transducer.register(this, TChannel.CUTTER);
+			myIndex=0;
 		}
 		else if (type == MachineType.OVEN)
 		{
 			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("oven");
 			channel = TChannel.OVEN;
+			myIndex=13;
 			transducer.register(this, TChannel.OVEN);
 		}
 		else if (type == MachineType.UV_LAMP)
 		{
 			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("uvLamp");
 			channel = TChannel.UV_LAMP;
+			myIndex=11;
 			transducer.register(this, TChannel.UV_LAMP);
 		}
 		else if (type == MachineType.WASHER)
 		{
 			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("washer");
 			channel = TChannel.WASHER;
+			myIndex=8;
 			transducer.register(this, TChannel.WASHER);
 		}
 		else if (type == MachineType.PAINT)
 		{
 			imageicons = (ArrayList<ImageIcon>)ImageIcons.getIconList("paint");
 			channel = TChannel.PAINTER;
+			myIndex=10;
 			transducer.register(this, TChannel.PAINTER);
 		}
 		else
@@ -339,8 +346,7 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
-		if (channel==this.channel)
-		{
+		
 			if (event == TEvent.WORKSTATION_DO_ACTION)
 			{
 				animationState = AnimationState./*MOVING*/ANIMATING;//changed by monroe
@@ -349,6 +355,26 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 			{
 				animationState = AnimationState.DONE;
 				releasePart = true;
+			}
+			
+		
+		
+		if(event == TEvent.INLINE_WORKSTATION_UNBREAK)
+		{
+			int index = ((Integer)(args[0])).intValue();
+			if(index==myIndex)
+			{
+				if(guiPart!=null)
+				{
+					guiPart.setIcon(new ImageIcon());
+					guiPart=null;
+					animationState=AnimationState.IDLE;
+					setIcon(imageicons.get(0));
+				}
+				else
+				{
+					setIcon(imageicons.get(0));
+				}
 			}
 		}
 

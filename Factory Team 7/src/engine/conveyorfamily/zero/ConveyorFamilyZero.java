@@ -32,5 +32,11 @@ public class ConveyorFamilyZero implements ConveyorFamilyInterface
 	{
 		conveyor.setNextConveyor(cF);
 	}
+	@Override
+	public void msgDeleteGlass(Glass g)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

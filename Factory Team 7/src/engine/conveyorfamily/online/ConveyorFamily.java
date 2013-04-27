@@ -56,4 +56,10 @@ public class ConveyorFamily implements ConveyorFamilyInterface
 	{
 		conveyor.msgPreviousCFGaveGlass(g);
 	}
+
+	@Override
+	public void msgDeleteGlass(Glass g)
+	{
+		conveyor.msgDeleteGlass(g);
+	}
 }

@@ -53,4 +53,11 @@ public class ConveyorFamilyM implements ConveyorFamilyInterface
 	{
 		conveyor.setPrevConveyor(cf);
 	}
+
+	@Override
+	public void msgDeleteGlass(Glass g)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

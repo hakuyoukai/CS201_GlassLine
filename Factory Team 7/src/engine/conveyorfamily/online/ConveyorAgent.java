@@ -14,7 +14,7 @@ import transducer.Transducer;
 public class ConveyorAgent extends Agent
 {
 	public List<MyGlass> glasses= Collections.synchronizedList(new ArrayList<MyGlass>());
-	public enum MyGlassState{STOPLEFT,STOPRIGHT,MOVING,PROCESSING};
+	public enum MyGlassState{STOPLEFT,STOPRIGHT,MOVING,PROCESSING,BROKEN};
 	public boolean conveyorBroken=false;
 
 	public enum ConveyorState{MOVING,STATIC,MOVING_TO_STOP};
@@ -100,6 +100,17 @@ public class ConveyorAgent extends Agent
 		nextCFState=NextCFState.AVAILABLE;
 		stateChanged();
 	}
+	
+	public void msgDeleteGlass(Glass g)
+	{
+		for(MyGlass mg : glasses)
+		{
+			if(mg.glass==g)
+			{
+				glasses.remove(g);
+			}
+		}
+	}
 
 	//Actions
 	public void giveGlassToMachine(MyGlass g)
@@ -136,7 +147,7 @@ public class ConveyorAgent extends Agent
 	//Scheduler
 	public boolean pickAndExecuteAnAction()
 	{	
-			if(conveyorIndex==3)
+			if(conveyorIndex==2)
 			{
 				synchronized(glasses)
 				{
@@ -170,7 +181,7 @@ public class ConveyorAgent extends Agent
 				}
 				if(temp!=null)
 				{
-					if(conveyorIndex==3)
+					if(conveyorIndex==2)
 						System.out.println("execute action: giveGlassToMachine");
 					giveGlassToMachine(temp);
 					return true;
@@ -221,7 +232,7 @@ public class ConveyorAgent extends Agent
 					{
 						if(mg.state == MyGlassState.PROCESSING)
 						{	
-							if(conveyorIndex==3)
+							if(conveyorIndex==2)
 								System.out.println("execute action: workstation release glass");
 							machineState = MachineState.RELEASING;
 							Object[] conveyorNum=new Object[1];
@@ -243,7 +254,7 @@ public class ConveyorAgent extends Agent
 						{
 							if(mg.state == MyGlassState.PROCESSING)
 							{
-								if(conveyorIndex==3)
+								if(conveyorIndex==2)
 									System.out.println("execute action: removeglass and clean up");
 								//conveyorAfter.msgHereIsGlass(mg.glass);
 								glasses.remove(mg);
@@ -271,7 +282,7 @@ public class ConveyorAgent extends Agent
 			{
 				if((machineState!=MachineState.LOADING)&&((machineState!=MachineState.AVAILABLE||nextCFState==NextCFState.UNAVAILABLE)))
 				{
-						if(conveyorIndex==3)
+						if(conveyorIndex==2)
 							System.out.println("execute action: tellGUIConveyorStopMoving");
 						tellGUIConveyorStopMoving();
 						return true;
@@ -301,7 +312,7 @@ public class ConveyorAgent extends Agent
 				
 				if(temp!=null)
 				{
-					if(conveyorIndex==3)
+					if(conveyorIndex==2)
 						System.out.println("execute action: tellGUIConveyorStartMoving");
 					tellGUIConveyorStartMoving(temp);
 					sensorAfterState=SensorAfterState.EMPTY;
@@ -326,7 +337,7 @@ public class ConveyorAgent extends Agent
 				}
 			}
 			*/
-			if(conveyorIndex==3)
+			if(conveyorIndex==2)
 				System.out.println("execute action: Nothing");
 		
 		return false;
@@ -352,34 +363,96 @@ public class ConveyorAgent extends Agent
 				stateChanged();
 			}
 		}
-		else if(channel == TChannel.CONTROL_PANEL)
+		
+		if(channel == TChannel.CONTROL_PANEL)
 		{
 			if(event == TEvent.CONVEYOR_JAM)
-			{
-				if((Integer)args[0]==2||(Integer)args[0]==3||(Integer)args[0]==8||(Integer)args[0]==10||(Integer)args[0]==11||(Integer)args[0]==13)
+			{	
+				if((Integer)args[0]==this.conveyorIndex)
 				{
 					transducer.fireEvent(TChannel.CONVEYOR,TEvent.CONVEYOR_DO_STOP,args);
-					if((Integer)args[0]==this.conveyorIndex)
-					{
-						conveyorBroken = true;
-						System.out.println("Conveoyr Index "+this.conveyorIndex+" is jammed");
-					}
-						
+					conveyorBroken = true;
+					System.out.println("Conveoyr Index "+this.conveyorIndex+" is jammed");
+					stateChanged();
 				}
 			}
-			else if(event == TEvent.CONVEYOR_UNJAM)
+			
+			if(event == TEvent.CONVEYOR_UNJAM)
 			{
-				if((Integer)args[0]==2||(Integer)args[0]==3||(Integer)args[0]==8||(Integer)args[0]==10||(Integer)args[0]==11||(Integer)args[0]==13)
+				if((Integer)args[0]==this.conveyorIndex)
 				{
 					transducer.fireEvent(TChannel.CONVEYOR,TEvent.CONVEYOR_DO_START,args);
-					if((Integer)args[0]==this.conveyorIndex)
-					{
-						conveyorBroken = false;
-						System.out.println("Conveoyr Index "+this.conveyorIndex+" is unjammed");
-					}
-						
+					conveyorBroken = false;
+					System.out.println("Conveoyr Index "+this.conveyorIndex+" is unjammed");
+					stateChanged();
 				}
 			}
+			
+			if(event == TEvent.INLINE_WORKSTATION_BREAK)
+			{
+				System.out.println("Back end received that the "+(Integer)args[0]+" is broken");
+				System.out.println((Integer)args[0]==conveyorIndex);
+				if((Integer)args[0]==conveyorIndex)
+				{
+					if(machineState!=MachineState.RELEASING&&machineState!=MachineState.RELEASE_FINISHED)
+					{
+						synchronized(glasses)
+						{
+							for(MyGlass mg : glasses)
+							{
+								if(mg.state==MyGlassState.PROCESSING)
+								{
+									conveyorAfter.msgDeleteGlass(mg.glass);
+									mg.state=MyGlassState.BROKEN;
+									System.out.println("Inline Index "+this.conveyorIndex+" is broken");
+									break;
+								}
+							}
+							System.out.println("receive INLINE_WORKSTATION_BREAK but did not find the glass");
+						}
+					}
+					else
+					{
+						System.out.println("receive INLINE_WORKSTATION_BREAK but did not process based on state ");
+					}
+					machineState=MachineState.LOADED;
+					stateChanged();
+				}
+			}
+			
+			if(event == TEvent.INLINE_WORKSTATION_UNBREAK)
+			{
+				System.out.println("Back end received that the "+(Integer)args[0]+" is unbroken");
+				System.out.println((Integer)args[0]==conveyorIndex);
+				if((Integer)args[0]==conveyorIndex)
+				{
+					if(machineState!=MachineState.RELEASING&&machineState!=MachineState.RELEASE_FINISHED)
+					{
+						machineState=MachineState.AVAILABLE;
+						synchronized(glasses)
+						{
+							for(MyGlass mg : glasses)
+							{
+								if(mg.state==MyGlassState.BROKEN)
+								{
+									glasses.remove(mg);
+									nextCFState=NextCFState.AVAILABLE;
+									System.out.println("Inline Index "+this.conveyorIndex+" is unbroken");
+									transducer.fireEvent(TChannel.CONVEYOR,TEvent.CONVEYOR_DO_START,args);
+									break;
+								}
+							}
+						}
+					}
+					else
+					{
+						System.out.println("receive INLINE_WORKSTATION_UNBREAK but did not process based on state ");
+					}
+					stateChanged();
+				}
+			}
+			
+			
 		}
 	}
 }

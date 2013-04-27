@@ -101,5 +101,12 @@ public class ConveyorFamilyJ implements ConveyorFamilyInterface {
 		}
 	}
 
+	@Override
+	public void msgDeleteGlass(Glass g)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }

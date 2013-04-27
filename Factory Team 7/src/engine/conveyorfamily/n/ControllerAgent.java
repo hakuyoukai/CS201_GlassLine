@@ -239,4 +239,11 @@ public class ControllerAgent extends Agent implements ConveyorFamilyInterface, C
 	public void init(){
 		source.msgIAmReady();
 	}
+
+	@Override
+	public void msgDeleteGlass(Glass g)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

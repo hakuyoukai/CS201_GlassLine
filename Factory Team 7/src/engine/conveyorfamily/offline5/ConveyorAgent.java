@@ -138,7 +138,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 					sensorOne = SensorState.ON;
 					if(prevState == SendState.WAITING)
 					{
-						System.err.println("ADDIN DAT GLASS");
+						System.err.println("ADDIN DAT GLASS " + number);
 						glass.add(incomingGlass);
 						incomingGlass = null;
 						prevState = SendState.DEFAULT;
