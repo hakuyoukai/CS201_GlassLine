@@ -62,6 +62,8 @@ public enum TEvent
 	//inline machine breaks non-norm
 	INLINE_WORKSTATION_BREAK,
 	INLINE_WORKSTATION_UNBREAK,
+	INLINE_DOES_NOT_PROCESS,
+	INLINE_DOES_PROCESS,
 	
 	// args[0] = workstation assembly number
 	//		0 = drill

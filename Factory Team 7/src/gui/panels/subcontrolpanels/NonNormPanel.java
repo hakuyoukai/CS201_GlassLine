@@ -3,6 +3,7 @@ package gui.panels.subcontrolpanels;
 
 import gui.panels.ControlPanel;
 import gui.panels.subcontrolpanels.nonnorm.ConveyorPanel;
+import gui.panels.subcontrolpanels.nonnorm.InlineDoesNotProcess;
 import gui.panels.subcontrolpanels.nonnorm.InlineStationPanel;
 import gui.panels.subcontrolpanels.nonnorm.PopUpPanel;
 
@@ -75,6 +76,7 @@ public class NonNormPanel extends JPanel
 		ConveyorPanel conveyorPanel = new ConveyorPanel(this);
 		PopUpPanel popUpPanel = new PopUpPanel(this);
 		InlineStationPanel inlineBreakPanel = new InlineStationPanel(this);
+		InlineDoesNotProcess inlineProcessPanel=new InlineDoesNotProcess(this);
 		// set up layout
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
@@ -158,6 +160,7 @@ public class NonNormPanel extends JPanel
 		cardContainer.add(mainPanel,"MAINPANEL");
 		cardContainer.add(conveyorPanel,"conveyor");
 		cardContainer.add(popUpPanel,"popupworkstations");
+		cardContainer.add(inlineProcessPanel,"inlineProcessPanel");
 		cardContainer.add(inlineBreakPanel,"inlineStation");
 		
 		this.add(cardContainer,BorderLayout.CENTER);
@@ -231,7 +234,7 @@ public class NonNormPanel extends JPanel
 		public void actionPerformed(ActionEvent ae)
 		{
 			CardLayout cl = (CardLayout)(cardContainer.getLayout());
-	        cl.show(cardContainer, "popupworkstations");
+	        cl.show(cardContainer, "inlineProcessPanel");
 		}
 	}
 

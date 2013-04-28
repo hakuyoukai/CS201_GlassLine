@@ -453,6 +453,16 @@ public class ConveyorAgent extends Agent
 				}
 			}
 			
+			if(event == TEvent.INLINE_DOES_NOT_PROCESS)
+			{
+				forgetToProcess=true;
+			}
+			
+			if(event == TEvent.INLINE_DOES_PROCESS)
+			{
+				forgetToProcess=false;
+			}
+			
 			
 		}
 	}
