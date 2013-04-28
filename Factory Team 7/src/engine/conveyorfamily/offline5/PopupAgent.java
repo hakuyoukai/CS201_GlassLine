@@ -418,9 +418,10 @@ public class PopupAgent extends Agent implements TReceiver
 					if(args[0] == o.args[0])
 					{
 						o.g = null;
-						o.state = OperatorState.DONE;
+						o.state = OperatorState.EMPTY;
 					}
 				}
+				givePrevAnswer();
 				stateChanged();
 			}
 		}
