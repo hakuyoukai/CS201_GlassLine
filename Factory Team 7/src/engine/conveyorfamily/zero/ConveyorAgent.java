@@ -262,17 +262,18 @@ public class ConveyorAgent extends Agent implements TReceiver
 		}
 		if(channel == TChannel.CONTROL_PANEL)
 		{
-			if((Integer)args[0] == 0)
+			if(event == TEvent.CONVEYOR_JAM)
 			{
-				if(event == TEvent.CONVEYOR_JAM)
+				if((Integer)args[0] == 0)
+				synchronized(jammed)
 				{
-					synchronized(jammed)
-					{
-						jammed = true;
-						stateChanged();
-					}
+					jammed = true;
+					stateChanged();
 				}
-				if(event == TEvent.CONVEYOR_UNJAM)
+			}
+			if(event == TEvent.CONVEYOR_UNJAM)
+			{
+				if((Integer)args[0] == 0)
 				{
 					synchronized(jammed)
 					{

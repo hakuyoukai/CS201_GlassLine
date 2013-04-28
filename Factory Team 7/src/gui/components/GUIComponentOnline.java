@@ -293,7 +293,7 @@ public class GUIComponentOnline extends GuiAnimationComponent implements ActionL
 			}
 			if(this.channel == TChannel.CUTTER)
 			{
-				if(guiPart.getCenterX()-45>getCenterX())
+				if(guiPart.getCenterX()-55>getCenterX())
 				{
 					guiPart.setCenterLocation(guiPart.getCenterX() - 1, guiPart.getCenterY());
 				}

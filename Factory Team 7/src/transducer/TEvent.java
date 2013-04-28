@@ -65,6 +65,10 @@ public enum TEvent
 	INLINE_DOES_NOT_PROCESS,
 	INLINE_DOES_PROCESS,
 	
+	//Truck Breaking Non-Norms
+	TRUCK_BREAK,
+	TRUCK_REPAIR,
+	
 	// args[0] = workstation assembly number
 	//		0 = drill
 	//		1 = crossseamer

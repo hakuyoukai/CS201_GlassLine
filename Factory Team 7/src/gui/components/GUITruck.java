@@ -24,6 +24,7 @@ public class GUITruck extends GuiComponent
 
 	private int MAX_TRUCK_SPEED =10;//added by monroe.
 	private int MIN_TRUCK_SPEED = 1;//added by monroe.
+	private boolean breaking = false;
 
 	//added to allow multiple parts to be loaded and shown on the truck
 	List<MyGUIGlass> parts = Collections.synchronizedList( new ArrayList<MyGUIGlass>() );
@@ -71,7 +72,7 @@ public class GUITruck extends GuiComponent
 
 	enum TruckState
 	{
-		LOADING, LEAVING, RETURNING
+		LOADING, LEAVING, RETURNING, BROKEN,STILLBROKEN
 	};
 
 	TruckState state;
@@ -96,6 +97,7 @@ public class GUITruck extends GuiComponent
 
 		transducer = t;
 		transducer.register(this, TChannel.TRUCK);
+		transducer.register(this,TChannel.CONTROL_PANEL);
 	}
 
 	int counter = 0;
@@ -139,17 +141,28 @@ public class GUITruck extends GuiComponent
 		if (state == TruckState.LOADING && !parts.isEmpty() )
 		{
 			movePartIn();
+			return;
 		}
 		if (state == TruckState.LEAVING)
 		{
 			moveTruckOut();
+			return;
+		}
+		if(breaking && (parts.isEmpty() || state == TruckState.RETURNING))
+		{
+			state = TruckState.BROKEN;
+			breaking = false;
 		}
 		if (state == TruckState.RETURNING)
 		{
 			moveTruckIn();
 		}
+		if(state == TruckState.BROKEN)
+		{
+			moveTruckOutBroke();
+		}
 	}
-
+	
 	private void moveTruckOut()
 	{
 		setCenterLocation(getCenterX() + TRUCK_SPEED, getCenterY());
@@ -163,6 +176,15 @@ public class GUITruck extends GuiComponent
 			state = TruckState.RETURNING;
 			//part.setVisible(false);//moved here by monroe
 			//part = null;//moved here by monroe
+		}
+	}
+	
+	private void moveTruckOutBroke()
+	{
+		setCenterLocation(getCenterX() + TRUCK_SPEED, getCenterY());
+		if (getCenterX() > (parent./*getParent().getGuiParent().*/getWidth() + this.getWidth()*3/4))//changed from < to > by monroe and added math to make truck actually leave the right panel
+		{
+			state = TruckState.STILLBROKEN;
 		}
 	}
 
@@ -189,6 +211,14 @@ public class GUITruck extends GuiComponent
 		if (event == TEvent.TRUCK_DO_EMPTY)
 		{
 			state = TruckState.LEAVING;
+		}
+		if (event == TEvent.TRUCK_BREAK)
+		{
+			breaking = true;
+		}
+		if (event == TEvent.TRUCK_REPAIR)
+		{
+			state = TruckState.RETURNING;
 		}
 	}
 }

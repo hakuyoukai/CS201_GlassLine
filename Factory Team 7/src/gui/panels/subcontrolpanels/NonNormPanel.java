@@ -24,6 +24,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import transducer.TChannel;
+import transducer.TEvent;
 import transducer.Transducer;
 
 /**
@@ -293,7 +295,16 @@ public class NonNormPanel extends JPanel
 		 */
 		public void actionPerformed(ActionEvent ae)
 		{
-
+			if(nonNormButtons.get(7).getText().equals("Broken Truck"))
+			{
+				nonNormButtons.get(7).setText("Repair Truck");
+				parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.TRUCK_BREAK, null);
+			}
+			else
+			{
+				nonNormButtons.get(7).setText("Broken Truck");
+				parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL, TEvent.TRUCK_REPAIR, null);
+			}
 		}
 	}
 	

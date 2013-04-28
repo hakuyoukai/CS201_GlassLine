@@ -23,10 +23,11 @@ public class ConveyorAgent extends Agent implements TReceiver
 	private boolean quieted = false;
 	private Boolean jammed = false;
 	private boolean initialJam = false;
+	private boolean truckBroken = false;
 	
 	private enum SensorState {ON,OFF};
 	private enum SendState {APPROVED,DEFAULT,WAITING,DENIED};
-	private enum AnimState {WAITING, LOADING, WORKING, RELEASING, DEFAULT};
+	private enum AnimState {WAITING, LOADING, WORKING, RELEASING, DEFAULT, BROKEN};
 	
 	private SensorState sensorOne;
 	private SensorState sensorTwo;
@@ -77,11 +78,11 @@ public class ConveyorAgent extends Agent implements TReceiver
 		{
 			if(truckState == AnimState.WAITING)
 			{
-				if(sensorTwo == SensorState.ON)
-				{
-					sendTruck();
-					return true;
-				}
+					if(sensorTwo == SensorState.ON)
+					{
+						sendTruck();
+						return true;
+					}
 			}
 			if(!glass.isEmpty())
 			{
@@ -221,9 +222,9 @@ public class ConveyorAgent extends Agent implements TReceiver
 		}
 		if(channel == TChannel.CONTROL_PANEL)
 		{
-			if((Integer)args[0] == 14)
+			if(event == TEvent.CONVEYOR_JAM)
 			{
-				if(event == TEvent.CONVEYOR_JAM)
+				if((Integer)args[0] == 14)
 				{
 					synchronized(jammed)
 					{
@@ -231,7 +232,10 @@ public class ConveyorAgent extends Agent implements TReceiver
 						stateChanged();
 					}
 				}
-				if(event == TEvent.CONVEYOR_UNJAM)
+			}
+			if(event == TEvent.CONVEYOR_UNJAM)
+			{
+				if((Integer)args[0] == 14)
 				{
 					synchronized(jammed)
 					{
@@ -244,6 +248,16 @@ public class ConveyorAgent extends Agent implements TReceiver
 						stateChanged();
 					}
 				}
+			}
+			if(event == TEvent.TRUCK_BREAK)
+			{
+				truckState = AnimState.BROKEN;
+				stateChanged();
+			}
+			if(event == TEvent.TRUCK_REPAIR)
+			{
+				truckState = AnimState.BROKEN;
+				stateChanged();
 			}
 		}
 	}
