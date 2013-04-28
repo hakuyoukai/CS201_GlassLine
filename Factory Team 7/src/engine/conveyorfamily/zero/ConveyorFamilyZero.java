@@ -35,8 +35,7 @@ public class ConveyorFamilyZero implements ConveyorFamilyInterface
 	@Override
 	public void msgDeleteGlass(Glass g)
 	{
-		// TODO Auto-generated method stub
-		
+		//Will never happen
 	}
 	
 }
