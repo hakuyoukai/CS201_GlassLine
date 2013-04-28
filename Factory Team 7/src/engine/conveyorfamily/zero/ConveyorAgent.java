@@ -324,9 +324,10 @@ public class ConveyorAgent extends Agent implements TReceiver
 							nextConveyor.msgDeleteGlass(cutterGlass);
 						}
 					}
+					cutterState = AnimState.BROKEN;
+					stateChanged();
 				}
-				cutterState = AnimState.BROKEN;
-				stateChanged();
+
 			}
 			if(event == TEvent.INLINE_WORKSTATION_UNBREAK)
 			{

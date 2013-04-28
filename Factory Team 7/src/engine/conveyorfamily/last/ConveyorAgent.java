@@ -70,6 +70,13 @@ public class ConveyorAgent extends Agent implements TReceiver
 		stateChanged();
 	}
 	
+	public void msgDeleteGlass(Glass g)
+	{
+		incomingGlass = null;
+		prevState = SendState.APPROVED;
+		stateChanged();
+	}
+	
 	//!!SCHEDULER!!
 	@Override
 	public boolean pickAndExecuteAnAction() 
