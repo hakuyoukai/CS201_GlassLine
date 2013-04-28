@@ -4,6 +4,8 @@ import engine.agent.Agent;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle;
 import engine.util.ConveyorFamilyInterface;
 import engine.util.Glass;
+import gui.panels.ControlPanel;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +37,8 @@ public class ConveyorAgent extends Agent
 	
 	public TChannel myChannel;
 	
+	public ControlPanel cp;
+	
 	public class MyGlass
 	{
 		public Glass glass;
@@ -47,7 +51,7 @@ public class ConveyorAgent extends Agent
 		}
 	}
 	
-	public ConveyorAgent(ConveyorFamilyInterface conveyorAfter,Transducer t, int index, TChannel myChannel)
+	public ConveyorAgent(ConveyorFamilyInterface conveyorAfter,Transducer t, int index, TChannel myChannel,ControlPanel cp)
 	{
 		super("Conveyor Belt " + index);
 		this.transducer=t;
@@ -56,6 +60,7 @@ public class ConveyorAgent extends Agent
 		this.conveyorIndex=index;
 		this.conveyorAfter=conveyorAfter;
 		this.myChannel=myChannel;
+		this.cp=cp;
 	}
 	
 	public void setNextCF(ConveyorFamilyInterface conveyorAfter)
@@ -405,7 +410,8 @@ public class ConveyorAgent extends Agent
 								{
 									conveyorAfter.msgDeleteGlass(mg.glass);
 									mg.state=MyGlassState.BROKEN;
-									System.out.println("Inline Index "+this.conveyorIndex+" is broken");
+									System.out.println("Inline Index "+this.conveyorIndex+" is broken\n");
+									cp.getTracePanel().print("Inline Machine Is Broken", this);
 									break;
 								}
 							}

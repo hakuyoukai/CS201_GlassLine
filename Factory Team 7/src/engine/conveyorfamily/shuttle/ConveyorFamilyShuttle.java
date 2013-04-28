@@ -84,9 +84,10 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 		}
 	}
 	
-	public void msgDeleteGlass() {
+	public void msgDeleteGlass(Glass g) {
 		conveyor.msgDeleteGlass();
 	}
+	
 	public void tellPreviousIAmReady()
 	{
 		for (MyConveyorFamily mcf: conveyorFamilyList) 
@@ -98,12 +99,4 @@ public class ConveyorFamilyShuttle implements ConveyorFamilyInterface {
 			}
 		}
 	}
-
-	@Override
-	public void msgDeleteGlass(Glass g)
-	{
-		
-	}
-
-
 }
