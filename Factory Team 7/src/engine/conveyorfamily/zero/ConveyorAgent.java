@@ -37,6 +37,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 	boolean quieted = false;
 	Boolean jammed = false;
 	boolean initialJam = false;
+	private boolean process = true;
 	
 	private Timer timer = new Timer();
 	
@@ -175,8 +176,16 @@ public class ConveyorAgent extends Agent implements TReceiver
 		{
 			if(event == TEvent.WORKSTATION_LOAD_FINISHED)
 			{
-				cutterState = AnimState.WORKING;
-				transducer.fireEvent(TChannel.CUTTER,TEvent.WORKSTATION_DO_ACTION,null);
+				if(process)
+				{
+					cutterState = AnimState.WORKING;
+					transducer.fireEvent(TChannel.CUTTER,TEvent.WORKSTATION_DO_ACTION,null);
+				}
+				else
+				{
+					cutterState = AnimState.DEFAULT;
+					transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, null);
+				}
 				stateChanged();
 			}
 			if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
@@ -286,6 +295,16 @@ public class ConveyorAgent extends Agent implements TReceiver
 						stateChanged();
 					}
 				}
+			}
+			if(event == TEvent.INLINE_DOES_NOT_PROCESS)
+			{
+				process = false;
+				stateChanged();
+			}
+			if(event == TEvent.INLINE_DOES_PROCESS)
+			{
+				process = true;
+				stateChanged();
 			}
 		}
 	}
