@@ -41,6 +41,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 		transducer = t;
 		transducer.register(this, TChannel.TRUCK);
 		transducer.register(this, TChannel.SENSOR);
+		transducer.register(this, TChannel.CONTROL_PANEL);
 		number = n;
 		
 		sensorOne = SensorState.OFF;
@@ -72,34 +73,54 @@ public class ConveyorAgent extends Agent implements TReceiver
 	@Override
 	public boolean pickAndExecuteAnAction() 
 	{
-		if(truckState == AnimState.WAITING)
+		if(!jammed)
 		{
-			if(sensorTwo == SensorState.ON)
+			if(truckState == AnimState.WAITING)
 			{
-				sendTruck();
-				return true;
+				if(sensorTwo == SensorState.ON)
+				{
+					sendTruck();
+					return true;
+				}
 			}
-		}
-		if(!glass.isEmpty())
-		{
-			if(nextState==SendState.APPROVED && truckState==AnimState.DEFAULT)
+			if(!glass.isEmpty())
 			{
-				sendNext();
-				return true;
+				if(nextState==SendState.APPROVED && truckState==AnimState.DEFAULT)
+				{
+					sendNext();
+					return true;
+				}
 			}
-		}
-		if(prevState!=SendState.APPROVED && prevState!=SendState.WAITING && prevState!=SendState.DENIED)
-		{
-				if(sensorOne!=SensorState.ON && sensorTwo!=SensorState.ON)
+			if(prevState!=SendState.APPROVED && prevState!=SendState.WAITING && prevState!=SendState.DENIED)
+			{
+				if(!glass.isEmpty())
+				{
+					if(sensorOne!=SensorState.ON && sensorTwo == SensorState.ON)
+					{
+						askForGlass();
+						return true;
+					}
+				}
+				else
 				{
 					askForGlass();
 					return true;
 				}
+			}
+			if(glass.isEmpty() && truckState == AnimState.DEFAULT && prevState == SendState.APPROVED && !quieted)
+			{
+				quietConveyor();
+				return true;
+			}
 		}
-		if(glass.isEmpty() && truckState == AnimState.DEFAULT && prevState == SendState.APPROVED && !quieted)
+		else if(!initialJam)
 		{
-			quietConveyor();
-			return true;
+			if(truckState != AnimState.LOADING)
+			{
+				initialJam = true;
+				transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_STOP, newArgs);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -195,6 +216,33 @@ public class ConveyorAgent extends Agent implements TReceiver
 				{
 					sensorTwo = SensorState.OFF;
 					stateChanged();
+				}
+			}
+		}
+		if(channel == TChannel.CONTROL_PANEL)
+		{
+			if((Integer)args[0] == 14)
+			{
+				if(event == TEvent.CONVEYOR_JAM)
+				{
+					synchronized(jammed)
+					{
+						jammed = true;
+						stateChanged();
+					}
+				}
+				if(event == TEvent.CONVEYOR_UNJAM)
+				{
+					synchronized(jammed)
+					{
+						initialJam = false;
+						jammed = false;
+						if(truckState == AnimState.WAITING)
+						{
+							transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
+						}
+						stateChanged();
+					}
 				}
 			}
 		}
