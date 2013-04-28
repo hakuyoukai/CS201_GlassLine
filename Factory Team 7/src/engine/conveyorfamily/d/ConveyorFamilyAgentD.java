@@ -124,4 +124,11 @@ public class ConveyorFamilyAgentD extends Agent implements ConveyorFamilyInterfa
 		return "DexConveyorFam";
 	}
 
+	@Override
+	public void msgDeleteGlass(Glass g)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

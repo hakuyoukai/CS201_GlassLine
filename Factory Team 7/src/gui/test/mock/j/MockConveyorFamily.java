@@ -172,6 +172,13 @@ public class MockConveyorFamily implements ConveyorFamilyInterface, TReceiver{
 
 	}
 
+	@Override
+	public void msgDeleteGlass(Glass g)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

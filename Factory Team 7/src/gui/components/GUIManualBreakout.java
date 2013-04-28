@@ -1,6 +1,8 @@
 
 package gui.components;
 
+import gui.components.GuiAnimationComponent.AnimationState;
+
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class GUIManualBreakout extends GuiAnimationComponent
 	ConveyorDirections direction = ConveyorDirections.UP;
 
 	MachineType type;
+	
+	int myIndex = 3;
 
 	/**
 	 * Constructor for GUIManualBreakout
@@ -43,6 +47,7 @@ public class GUIManualBreakout extends GuiAnimationComponent
 		type = MachineType.MANUAL_BREAKOUT;
 		transducer = t;
 		transducer.register(this, TChannel.MANUAL_BREAKOUT);
+		transducer.register(this, TChannel.CONTROL_PANEL);
 
 	}
 
@@ -206,6 +211,24 @@ public class GUIManualBreakout extends GuiAnimationComponent
 			if (event == TEvent.WORKSTATION_RELEASE_GLASS)
 			{
 				animationState = AnimationState.DONE;
+			}
+			if(event == TEvent.INLINE_WORKSTATION_UNBREAK)
+			{
+				int index = ((Integer)(args[0])).intValue();
+				if(index==myIndex)
+				{
+					if(guiPart!=null)
+					{
+						guiPart.setIcon(new ImageIcon());
+						guiPart=null;
+						animationState=AnimationState.IDLE;
+						setIcon(imageIcons.get(0));
+					}
+					else
+					{
+						setIcon(imageIcons.get(0));
+					}
+				}
 			}
 		}
 

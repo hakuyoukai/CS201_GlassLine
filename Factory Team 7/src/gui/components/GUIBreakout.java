@@ -1,6 +1,8 @@
 
 package gui.components;
 
+import gui.components.GuiAnimationComponent.AnimationState;
+
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
@@ -26,6 +28,8 @@ public class GUIBreakout extends GuiAnimationComponent
 	GUIGlass guiPart;
 
 	ConveyorDirections direction = ConveyorDirections.UP;
+	
+	int myIndex=2;
 
 	/**
 	 * Constructor for GUIBreakout
@@ -37,6 +41,7 @@ public class GUIBreakout extends GuiAnimationComponent
 		setSize(getIcon().getIconWidth(), getIcon().getIconHeight());
 		transducer = t;
 		transducer.register(this, TChannel.BREAKOUT);
+		transducer.register(this, TChannel.CONTROL_PANEL);
 	}
 
 	/**
@@ -186,6 +191,24 @@ public class GUIBreakout extends GuiAnimationComponent
 			if (event == TEvent.WORKSTATION_RELEASE_GLASS)
 			{
 				animationState = AnimationState.DONE;
+			}
+			if(event == TEvent.INLINE_WORKSTATION_UNBREAK)
+			{
+				int index = ((Integer)(args[0])).intValue();
+				if(index==myIndex)
+				{
+					if(guiPart!=null)
+					{
+						guiPart.setIcon(new ImageIcon());
+						guiPart=null;
+						animationState=AnimationState.IDLE;
+						setIcon(imageIcons.get(0));
+					}
+					else
+					{
+						setIcon(imageIcons.get(0));
+					}
+				}
 			}
 		}
 

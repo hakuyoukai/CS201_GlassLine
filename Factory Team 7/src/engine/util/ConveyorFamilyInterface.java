@@ -6,4 +6,5 @@ public interface ConveyorFamilyInterface
 {
 	public abstract void msgHereIsGlass(Glass g);
 	public abstract void msgIAmReady();
+	public abstract void msgDeleteGlass(Glass g);
 }

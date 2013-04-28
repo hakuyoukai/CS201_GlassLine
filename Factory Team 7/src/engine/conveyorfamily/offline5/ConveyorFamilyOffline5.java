@@ -68,4 +68,11 @@ public class ConveyorFamilyOffline5 implements ConveyorFamilyInterface
 		popup.startThread();
 		conveyor.startThread();
 	}
+
+	@Override
+	public void msgDeleteGlass(Glass g)
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }
