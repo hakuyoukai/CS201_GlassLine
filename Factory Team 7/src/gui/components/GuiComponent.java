@@ -294,6 +294,12 @@ public abstract class GuiComponent extends JLabel implements ActionListener, TRe
 	{
 		this.part = part;
 	}
+	
+	public void removePart(){
+		if(this.part != null){
+			this.part = null;
+		}
+	}
 
 	public void addNextComponent(GuiComponent nextComponent)
 	{

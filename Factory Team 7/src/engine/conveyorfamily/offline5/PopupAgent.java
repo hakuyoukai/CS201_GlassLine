@@ -412,7 +412,16 @@ public class PopupAgent extends Agent implements TReceiver
 
 			}
 			if(event == TEvent.WORKSTATION_BROKEN){
-				
+				//System.err.println("Hello");
+				for(MyOperator o:operators)
+				{
+					if(args[0] == o.args[0])
+					{
+						o.g = null;
+						o.state = OperatorState.DONE;
+					}
+				}
+				stateChanged();
 			}
 		}
 	}

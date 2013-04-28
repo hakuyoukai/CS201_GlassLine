@@ -190,7 +190,6 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			if (event == TEvent.WORKSTATION_BREAK_GLASS){
 				//this.part.removeAll();
 				this.part.msgPartBroken();
-				System.out.println("This is broken");
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_BROKEN, args);
 				return;
 				
