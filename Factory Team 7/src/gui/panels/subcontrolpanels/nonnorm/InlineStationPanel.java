@@ -32,6 +32,10 @@ public class InlineStationPanel extends JPanel implements ActionListener
 	JButton backButton;
 	NonNormPanel parent;
 	
+	JComboBox<String> shuttleNum;
+	JButton shuttleBreak;
+	JButton shuttleFix;
+	
 	public InlineStationPanel(NonNormPanel p)
 	{
 		this.parent = p;
@@ -89,6 +93,29 @@ public class InlineStationPanel extends JPanel implements ActionListener
 		panel.add(unBreakButton,c);
 		
 		add(backButton,BorderLayout.SOUTH);
+		
+		shuttleBreak = new JButton("Break");
+		shuttleFix = new JButton("Fix");
+		String[] shut = new String[4];
+		shut[0] = "1";
+		shut[1] = "4";
+		shut[2] = "9";
+		shut[3] = "12";
+		shuttleNum = new JComboBox<String>(shut);
+		
+		ShuttleListener shuttleListener = new ShuttleListener();
+		shuttleBreak.addActionListener(shuttleListener);
+		shuttleFix.addActionListener(shuttleListener);
+		
+		c.gridy = 3;
+		c.gridx = 1;
+		panel.add(new JLabel("Shuttle"),c);
+		c.gridx = 2;
+		panel.add(shuttleNum,c);
+		c.gridx = 3;
+		panel.add(shuttleBreak,c);
+		c.gridx = 4;
+		panel.add(shuttleFix,c);
 	}
 	
 	@Override
@@ -114,5 +141,24 @@ public class InlineStationPanel extends JPanel implements ActionListener
 	        cl.show(parent.cardContainer, "MAINPANEL");
 		}
 	}
+	
+	public class ShuttleListener implements ActionListener {
+		
+	
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == shuttleBreak) {
+			Integer[] newArgs = new Integer[1];
+			newArgs[0] = shuttleNum.getSelectedIndex();
+			parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL,TEvent.GUI_BREAK_SHUTTLE,newArgs);
+		}
+		else if (e.getSource() == shuttleFix) {
+			Integer[] newArgs = new Integer[1];
+			newArgs[0] = shuttleNum.getSelectedIndex();
+			parent.getTransducer().fireEvent(TChannel.CONTROL_PANEL,TEvent.GUI_FIX_SHUTTLE,newArgs);
+	
+		}
+	}
+	}
 }

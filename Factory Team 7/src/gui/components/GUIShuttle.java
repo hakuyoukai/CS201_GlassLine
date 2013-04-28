@@ -16,7 +16,9 @@ import transducer.TEvent;
  */
 @SuppressWarnings("serial")
 public class GUIShuttle extends GuiComponent
-{
+{	
+	
+	boolean[] shuttleBroken = {false,false,false,false};
 
 	/** the current GUI glass part */
 	GUIGlass currentPart;
@@ -96,6 +98,7 @@ public class GUIShuttle extends GuiComponent
 			setvY(0);
 		}
 		setSize(getIcon().getIconWidth(), getIcon().getIconHeight());
+		transducer.register(this, TChannel.CONTROL_PANEL);
 	}
 
 	/**
@@ -141,9 +144,9 @@ public class GUIShuttle extends GuiComponent
 	}
 
 	// registers transducer (after guicomponent.setTransducer called in displaypanel) // used in conveyor for now?
-	/*public void registerTransducer() {
-		transducer.register(this,TChannel.SHUTTLE);
-	} */
+	public void registerTransducer() {
+		transducer.register(this,TChannel.CONTROL_PANEL);
+	} 
 	
 	
 	/**
@@ -169,12 +172,14 @@ public class GUIShuttle extends GuiComponent
 			}
 			else
 			{
+				if (shuttleBroken[0] == false) {
 				if (part.getCenterY() == getCenterY() && part.getCenterX() == getCenterX()) {
 					Integer[] args = new Integer[1];
 					args[0] = 1; // index of adjacent conveyors
 					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
 				}
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() - 1);
+				}
 			}
 		}
 		else if (direction == ConveyorDirections.DOWN)
@@ -185,12 +190,14 @@ public class GUIShuttle extends GuiComponent
 			}
 			else
 			{
+				if (shuttleBroken[2] == false) {
 				if (part.getCenterY() == getCenterY() && part.getCenterX() == getCenterX()) {
 					Integer[] args = new Integer[1];
 					args[0] = 9; // index of adjacent conveyor
 					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
 				}
 				part.setCenterLocation(part.getCenterX(), part.getCenterY() + 1);
+				}
 			}
 		}
 		else if (direction == ConveyorDirections.LEFT)
@@ -201,12 +208,14 @@ public class GUIShuttle extends GuiComponent
 			}
 			else
 			{
+				if (shuttleBroken[3] == false) {
 				if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY()) {
 					Integer[] args = new Integer[1];
 					args[0] = 12; // index of adjacent conveyor
 					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
 				}
 				part.setCenterLocation(part.getCenterX() - 1, part.getCenterY());
+				}
 			}
 		}
 		else if (direction == ConveyorDirections.RIGHT)
@@ -217,12 +226,14 @@ public class GUIShuttle extends GuiComponent
 			}
 			else
 			{
+				if (shuttleBroken[1] == false) {
 				if (part.getCenterX() == getCenterX() && part.getCenterY() == getCenterY()) {
 					Integer[] args = new Integer[1];
 					args[0] = 4; // index of adjacent conveyor
 					transducer.fireEvent(TChannel.SHUTTLE, TEvent.SHUTTLE_FINISHED_LOADING, args);
 				}
 				part.setCenterLocation(part.getCenterX() + 1, part.getCenterY());
+				}
 			}
 		}
 		if (!part.getBounds().intersects(getBounds()))
@@ -295,6 +306,13 @@ public class GUIShuttle extends GuiComponent
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args)
 	{
-
+		if (channel == TChannel.CONTROL_PANEL && event == TEvent.GUI_BREAK_SHUTTLE) {
+			int index = (Integer)args[0];
+			shuttleBroken[index] = true;
+		}
+		else if (channel == TChannel.CONTROL_PANEL && event == TEvent.GUI_FIX_SHUTTLE) {
+			int index  = (Integer)args[0];
+			shuttleBroken[index] = false;
+		}
 	}
 }
