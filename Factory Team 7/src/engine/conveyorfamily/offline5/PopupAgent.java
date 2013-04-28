@@ -26,9 +26,11 @@ public class PopupAgent extends Agent implements TReceiver
 	enum ConveyorState {ASKED, APPROVED, DEFAULT};
 	enum NextConveyorState {READY, DEFAULT};
 	enum GlassState {PROCESSED, UNPROCESSED};
-	enum OperatorState {FULL, EMPTY, DONE, APPROVED, DISABLED};
+	enum OperatorState {FULL, EMPTY, DONE, APPROVED, DISABLED, GLASS_BROKEN};
 	enum AnimState {DONE, RUN, DEFAULT};
+	enum GlassBreak {YES, NO};
 	
+	GlassBreak doesGlassBreak;
 	GlassState gState;
 	PopupState popState;
 	PopupStatus popStatus;
@@ -85,6 +87,7 @@ public class PopupAgent extends Agent implements TReceiver
 		
 		popArgs[0] = n-5;
 		
+		doesGlassBreak = GlassBreak.NO;
 		popState = PopupState.READY;
 		popStatus = PopupStatus.UP;
 		operators = new ArrayList<MyOperator>();
@@ -374,27 +377,48 @@ public class PopupAgent extends Agent implements TReceiver
 				{
 					if(args[0] == o.args[0])
 					{
-						transducer.fireEvent(o.channel, TEvent.WORKSTATION_DO_ACTION, o.args);
-						o.state =OperatorState.FULL;
-						popState = PopupState.READY;
-						stateChanged();
+						if(doesGlassBreak == GlassBreak.NO){
+							transducer.fireEvent(o.channel, TEvent.WORKSTATION_DO_ACTION, o.args);
+							o.state =OperatorState.FULL;
+							popState = PopupState.READY;
+							stateChanged();
+						}
+						else{
+							transducer.fireEvent(o.channel, TEvent.WORKSTATION_BREAK_GLASS, o.args);
+							o.state =OperatorState.FULL;
+							popState = PopupState.READY;
+							stateChanged();
+						}
 					}
 				}
 			}
 			if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
 			{
-				System.out.println("GUI ACTION FINISHED");
-				for(MyOperator o:operators)
-				{
-					if(args[0] == o.args[0])
+				//if(doesGlassBreak == GlassBreak.NO){
+					System.out.println("GUI ACTION FINISHED");
+					for(MyOperator o:operators)
 					{
-						o.state = OperatorState.DONE;
+						if(args[0] == o.args[0])
+						{
+							o.state = OperatorState.DONE;
+						}
 					}
-				}
-				stateChanged();
+					stateChanged();
+//				}
+//				else{
+//					System.out.println("GLASS BREAKS");
+//					
+//				}
 
 			}
+			if(event == TEvent.WORKSTATION_BROKEN){
+				
+			}
 		}
+	}
+	
+	public void msgBreakGlass(){
+		doesGlassBreak = GlassBreak.YES;
 	}
 
 	public void setPrevious(ConveyorAgent conveyor)

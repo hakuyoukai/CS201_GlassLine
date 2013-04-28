@@ -190,9 +190,10 @@ public class FactoryPanel extends JPanel
 		conveyor7.msgIAmReady();
 		System.out.println("Back end initialization finished.");
 		
-		conveyor5.disableBoth();
-		conveyor5.jam();
-		conveyor5.turnOn();
+//		conveyor5.disableBoth();
+//		conveyor5.jam();
+//		conveyor5.turnOn();
+		conveyor5.breakGlass();
 	}
 
 	/**

@@ -62,6 +62,10 @@ public class ConveyorFamilyOffline5 implements ConveyorFamilyInterface
 	public void turnOn(){
 		conveyor.msgTurnOn();
 	}
+	
+	public void breakGlass(){
+		popup.msgBreakGlass();
+	}
 		
 	public void starThread()
 	{
