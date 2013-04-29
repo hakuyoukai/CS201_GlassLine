@@ -202,12 +202,14 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 //				    3000);
 				
 				//this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_BROKEN, args);
-				this.part.setIcon(new ImageIcon());
-				this.part = null;
-				animationState=AnimationState.IDLE;
-				this.setIcon(imageicons.get(0));
-//				
-				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_BROKEN, args);
+				
+				//HERE IS REMOVE INSTANTLY
+//				this.part.setIcon(new ImageIcon());
+//				this.part = null;
+//				animationState=AnimationState.IDLE;
+//				this.setIcon(imageicons.get(0));
+////				
+//				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_BROKEN, args);
 //				return;
 				return;
 				

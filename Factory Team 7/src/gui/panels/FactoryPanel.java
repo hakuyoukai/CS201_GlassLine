@@ -193,7 +193,7 @@ public class FactoryPanel extends JPanel
 //		conveyor5.disableBoth();
 //		conveyor5.jam();
 //		conveyor5.turnOn();
-//		conveyor5.breakGlassBot();
+		conveyor5.breakGlassTop();
 		
 	}
 

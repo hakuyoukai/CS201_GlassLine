@@ -504,9 +504,9 @@ public class PopupAgent extends Agent implements TReceiver
 					if(args[0] == o.args[0])
 					{
 						//System.err.println("WHY THE HECK IS THIS NOT WORKING?");
-						o.g = null;
-						o.state = OperatorState.EMPTY;
-						//o.state = OperatorState.GLASS_BROKEN;
+//						o.g = null;
+//						o.state = OperatorState.EMPTY;
+						o.state = OperatorState.GLASS_BROKEN;
 						//o.state = OperatorState.DONE;
 					}
 				}
