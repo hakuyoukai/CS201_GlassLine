@@ -74,11 +74,13 @@ public class ConveyorFamilyOffline6 implements ConveyorFamilyInterface, TReceive
 		else if( event == TEvent.POPUP_JAM){
 			if((Integer)args[0] == pNumber){
 				System.err.println("Message received upper popup jammed");
+				popup.jamPopup(true);
 			}
 		}
 		else if( event == TEvent.POPUP_UNJAM){
 			if((Integer)args[0] == pNumber){
 				System.err.println("Message received popup un-jammed");
+				popup.jamPopup(false);
 			}
 		}
 		// For workstation events

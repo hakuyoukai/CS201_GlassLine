@@ -21,7 +21,7 @@ public class PopupAgent extends Agent implements TReceiver{
 	private TChannel opChannel;
 	
 	enum PopupStatus {UP,DOWN,ANIM};						// is it raised or lowered
-	enum PopupState {WAIT,READY};							// is the popup free to go do something else now
+	enum PopupState {WAIT,READY, JAMMED};					// is the popup free to go do something else now
 	enum ConveyorState {ASKED, APPROVED, DEFAULT};
 	enum NextConveyorState {READY, DEFAULT};
 	enum GlassState {PROCESSED, UNPROCESSED};
@@ -93,6 +93,14 @@ public class PopupAgent extends Agent implements TReceiver{
 	// ************************************************ //
     // ***************** MESSAGES ********************* //
     // ************************************************ //
+	public void jamPopup(boolean jam){
+		if(jam){
+			popState = PopupState.JAMMED;
+		}
+		else{
+			popState = PopupState.READY;
+		}
+	}
 	public void msgIAmReady(){							// msg from dest informing they are ok to accept
 		nextState = NextConveyorState.READY;
 		stateChanged();
@@ -104,6 +112,10 @@ public class PopupAgent extends Agent implements TReceiver{
 	}
 	
 	public void msgHereIsGlass(ConveyorAgent c, Glass g){	// msg from source giving you glass
+		if(popState == PopupState.JAMMED){
+			System.err.println("trying to add glass");
+			System.exit(0);
+		}
 		System.err.println("popup accept glass");
 		pGlass = g;
 		if(g.recipe.get(name) == false)						// identifies if the glass needs to be proccessed or not
@@ -123,6 +135,10 @@ public class PopupAgent extends Agent implements TReceiver{
 	// 3: accept new glass
 	@Override
 	public boolean pickAndExecuteAnAction() {
+		if(popState == PopupState.JAMMED){
+			return true;
+		}
+		
 		if(popState!=PopupState.WAIT && popStatus!=PopupStatus.ANIM){		// if the popup is not waiting or animating 
 			if(pGlass!=null){												// if there is glass on the popup
 				if(gState == GlassState.PROCESSED){							// if glass has been processed check if the next conveyor can accept the glass
