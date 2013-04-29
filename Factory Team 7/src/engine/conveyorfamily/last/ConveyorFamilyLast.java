@@ -31,7 +31,6 @@ public class ConveyorFamilyLast implements ConveyorFamilyInterface
 	@Override
 	public void msgDeleteGlass(Glass g)
 	{
-		// TODO Auto-generated method stub
-		
+		conveyor.msgDeleteGlass(g);
 	}
 }

@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 
@@ -190,9 +192,44 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			if (event == TEvent.WORKSTATION_BREAK_GLASS){
 				//this.part.removeAll();
 				this.part.msgPartBroken();
+				//this.part.setIcon(imageicons.get(1));
+//				Timer timer = new Timer();
+//				System.out.println("Removing Part...(3000 milliseconds)");
+//				timer.schedule(new TimerTask() {
+//				    public void run() {  
+//				    	    
+//				    }},
+//				    3000);
+				
+				//this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_BROKEN, args);
+				
+				//HERE IS REMOVE INSTANTLY
+//				this.part.setIcon(new ImageIcon());
+//				this.part = null;
+				animationState=AnimationState.IDLE;
+//				this.setIcon(imageicons.get(0));
+////				
 				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_BROKEN, args);
+//				return;
 				return;
 				
+			}
+			
+			if(event == TEvent.WORKSTATION_NO_PROCESS){
+				
+				this.part = null;
+				animationState=AnimationState.IDLE;
+				this.setIcon(imageicons.get(0));
+				return;
+			}
+			
+			if(event == TEvent.WORKSTATION_UNBREAK_GLASS){
+				this.part.setIcon(new ImageIcon());
+				this.part = null;
+				animationState=AnimationState.IDLE;
+				this.setIcon(imageicons.get(0));
+				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_UNBROKEN, args);
+				return;
 			}
 
 		}

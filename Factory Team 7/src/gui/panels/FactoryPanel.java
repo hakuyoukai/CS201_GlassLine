@@ -53,9 +53,10 @@ public class FactoryPanel extends JPanel
 	ConveyorFamilyShuttle conveyor9;
 	ConveyorFamilyShuttle conveyor12;
 	
-	ConveyorFamilyOffline6 conveyor5;
-	ConveyorFamilyOffline6 conveyor6;
-	ConveyorFamilyOffline conveyor7;
+
+	ConveyorFamilyOffline5 conveyor5;
+	ConveyorFamilyOffline5 conveyor6;
+	ConveyorFamilyOffline6 conveyor7;
 	
 	ConveyorFamilyLast conveyor14;
 	
@@ -114,19 +115,19 @@ public class FactoryPanel extends JPanel
 		conveyor0= new ConveyorFamilyZero(transducer);
 		//conveyor1=new ConveyorFamily(null,null,transducer,1,TChannel.NO_WORKSTATION);
 		conveyor1= new ConveyorFamilyShuttle(1,transducer);
-		conveyor2=new ConveyorFamily(null,null,transducer,2,TChannel.BREAKOUT);
-		conveyor3=new ConveyorFamily(null,null,transducer,3,TChannel.MANUAL_BREAKOUT);
-		conveyor8=new ConveyorFamily(null,null,transducer,8,TChannel.WASHER);
-		conveyor10=new ConveyorFamily(null,null,transducer,10,TChannel.PAINTER);
-		conveyor11=new ConveyorFamily(null,null,transducer,11,TChannel.UV_LAMP);
-		conveyor13=new ConveyorFamily(null,null,transducer,13,TChannel.OVEN);
+		conveyor2=new ConveyorFamily(null,null,transducer,2,TChannel.BREAKOUT,cPanel);
+		conveyor3=new ConveyorFamily(null,null,transducer,3,TChannel.MANUAL_BREAKOUT,cPanel);
+		conveyor8=new ConveyorFamily(null,null,transducer,8,TChannel.WASHER,cPanel);
+		conveyor10=new ConveyorFamily(null,null,transducer,10,TChannel.PAINTER,cPanel);
+		conveyor11=new ConveyorFamily(null,null,transducer,11,TChannel.UV_LAMP,cPanel);
+		conveyor13=new ConveyorFamily(null,null,transducer,13,TChannel.OVEN,cPanel);
 		conveyor4= new ConveyorFamilyShuttle(4,transducer);
 		conveyor9= new ConveyorFamilyShuttle(9,transducer);
 		conveyor12= new ConveyorFamilyShuttle(12,transducer);
 		
-		conveyor5 = new ConveyorFamilyOffline6(transducer,conveyor4,5);
-		conveyor6 = new ConveyorFamilyOffline6(transducer,conveyor5,6);
-		conveyor7 = new ConveyorFamilyOffline(transducer,conveyor6,7);
+		conveyor5 = new ConveyorFamilyOffline5(transducer,conveyor4,5);
+		conveyor6 = new ConveyorFamilyOffline5(transducer,conveyor5,6);
+		conveyor7 = new ConveyorFamilyOffline6(transducer,conveyor6,7);
 		
 		conveyor14 = new ConveyorFamilyLast(transducer,conveyor13);
 		
@@ -173,9 +174,9 @@ public class FactoryPanel extends JPanel
 		conveyor2.startAllAgentThreads();
 		conveyor3.startAllAgentThreads();
 		
-		conveyor5.startThread();
-		conveyor6.startThread();
-		conveyor7.starThread();
+		conveyor5.starThread();
+		conveyor6.starThread();
+		conveyor7.startThread();
 		conveyor8.startAllAgentThreads();
 		conveyor10.startAllAgentThreads();
 		conveyor11.startAllAgentThreads();
@@ -192,7 +193,11 @@ public class FactoryPanel extends JPanel
 //		conveyor5.disableBoth();
 //		conveyor5.jam();
 //		conveyor5.turnOn();
-		//conveyor5.breakGlass();
+//		conveyor5.breakGlassTop();
+//		conveyor5.unBreakGlassTop();
+		//conveyor5.noProcessTop();
+		//conveyor5.reProcessTop();
+		
 	}
 
 	/**

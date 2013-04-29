@@ -2,6 +2,8 @@ package engine.conveyorfamily.online;
 
 import engine.util.ConveyorFamilyInterface;
 import engine.util.Glass;
+import gui.drivers.FactoryFrame;
+import gui.panels.ControlPanel;
 import transducer.TChannel;
 import transducer.Transducer;
 
@@ -13,14 +15,15 @@ public class ConveyorFamily implements ConveyorFamilyInterface
 	ConveyorFamilyInterface conveyorBefore;
 	ConveyorFamilyInterface conveyorAfter;
 	public int familyIndex;
+	public ControlPanel cp;
 
 	
-	public ConveyorFamily(ConveyorFamilyInterface conveyorBefore, ConveyorFamilyInterface conveyorAfter,Transducer t, int familyIndex, TChannel machineType)
+	public ConveyorFamily(ConveyorFamilyInterface conveyorBefore, ConveyorFamilyInterface conveyorAfter,Transducer t, int familyIndex, TChannel machineType,ControlPanel cp)
 	{
 		this.conveyorBefore=conveyorBefore;
 		this.familyIndex=familyIndex;
 		sensorBefore=new SensorBeforeAgent(conveyorBefore,t,2*familyIndex);
-		conveyor=new ConveyorAgent(conveyorAfter,t,familyIndex,machineType);
+		conveyor=new ConveyorAgent(conveyorAfter,t,familyIndex,machineType,cp);
 		sensorAfter=new SensorAfterAgent(conveyor,t,2*familyIndex+1);
 	}
 	

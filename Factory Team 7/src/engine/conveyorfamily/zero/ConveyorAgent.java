@@ -27,7 +27,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 	
 	private enum SensorState {ON,OFF};
 	private enum SendState {APPROVED, DEFAULT, WAITING, DENIED};
-	private enum AnimState {WAITING,LOADING, WORKING, RELEASING, DEFAULT};
+	private enum AnimState {WAITING,LOADING, WORKING, RELEASING, DEFAULT, BROKEN};
 
 	private SensorState sensorOne;
 	private SensorState sensorTwo;
@@ -37,6 +37,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 	boolean quieted = false;
 	Boolean jammed = false;
 	boolean initialJam = false;
+	private boolean process = true;
 	
 	private Timer timer = new Timer();
 	
@@ -75,7 +76,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 		stateChanged();
 	}
 	
-	
+
 	//!!SCHEDULER!!
 	@Override
 	public boolean pickAndExecuteAnAction()
@@ -134,7 +135,9 @@ public class ConveyorAgent extends Agent implements TReceiver
 	}
 	public void sendNext()
 	{
-		nextConveyor.msgHereIsGlass(glass.remove(0));
+		System.err.println("WELCOME TO HELL");
+		cutterGlass = glass.remove(0);
+		nextConveyor.msgHereIsGlass(cutterGlass);
 		cutterState = AnimState.WAITING;
 		quieted = false;
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, newArgs);
@@ -175,8 +178,19 @@ public class ConveyorAgent extends Agent implements TReceiver
 		{
 			if(event == TEvent.WORKSTATION_LOAD_FINISHED)
 			{
-				cutterState = AnimState.WORKING;
-				transducer.fireEvent(TChannel.CUTTER,TEvent.WORKSTATION_DO_ACTION,null);
+				if(process)
+				{
+					if(cutterState !=AnimState.BROKEN)
+					{
+						cutterState = AnimState.WORKING;
+						transducer.fireEvent(TChannel.CUTTER,TEvent.WORKSTATION_DO_ACTION,null);
+					}
+				}
+				else
+				{
+					cutterState = AnimState.DEFAULT;
+					transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, null);
+				}
 				stateChanged();
 			}
 			if(event == TEvent.WORKSTATION_GUI_ACTION_FINISHED)
@@ -185,6 +199,7 @@ public class ConveyorAgent extends Agent implements TReceiver
 				{
 					cutterState = AnimState.DEFAULT;
 					transducer.fireEvent(TChannel.CUTTER, TEvent.WORKSTATION_RELEASE_GLASS, null);
+					cutterGlass = null;
 					stateChanged();
 				}
 			}
@@ -285,6 +300,50 @@ public class ConveyorAgent extends Agent implements TReceiver
 						}
 						stateChanged();
 					}
+				}
+			}
+			if(event == TEvent.INLINE_DOES_NOT_PROCESS)
+			{
+				process = false;
+				stateChanged();
+			}
+			if(event == TEvent.INLINE_DOES_PROCESS)
+			{
+				process = true;
+				stateChanged();
+			}
+			if(event == TEvent.INLINE_WORKSTATION_BREAK)
+			{
+				System.err.println("GOT INLINE MESSAGE YO");
+				if((Integer)args[0] == 0)
+				{
+					if(cutterState!=AnimState.DEFAULT && cutterState!= AnimState.RELEASING)
+					{
+						if(cutterState == AnimState.WORKING || cutterState == AnimState.LOADING)
+						{
+							nextConveyor.msgDeleteGlass(cutterGlass);
+						}
+					}
+					cutterState = AnimState.BROKEN;
+					stateChanged();
+				}
+
+			}
+			if(event == TEvent.INLINE_WORKSTATION_UNBREAK)
+			{
+				if((Integer)args[0] == 0)
+				{
+					if(cutterState == AnimState.BROKEN)
+					{
+						cutterState = AnimState.WAITING;
+						cutterGlass = null;
+						nextState = SendState.APPROVED;
+						if(nextState == SendState.APPROVED && !glass.isEmpty())
+						{
+							sendNext();
+						}
+					}
+					stateChanged();
 				}
 			}
 		}
