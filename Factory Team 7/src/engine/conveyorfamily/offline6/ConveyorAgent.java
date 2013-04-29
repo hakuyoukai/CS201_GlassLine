@@ -71,8 +71,15 @@ public class ConveyorAgent extends Agent implements TReceiver{
 		conveyorJammed = jammed;
 		if( jammed )
 			stopConveyor();
-		else
+		else{
+			System.err.print(sensorTwo);
+			System.err.print(nextState);
+			if( sensorTwo == SensorState.OFF || nextState == SendState.WAITING || nextState == SendState.DEFAULT){
+				System.err.println("starting conveyor");
+				startConveyor();
+			}
 			stateChanged();
+		}
 	}
 
 	// ************************************************ //
@@ -87,12 +94,15 @@ public class ConveyorAgent extends Agent implements TReceiver{
 		}
 		
 		if(!glass.isEmpty()){
+			if( sensorTwo != SensorState.ON){
+				startConveyor();
+			}
 			if(nextState == SendState.APPROVED){
 				sendNext();
 				return true;
 			}
-			else if(nextState == SendState.DEFAULT){
-				askNext();
+			if(nextState == SendState.DEFAULT && sensorTwo == SensorState.ON){		// wait till the absolute last momement to ask the popup if it can offload glass
+				askNext();										// ask dest to get rid of glass --> if true nextState = approved
 				return true;
 			}
 		}
@@ -102,8 +112,8 @@ public class ConveyorAgent extends Agent implements TReceiver{
 		if(prevState == SendState.DEFAULT){
 			if(glass.size()<capacity){
 				if(sensorOne == SensorState.OFF){
-					System.err.println("Ask for glass");
-					askForGlass();
+					//System.err.println("Ask for glass");
+					askForGlass();								// request glass from source
 					return true;
 				}
 			}
@@ -115,13 +125,13 @@ public class ConveyorAgent extends Agent implements TReceiver{
     // ****************** ACTIONS ********************* //
     // ************************************************ //
 	public void sendNext(){
-		next.msgHereIsGlass(this,glass.remove(0));
+		next.msgHereIsGlass(this,glass.remove(0));				// --> offload glass to dest --> only place glass is removed from the queue
 		if(sensorTwo == SensorState.ON)
 			nextState = SendState.DEFAULT;
 		else
 			nextState = SendState.WAITING;
 		
-		System.err.println("starting conveyor send next");
+		//System.err.println("starting conveyor send next");
 		transducer.fireEvent(TChannel.CONVEYOR, TEvent.CONVEYOR_DO_START, conArgs);
 		stateChanged();
 		printState("send next");
@@ -137,41 +147,43 @@ public class ConveyorAgent extends Agent implements TReceiver{
 	
 	public void askNext(){
 		nextState = SendState.ASKED;
-		next.msgCanIGive();
+		next.msgCanIGive();									// --> ask the popup if you can offload glass
 		stateChanged();
 		printState("ask next");
 	}
 	
 	public void askForGlass(){
 		prevState = SendState.APPROVED;
-		prev.msgIAmReady();
+		prev.msgIAmReady();									// tell the prev cf that you can accept glass
 		stateChanged();
 		printState("ask for glass");
 	}
 
-	//!!SCHEDULER!! --> No actions are called here
+	
 	@Override
 	public void eventFired(TChannel channel, TEvent event, Object[] args){
 		// if the conveyor is jammed we still want to log the gui state but we need to prevent action execution
+		if(conveyorJammed)
+			return;
 		if(channel == TChannel.SENSOR){
 			if(event == TEvent.SENSOR_GUI_PRESSED){
 				if((Integer)args[0] == (2*number)){
 					sensorOne = SensorState.ON;
 					if(prevState == SendState.WAITING){
-						System.err.println("loading glass from previous conveyer");
+						//System.err.println("loading glass from previous conveyer");
 						glass.add(incomingGlass);
 						incomingGlass = null;
 						prevState = SendState.DEFAULT;
 						printState("s1");
 					}
 					else{
-						System.err.println("entry pressed but send state was not expecting it");
+						//System.err.println("entry pressed but send state was not expecting it");
 					}
 					stateChanged();
 				}
-				if((Integer)args[0] == ((2*number)+1)){
-					System.err.println("REACHED SECOND SENSOR");
-					System.err.println(nextState);
+				else if((Integer)args[0] == ((2*number)+1)){
+					//System.err.println("REACHED SECOND SENSOR");
+					//System.err.println(nextState);
 					sensorTwo = SensorState.ON;
 					if(nextState == SendState.WAITING){
 						nextState = SendState.DEFAULT;
@@ -184,12 +196,13 @@ public class ConveyorAgent extends Agent implements TReceiver{
 					stateChanged();
 				}
 			}
-			if(event == TEvent.SENSOR_GUI_RELEASED){
+			else if(event == TEvent.SENSOR_GUI_RELEASED){
 				if((Integer)args[0] == (2*number)){
 					sensorOne = SensorState.OFF;
+					prev.msgIAmReady();
 					stateChanged();
 				}
-				if((Integer)args[0] == ((2*number)+1)){
+				else if((Integer)args[0] == ((2*number)+1)){
 					sensorTwo = SensorState.OFF;
 					stateChanged();
 				}
@@ -213,6 +226,7 @@ public class ConveyorAgent extends Agent implements TReceiver{
 	}
 	
 	public void printState(String msg){
+		/*
 		System.out.println("-------CF 6---------");
 		System.out.println(msg);
 		System.out.println(conveyorJammed);
@@ -221,5 +235,6 @@ public class ConveyorAgent extends Agent implements TReceiver{
 		System.out.println("entrySensor: "+sensorOne);
 		System.out.println("exitSensor: "+sensorTwo);
 		System.out.println("--------------------");
+		*/
 	}
 }
