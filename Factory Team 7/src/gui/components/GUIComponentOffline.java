@@ -191,15 +191,15 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 			}
 			if (event == TEvent.WORKSTATION_BREAK_GLASS){
 				//this.part.removeAll();
-				//this.part.msgPartBroken();
+				this.part.msgPartBroken();
 				//this.part.setIcon(imageicons.get(1));
-				Timer timer = new Timer();
+//				Timer timer = new Timer();
 				System.out.println("Removing Part...(3000 milliseconds)");
-				timer.schedule(new TimerTask() {
-				    public void run() {  
-				    	    
-				    }},
-				    3000);
+//				timer.schedule(new TimerTask() {
+//				    public void run() {  
+//				    	    
+//				    }},
+//				    3000);
 				
 				//this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_BROKEN, args);
 				this.part.setIcon(new ImageIcon());

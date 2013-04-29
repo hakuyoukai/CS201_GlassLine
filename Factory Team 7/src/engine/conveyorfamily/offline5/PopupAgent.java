@@ -22,7 +22,7 @@ public class PopupAgent extends Agent implements TReceiver
 	private TChannel opChannel;
 	
 	enum PopupStatus {UP,DOWN,ANIM};
-	enum PopupState {WAIT,READY};
+	enum PopupState {WAIT,READY, JAMMED};
 	enum ConveyorState {ASKED, APPROVED, DEFAULT};
 	enum NextConveyorState {READY, DEFAULT};
 	enum GlassState {PROCESSED, UNPROCESSED};
@@ -30,7 +30,7 @@ public class PopupAgent extends Agent implements TReceiver
 	enum AnimState {DONE, RUN, DEFAULT};
 	enum GlassBreak {YES, NO};
 	
-	GlassBreak doesGlassBreak;
+	
 	GlassState gState;
 	PopupState popState;
 	PopupStatus popStatus;
@@ -39,6 +39,7 @@ public class PopupAgent extends Agent implements TReceiver
 	
 	private class MyOperator
 	{
+		GlassBreak doesGlassBreak;
 		Glass g;
 		OperatorState state;
 		TChannel channel;
@@ -50,6 +51,7 @@ public class PopupAgent extends Agent implements TReceiver
 			args[0] = num;
 			g = null;
 			state = OperatorState.EMPTY;
+			doesGlassBreak = GlassBreak.NO;
 		}
 	}
 	
@@ -87,7 +89,7 @@ public class PopupAgent extends Agent implements TReceiver
 		
 		popArgs[0] = n-5;
 		
-		doesGlassBreak = GlassBreak.NO;
+		//doesGlassBreak = GlassBreak.NO;
 		popState = PopupState.READY;
 		popStatus = PopupStatus.UP;
 		operators = new ArrayList<MyOperator>();
@@ -129,11 +131,27 @@ public class PopupAgent extends Agent implements TReceiver
 		}
 	}
 	
+	public void msgReEnableBot(){
+		for(MyOperator o: operators){
+			if(o.args[0] == 1){
+				o.state = OperatorState.EMPTY;
+			}
+		}
+	}
+	
 	public void msgOnlyBotWorkstation(){
 		for(MyOperator o: operators){
 			if(o.args[0] == 0){
 				//operators.remove(o);
 				o.state = OperatorState.DISABLED;
+			}
+		}
+	}
+	
+	public void msgReEnableTop(){
+		for(MyOperator o: operators){
+			if(o.args[0] == 0){
+				o.state = OperatorState.EMPTY;
 			}
 		}
 	}
@@ -152,12 +170,45 @@ public class PopupAgent extends Agent implements TReceiver
 			}
 		}
 	}
+	
+	public void msgBreakGlass(int i){
+		Integer[] tempArg = new Integer[1];
+		tempArg[0] = i;
+		for(MyOperator o: operators){
+			if(o.args[0] == tempArg[0]){
+				o.doesGlassBreak = GlassBreak.YES;
+			}
+		}
+		stateChanged();
+		
+	}
+	
+	public void msgUnBreakGlass(int i){
+		Integer[] tempArg = new Integer[1];
+		tempArg[0] = i;
+		for(MyOperator o: operators){
+			if(o.args[0] == tempArg[0]){
+				o.doesGlassBreak = GlassBreak.NO;
+			}
+		}
+		stateChanged();
+		
+	}
+	
+	
+	public void msgJamPopup(){
+		popState = PopupState.JAMMED;
+	}
+	
+	public void msgUnJamPopup(){
+		popState = PopupState.READY;
+	}
 
 	//!!SCHEDULER!!
 	@Override
 	public boolean pickAndExecuteAnAction() 
 	{
-		if(popState!=PopupState.WAIT && popStatus!=PopupStatus.ANIM)
+		if(popState!=PopupState.WAIT && popStatus!=PopupStatus.ANIM && popState!=PopupState.JAMMED)
 		{
 			if(pGlass!=null)
 			{
@@ -186,6 +237,7 @@ public class PopupAgent extends Agent implements TReceiver
 							{
 								if(popStatus == PopupStatus.UP)
 								{
+									//System.err.println("GIVING OPERATOR GLASS");
 									giveOperatorGlass(o);
 									return true;
 								}
@@ -208,11 +260,26 @@ public class PopupAgent extends Agent implements TReceiver
 									}
 									else
 									{
+										System.err.println("LOWERING POPUP");
 										lowerPopup();
 										return true;
 									}
 								}
 							}
+							
+//							if(o.state == OperatorState.GLASS_BROKEN){
+//								if(popStatus == PopupStatus.UP)
+//								{
+//									//System.err.println("GIVING OPERATOR GLASS");
+//									giveOperatorGlass(o);
+//									return true;
+//								}
+//								else
+//								{
+//									raisePopup();
+//									return true;
+//								}
+//							}
 						}
 					}
 				}
@@ -235,7 +302,21 @@ public class PopupAgent extends Agent implements TReceiver
 									return true;
 								}
 							}
-						}
+						//if(o.state == OperatorState.EMPTY
+//						else if(o.state == OperatorState.GLASS_BROKEN){
+//							if(popStatus == PopupStatus.UP)
+//							{
+//								lowerPopup();	
+//								
+//								return true;
+//							}
+////							else
+////							{
+////								return true;
+////							}
+//						}
+						
+					}
 					}
 				}
 				
@@ -243,11 +324,13 @@ public class PopupAgent extends Agent implements TReceiver
 				{
 					if(popStatus == PopupStatus.DOWN)
 					{
+						System.err.println("GIVE PREVIOUS THE ANSWER DUDE");
 						givePrevAnswer();
 						return true;
 					}
 					else
 					{
+						System.err.println("LOWER ZE POPSS");
 						lowerPopup();
 						return true;
 					}
@@ -270,6 +353,7 @@ public class PopupAgent extends Agent implements TReceiver
 	
 	public void giveOperatorGlass(MyOperator o)
 	{
+		System.err.println("GIVING OPERATOR GLASS");
 		o.g = pGlass;
 		pGlass = null;
 		transducer.fireEvent(o.channel, TEvent.WORKSTATION_DO_LOAD_GLASS,o.args);
@@ -292,6 +376,7 @@ public class PopupAgent extends Agent implements TReceiver
 		{
 			if(o.state == OperatorState.EMPTY || o.state == OperatorState.DISABLED)
 			{
+				System.err.println("Told prev to gimme glass!");
 				prevConveyor.conveyor.msgGiveMeGlass();
 				prevConveyor.state = ConveyorState.APPROVED;
 				popState = PopupState.WAIT;
@@ -377,15 +462,16 @@ public class PopupAgent extends Agent implements TReceiver
 				{
 					if(args[0] == o.args[0])
 					{
-						if(doesGlassBreak == GlassBreak.NO){
+						if(o.doesGlassBreak == GlassBreak.NO){
 							transducer.fireEvent(o.channel, TEvent.WORKSTATION_DO_ACTION, o.args);
 							o.state =OperatorState.FULL;
 							popState = PopupState.READY;
+							//System.out.println("i am not gonna break you");
 							stateChanged();
 						}
 						else{
 							transducer.fireEvent(o.channel, TEvent.WORKSTATION_BREAK_GLASS, o.args);
-							o.state =OperatorState.FULL;
+							o.state = OperatorState.FULL;
 							popState = PopupState.READY;
 							stateChanged();
 						}
@@ -417,19 +503,20 @@ public class PopupAgent extends Agent implements TReceiver
 				{
 					if(args[0] == o.args[0])
 					{
+						//System.err.println("WHY THE HECK IS THIS NOT WORKING?");
 						o.g = null;
 						o.state = OperatorState.EMPTY;
+						//o.state = OperatorState.GLASS_BROKEN;
+						//o.state = OperatorState.DONE;
 					}
 				}
-				givePrevAnswer();
+				//givePrevAnswer();
 				stateChanged();
 			}
 		}
 	}
 	
-	public void msgBreakGlass(){
-		doesGlassBreak = GlassBreak.YES;
-	}
+	
 
 	public void setPrevious(ConveyorAgent conveyor)
 	{
