@@ -78,6 +78,22 @@ public class ConveyorFamilyOffline5 implements ConveyorFamilyInterface
 	public void unBreakGlassBot(){
 		popup.msgUnBreakGlass(1);
 	}
+	
+	public void noProcessBot(){
+		popup.msgNoProcessGlass(0);
+	}
+	
+	public void noProcessTop(){
+		popup.msgNoProcessGlass(1);
+	}
+	
+	public void reProcessBot(){
+		popup.msgReProcessGlass(0);
+	}
+	
+	public void reProcessTop(){
+		popup.msgReProcessGlass(1);
+	}
 		
 	public void starThread()
 	{

@@ -544,8 +544,7 @@ public class PopupAgent extends Agent implements TReceiver
 				}
 				//givePrevAnswer();
 				stateChanged();
-			}
-			
+			}			
 		}
 	}
 	

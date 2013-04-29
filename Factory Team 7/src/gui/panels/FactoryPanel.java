@@ -55,8 +55,8 @@ public class FactoryPanel extends JPanel
 	ConveyorFamilyShuttle conveyor12;
 	
 	ConveyorFamilyOffline5 conveyor5;
-	ConveyorFamilyOffline conveyor6;
-	ConveyorFamilyOffline conveyor7;
+	ConveyorFamilyOffline5 conveyor6;
+	ConveyorFamilyOffline5 conveyor7;
 	
 	ConveyorFamilyLast conveyor14;
 	
@@ -126,8 +126,8 @@ public class FactoryPanel extends JPanel
 		conveyor12= new ConveyorFamilyShuttle(12,transducer);
 		
 		conveyor5 = new ConveyorFamilyOffline5(transducer,conveyor4,5);
-		conveyor6 = new ConveyorFamilyOffline(transducer,conveyor5,6);
-		conveyor7 = new ConveyorFamilyOffline(transducer,conveyor6,7);
+		conveyor6 = new ConveyorFamilyOffline5(transducer,conveyor5,6);
+		conveyor7 = new ConveyorFamilyOffline5(transducer,conveyor6,7);
 		
 		conveyor14 = new ConveyorFamilyLast(transducer,conveyor13);
 		
