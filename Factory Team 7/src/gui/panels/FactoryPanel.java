@@ -5,14 +5,13 @@ package gui.panels;
 import engine.conveyorfamily.last.ConveyorFamilyLast;
 import engine.conveyorfamily.offline.ConveyorFamilyOffline;
 import engine.conveyorfamily.offline5.ConveyorFamilyOffline5;
+import engine.conveyorfamily.offline6.ConveyorFamilyOffline6;
 import engine.conveyorfamily.online.ConveyorFamily;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle;
 import engine.conveyorfamily.shuttle.ConveyorFamilyShuttle.ConveyorFamilyType;
 import engine.conveyorfamily.zero.ConveyorFamilyZero;
 import engine.util.ConveyorFamilyInterface;
 import gui.drivers.FactoryFrame;
-import gui.test.mock.j.MockConveyorFamily;
-import engine.conveyorfamily.d.*;
 
 
 import javax.swing.BoxLayout;
@@ -55,7 +54,7 @@ public class FactoryPanel extends JPanel
 	ConveyorFamilyShuttle conveyor12;
 	
 	ConveyorFamilyOffline5 conveyor5;
-	ConveyorFamilyOffline conveyor6;
+	ConveyorFamilyOffline6 conveyor6;
 	ConveyorFamilyOffline conveyor7;
 	
 	ConveyorFamilyLast conveyor14;
@@ -126,7 +125,7 @@ public class FactoryPanel extends JPanel
 		conveyor12= new ConveyorFamilyShuttle(12,transducer);
 		
 		conveyor5 = new ConveyorFamilyOffline5(transducer,conveyor4,5);
-		conveyor6 = new ConveyorFamilyOffline(transducer,conveyor5,6);
+		conveyor6 = new ConveyorFamilyOffline6(transducer,conveyor5,6);
 		conveyor7 = new ConveyorFamilyOffline(transducer,conveyor6,7);
 		
 		conveyor14 = new ConveyorFamilyLast(transducer,conveyor13);
@@ -175,7 +174,7 @@ public class FactoryPanel extends JPanel
 		conveyor3.startAllAgentThreads();
 		
 		conveyor5.starThread();
-		conveyor6.starThread();
+		conveyor6.startThread();
 		conveyor7.starThread();
 		conveyor8.startAllAgentThreads();
 		conveyor10.startAllAgentThreads();
