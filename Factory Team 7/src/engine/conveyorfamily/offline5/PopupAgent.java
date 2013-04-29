@@ -26,10 +26,11 @@ public class PopupAgent extends Agent implements TReceiver
 	enum ConveyorState {ASKED, APPROVED, DEFAULT};
 	enum NextConveyorState {READY, DEFAULT};
 	enum GlassState {PROCESSED, UNPROCESSED};
-	enum OperatorState {FULL, EMPTY, DONE, APPROVED, DISABLED, GLASS_BROKEN};
+	enum OperatorState {FULL, EMPTY, DONE, APPROVED, DISABLED, GLASS_BROKEN, NO_PROCESS};
 	enum AnimState {DONE, RUN, DEFAULT};
 	enum GlassBreak {YES, NO};
 	
+	int counter = 0;
 	
 	GlassState gState;
 	PopupState popState;
@@ -113,6 +114,8 @@ public class PopupAgent extends Agent implements TReceiver
 	
 	public void msgHereIsGlass(ConveyorAgent c, Glass g)
 	{
+		counter++;
+		System.err.print("*** THIS HAS BEEN CALLED " + counter + " times!");
 		pGlass = g;
 		if(g.recipe.get(name) == false)
 			gState = GlassState.PROCESSED;
@@ -183,14 +186,40 @@ public class PopupAgent extends Agent implements TReceiver
 		
 	}
 	
+	public void msgNoProcessGlass(int i){
+		Integer[] tempArg = new Integer[1];
+		tempArg[0] = i;
+		for(MyOperator o: operators){
+			if(o.args[0] == tempArg[0]){
+				o.state = OperatorState.NO_PROCESS;
+				this.transducer.fireEvent(o.channel, TEvent.WORKSTATION_NO_PROCESS, o.args);
+			}
+		}
+		stateChanged();
+	}
+	
+	public void msgReProcessGlass(int i){
+//		Integer[] tempArg = new Integer[1];
+//		tempArg[0] = i;
+//		for(MyOperator o: operators){
+//			if(o.args[0] == tempArg[0]){
+//				o.state = OperatorState.EMPTY;
+//				//this.transducer.fireEvent(o.channel, TEvent.WORKSTATION_NO_PROCESS, o.args);
+//			}
+//		}
+//		stateChanged();
+	}
+	
 	public void msgUnBreakGlass(int i){
 		Integer[] tempArg = new Integer[1];
 		tempArg[0] = i;
 		for(MyOperator o: operators){
 			if(o.args[0] == tempArg[0]){
 				o.doesGlassBreak = GlassBreak.NO;
+				this.transducer.fireEvent(o.channel, TEvent.WORKSTATION_UNBROKEN, o.args);
 			}
 		}
+		
 		stateChanged();
 		
 	}
@@ -238,6 +267,7 @@ public class PopupAgent extends Agent implements TReceiver
 								if(popStatus == PopupStatus.UP)
 								{
 									//System.err.println("GIVING OPERATOR GLASS");
+									System.err.println("OPERATOR NUMBER: " + o.args[0]);
 									giveOperatorGlass(o);
 									return true;
 								}
@@ -252,7 +282,6 @@ public class PopupAgent extends Agent implements TReceiver
 								{
 									if(popStatus == PopupStatus.DOWN)
 									{
-										
 										giveConveyorGlass();
 										//o.state = OperatorState.
 										givePrevAnswer();
@@ -343,6 +372,7 @@ public class PopupAgent extends Agent implements TReceiver
 	//!!ACTIONS!!
 	public void giveConveyorGlass()
 	{
+		System.err.println("GIVE CONVEYOR GLASS CALLED");
 		nextConveyor.msgHereIsGlass(pGlass);
 		pGlass = null;
 		nextState = NextConveyorState.DEFAULT;
@@ -353,7 +383,9 @@ public class PopupAgent extends Agent implements TReceiver
 	
 	public void giveOperatorGlass(MyOperator o)
 	{
+		System.err.println("GIVE OPERATOR GLASS CALLED");
 		System.err.println("GIVING OPERATOR GLASS");
+		
 		o.g = pGlass;
 		pGlass = null;
 		transducer.fireEvent(o.channel, TEvent.WORKSTATION_DO_LOAD_GLASS,o.args);
@@ -513,6 +545,7 @@ public class PopupAgent extends Agent implements TReceiver
 				//givePrevAnswer();
 				stateChanged();
 			}
+			
 		}
 	}
 	

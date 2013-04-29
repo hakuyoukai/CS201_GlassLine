@@ -194,7 +194,7 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				this.part.msgPartBroken();
 				//this.part.setIcon(imageicons.get(1));
 //				Timer timer = new Timer();
-				System.out.println("Removing Part...(3000 milliseconds)");
+//				System.out.println("Removing Part...(3000 milliseconds)");
 //				timer.schedule(new TimerTask() {
 //				    public void run() {  
 //				    	    
@@ -206,13 +206,30 @@ public class GUIComponentOffline extends GuiAnimationComponent implements Action
 				//HERE IS REMOVE INSTANTLY
 //				this.part.setIcon(new ImageIcon());
 //				this.part = null;
-//				animationState=AnimationState.IDLE;
+				animationState=AnimationState.IDLE;
 //				this.setIcon(imageicons.get(0));
 ////				
-//				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_BROKEN, args);
+				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_BROKEN, args);
 //				return;
 				return;
 				
+			}
+			
+			if(event == TEvent.WORKSTATION_NO_PROCESS){
+				
+				this.part = null;
+				animationState=AnimationState.IDLE;
+				this.setIcon(imageicons.get(0));
+				return;
+			}
+			
+			if(event == TEvent.WORKSTATION_UNBREAK_GLASS){
+				this.part.setIcon(new ImageIcon());
+				this.part = null;
+				animationState=AnimationState.IDLE;
+				this.setIcon(imageicons.get(0));
+				this.transducer.fireEvent(this.channel, TEvent.WORKSTATION_UNBROKEN, args);
+				return;
 			}
 
 		}
